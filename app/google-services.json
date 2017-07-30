@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "781673522776",
+    "firebase_url": "https://climate-c6d19.firebaseio.com",
+    "project_id": "climate-c6d19",
+    "storage_bucket": "climate-c6d19.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:781673522776:android:1d8864a1789995b0",
+        "android_client_info": {
+          "package_name": "com.jogato.climate"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "781673522776-8urftfor6asv7g93f828v5mk7i3p8f14.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.jogato.climate",
+            "certificate_hash": "44ce6c3e6392cd49c093cd4e9e3abeaea9a29b64"
+          }
+        },
+        {
+          "client_id": "781673522776-n8fpgdcp0qn8leaahijjqrgbdphd8i26.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyChfG1OBPS4uMWHnQTi6npoDwHH6GutfiQ"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "781673522776-n8fpgdcp0qn8leaahijjqrgbdphd8i26.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
