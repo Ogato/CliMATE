@@ -4,7 +4,6 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="20dp"
     android:background="@drawable/wall">
 
     <LinearLayout
@@ -38,11 +37,12 @@
                 android:textColorHint="#979797"
                 android:layout_marginTop="50dp"
                 android:layout_gravity="center"
-                android:hint="Username"
+                android:hint="Email"
                 android:padding="10dp"
                 android:layout_width="300dp"
                 android:layout_height="wrap_content"
                 android:maxLines="1"
+                android:inputType="textEmailAddress"
                 android:id="@+id/email"/>
 
             <EditText
@@ -50,7 +50,6 @@
                 android:backgroundTint="#979797"
                 android:inputType="textPassword"
                 android:drawableStart="@drawable/ic_lock_black_24dp"
-                android:drawableLeft="@drawable/ic_lock_black_24dp"
                 android:textColor="#fff"
                 android:textColorHint="#979797"
                 android:layout_marginTop="10dp"
