@@ -1,16 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <item
-        android:title="History"
-        android:id="@+id/user_search_history"/>
-
-    <item
-        android:title="Account"
-        android:id="@+id/account_info"/>
-
-    <item
-        android:title="Log Out"
-        android:id="@+id/logout"/>
+    <item android:id="@+id/search"
+        android:title=""
+        android:icon="@android:drawable/ic_menu_search"
+        app:showAsAction="collapseActionView|ifRoom"
+        android:actionViewClass="android.widget.SearchView" />
 
 </menu>
