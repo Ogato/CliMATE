@@ -23,7 +23,7 @@ import java.util.List;
 
 public class WeatherSource {
     private static final String APIXU_URL = "https://api.apixu.com/v1/forecast.json?key=606241cc9f67477abce55230172107&q=";
-    private final static int IMAGE_CACHE_COUNT = 100;
+    private final static int IMAGE_CACHE_COUNT = 10;
     private static WeatherSource sWeatherSource;
     private RequestQueue mRequestQueue;
     private Context mContext;
@@ -42,7 +42,8 @@ public class WeatherSource {
     }
 
     private WeatherSource(Context context){
-        mRequestQueue = Volley.newRequestQueue(context);
+        mContext = context;
+        mRequestQueue = Volley.newRequestQueue(mContext);
         mImageLoader = new ImageLoader(mRequestQueue, new ImageLoader.ImageCache(){
             private final LruCache<String, Bitmap> mCache = new LruCache<>(IMAGE_CACHE_COUNT);
             @Override
@@ -57,7 +58,7 @@ public class WeatherSource {
         });
     }
 
-    public void getWeatherForecast(final ForecastListener forecastListener, String location){
+    public void getWeatherForecast(String location,final ForecastListener forecastListener){
         String url = APIXU_URL + location + "&days=7";
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
                 Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
