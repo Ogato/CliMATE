@@ -29,6 +29,7 @@ public class Login extends AppCompatActivity {
     private Button mSignUp;
     private EditText mEmail;
     private EditText mPassword;
+    private static User user;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -37,7 +38,12 @@ public class Login extends AppCompatActivity {
 
         getSupportActionBar().hide();
 
+        user = User.getInstance();
+
         mAuth = FirebaseAuth.getInstance();
+
+        user.setmUserAuthState(mAuth);
+
         mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
@@ -45,6 +51,8 @@ public class Login extends AppCompatActivity {
                 if (user != null) {
                     // User is signed in
                     Log.d("JO_INFO", "onAuthStateChanged:signed_in:" + user.getUid());
+                    User.getInstance().setmUserName(user.getEmail());
+                    User.getInstance().setmUserID(user.getUid());
                     Intent i = new Intent(Login.this, MainActivity.class);
                     startActivity(i);
                 } else {
@@ -70,8 +78,6 @@ public class Login extends AppCompatActivity {
                                 @Override
                                 public void onComplete(@NonNull Task<AuthResult> task) {
                                     Log.i("JO_INFO", "signInWithEmail:onComplete:" + task.isSuccessful());
-                                    Log.i("JO_INFO", "EMAIL:" + user_email + " PW: " + user_password);
-
                                     // If sign in fails, display a message to the user. If sign in succeeds
                                     // the auth state listener will be notified and logic to handle the
                                     // signed in user can be handled in the listener.
@@ -80,7 +86,9 @@ public class Login extends AppCompatActivity {
                                         Toast.makeText(Login.this, R.string.auth_failed,
                                                 Toast.LENGTH_SHORT).show();
                                     }
-
+                                    else{
+                                        user.setmUserEmail(user_email);
+                                    }
                                 }
                             });
                 }
@@ -98,19 +106,10 @@ public class Login extends AppCompatActivity {
 
     }
 
-
-
     @Override
     public void onStart() {
         super.onStart();
         mAuth.addAuthStateListener(mAuthListener);
     }
 
-    @Override
-    public void onStop() {
-        super.onStop();
-        if (mAuthListener != null) {
-            mAuth.removeAuthStateListener(mAuthListener);
-        }
-    }
 }
