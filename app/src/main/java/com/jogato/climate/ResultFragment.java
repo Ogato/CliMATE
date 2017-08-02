@@ -4,12 +4,10 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
 
@@ -21,7 +19,8 @@ import java.util.List;
 
 public class ResultFragment extends Fragment {
 
-    private static final String USER_QUERY_KEY = "location";
+    private static final String USER_CITY_KEY = "city";
+    private static final String USER_STATE_KEY = "state";
     private ForecastAdapter mAdapter;
     private TwoWayView mTwoWayView;
 
@@ -32,19 +31,19 @@ public class ResultFragment extends Fragment {
         setHasOptionsMenu(true);
         setRetainInstance(true);
 
-        final String location = getArguments().getString(USER_QUERY_KEY);
+        final String city = getArguments().getString(USER_CITY_KEY);
+        final String state = getArguments().getString(USER_STATE_KEY);;
 
         mTwoWayView = v.findViewById(R.id.temporary);
         mAdapter = new ForecastAdapter(getContext());
         mTwoWayView.setAdapter(mAdapter);
 
-        WeatherSource.getInstance(getContext()).getWeatherForecast(location, new WeatherSource.ForecastListener() {
+        WeatherSource.getInstance(getContext()).getWeatherForecast(city, state, new WeatherSource.ForecastListener() {
             @Override
             public void onForecastReceived(List<DayForecast> dayForecasts) {
                 mAdapter.setItems(dayForecasts);
             }
         });
-
         return v;
     }
 
@@ -93,7 +92,6 @@ public class ResultFragment extends Fragment {
                 TextView averageTemp = dayView.findViewById(R.id.average_temp);
                 averageTemp.setText(Integer.toString(dayForecast.getmAverageTemp()));
 
-                MainActivity.mProgressBar.setVisibility(View.INVISIBLE);
                 return dayView;
             }
             else {
@@ -104,7 +102,6 @@ public class ResultFragment extends Fragment {
 
                 TextView averageTemp = view.findViewById(R.id.average_temp);
                 averageTemp.setText(Integer.toString(dayForecast.getmAverageTemp()));
-                MainActivity.mProgressBar.setVisibility(View.INVISIBLE);
                 return view;
 
             }
