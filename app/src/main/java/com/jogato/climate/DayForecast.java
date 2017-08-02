@@ -1,12 +1,10 @@
 package com.jogato.climate;
 
 
-import com.android.volley.toolbox.NetworkImageView;
-
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class DayForecast {
+public class DayForecast{
     private String mDate;
     private int mMaxTemp;
     private int mMinTemp;
@@ -18,14 +16,14 @@ public class DayForecast {
 
     public DayForecast(JSONObject dayObject){
         try {
-            mDate = dayObject.getString("date");
-            mMaxTemp = (int)Math.round(dayObject.getDouble("maxtemp_f"));
-            mMinTemp = (int)Math.round(dayObject.getDouble("mintemp_f"));
-            mAverageTemp = (int)Math.round(dayObject.getDouble("avgtemp_f"));
-            mWindSpeed = dayObject.getDouble("maxwind_mph");
-            mHumidity = dayObject.getDouble("avghumidity");
-            mDescription = dayObject.getJSONObject("condition").getString("text");
-            mImageViewURL = dayObject.getJSONObject("condition").getString("icon").replace("//", "");
+            mDate = dayObject.getString("date").substring(5);
+            mMaxTemp = (int)Math.round(dayObject.getJSONObject("day").getDouble("maxtemp_f"));
+            mMinTemp = (int)Math.round(dayObject.getJSONObject("day").getDouble("mintemp_f"));
+            mAverageTemp = (int)Math.round(dayObject.getJSONObject("day").getDouble("avgtemp_f"));
+            mWindSpeed = dayObject.getJSONObject("day").getDouble("maxwind_mph");
+            mHumidity = dayObject.getJSONObject("day").getDouble("avghumidity");
+            mDescription = dayObject.getJSONObject("day").getJSONObject("condition").getString("text");
+            mImageViewURL = dayObject.getJSONObject("day").getJSONObject("condition").getString("icon").replace("//", "");
         }
         catch (JSONException e){
             e.printStackTrace();
@@ -63,5 +61,9 @@ public class DayForecast {
 
     public String getmImageViewURL() {
         return mImageViewURL;
+    }
+
+    public void setmDate(String mDate) {
+        this.mDate = mDate;
     }
 }
