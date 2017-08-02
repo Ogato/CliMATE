@@ -1,9 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
-<EditText
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal">
+
+<EditText
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:hint="City"
+    android:layout_weight="3"
     android:id="@+id/user_query">
 
 </EditText>
+
+<Spinner
+    android:id="@+id/states"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_weight="2"/>
+
+</LinearLayout>
