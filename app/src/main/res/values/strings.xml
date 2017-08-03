@@ -1,6 +1,8 @@
 <resources>
     <string name="app_name">CliMATE</string>
     <string name="title_activity_login">Sign in</string>
+    <string name="drawer_open">Drawer Opened</string>
+    <string name="drawer_close">Drawer Closed</string>
 
     <!-- Strings related to login -->
     <string name="prompt_email">Email</string>
@@ -26,6 +28,7 @@
     <item>Colorado</item>
     <item>Connecticut</item>
     <item>Delaware</item>
+    <item>District of Columbia</item>
     <item>Florida</item>
     <item>Georgia</item>
     <item>Hawaii</item>
@@ -79,6 +82,7 @@
     <item>CO</item>
     <item>CT</item>
     <item>DE</item>
+    <item>DC</item>
     <item>FL</item>
     <item>GA</item>
     <item>HI</item>
@@ -122,5 +126,11 @@
     <item>WI</item>
     <item>WY</item>
 </string-array>
+
+    <string-array name="navigation_options">
+        <item>History</item>
+        <item>Account</item>
+        <item>LogOut</item>
+    </string-array>
 </resources>
 

@@ -5,6 +5,13 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 public class DayForecast{
+    public static int sNumDays;
+    public static int sTotalMaxTemp;
+    public static int sTotalMinTemp;
+    public static int sTotalAverageTemp;
+    public static int sAverageMaxTemp;
+    public static int sAverageTemp;
+    public static int sAverageMinTemp;
     private String mDate;
     private int mMaxTemp;
     private int mMinTemp;
@@ -23,7 +30,14 @@ public class DayForecast{
             mWindSpeed = dayObject.getJSONObject("day").getDouble("maxwind_mph");
             mHumidity = dayObject.getJSONObject("day").getDouble("avghumidity");
             mDescription = dayObject.getJSONObject("day").getJSONObject("condition").getString("text");
-            mImageViewURL = dayObject.getJSONObject("day").getJSONObject("condition").getString("icon").replace("//", "");
+            mImageViewURL = "https:" + dayObject.getJSONObject("day").getJSONObject("condition").getString("icon");
+            sNumDays++;
+            sTotalMaxTemp += mMaxTemp;
+            sTotalMinTemp += mMinTemp;
+            sTotalAverageTemp += mAverageTemp;
+            sAverageMaxTemp = (int) (sTotalMaxTemp / sNumDays);
+            sAverageMinTemp = (int) (sTotalMinTemp / sNumDays);
+            sAverageTemp = (int) (sTotalAverageTemp / sNumDays);
         }
         catch (JSONException e){
             e.printStackTrace();

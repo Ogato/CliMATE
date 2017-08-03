@@ -41,7 +41,7 @@ public class User {
         this.mUserID = mUserID;
     }
 
-    public static FirebaseAuth getmUserAuthState() {
+    public FirebaseAuth getmUserAuthState() {
         return mUserAuthState;
     }
 

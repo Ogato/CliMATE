@@ -27,7 +27,7 @@
             android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
-            <EditText
+            <!---<EditText
                 android:backgroundTint="#979797"
 
                 android:drawableStart="@drawable/ic_person_black_24dp"
@@ -42,7 +42,7 @@
                 android:padding="10dp"
                 android:layout_width="300dp"
                 android:layout_height="wrap_content"
-                android:maxLines="1"/>
+                android:maxLines="1"/>-->
 
             <EditText
                 android:lineSpacingMultiplier="3.2"

@@ -4,11 +4,16 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
+
+import com.android.volley.toolbox.ImageLoader;
+import com.android.volley.toolbox.NetworkImageView;
 
 
 import org.lucasr.twowayview.TwoWayView;
@@ -22,7 +27,11 @@ public class ResultFragment extends Fragment {
     private static final String USER_CITY_KEY = "city";
     private static final String USER_STATE_KEY = "state";
     private ForecastAdapter mAdapter;
-    private TwoWayView mTwoWayView;
+    private ClothesAdapter mAdapter2;
+    private TwoWayView mTwoWayView1;
+    private TwoWayView mTwoWayView2;
+    private List<String>clothingURLs;
+    private ArrayAdapter<String>clothAdapter;
 
     @Nullable
     @Override
@@ -34,14 +43,25 @@ public class ResultFragment extends Fragment {
         final String city = getArguments().getString(USER_CITY_KEY);
         final String state = getArguments().getString(USER_STATE_KEY);;
 
-        mTwoWayView = v.findViewById(R.id.temporary);
+        mTwoWayView1 = v.findViewById(R.id.temporary);
+        mTwoWayView2 = v.findViewById(R.id.temporary1);
+
         mAdapter = new ForecastAdapter(getContext());
-        mTwoWayView.setAdapter(mAdapter);
+        mAdapter2 = new ClothesAdapter(getContext());
+        mTwoWayView1.setAdapter(mAdapter);
+        mTwoWayView2.setAdapter(mAdapter2);
+
 
         WeatherSource.getInstance(getContext()).getWeatherForecast(city, state, new WeatherSource.ForecastListener() {
             @Override
             public void onForecastReceived(List<DayForecast> dayForecasts) {
                 mAdapter.setItems(dayForecasts);
+                WeatherSource.getInstance(getContext()).getClothing(new WeatherSource.ClothingListener() {
+                    @Override
+                    public void onClothingReceived(List<String> imageURLs) {
+                        mAdapter2.setItems(imageURLs);
+                    }
+                });
             }
         });
         return v;
@@ -92,6 +112,9 @@ public class ResultFragment extends Fragment {
                 TextView averageTemp = dayView.findViewById(R.id.average_temp);
                 averageTemp.setText(Integer.toString(dayForecast.getmAverageTemp()));
 
+                NetworkImageView weather_icon = dayView.findViewById(R.id.weather_img);
+                ImageLoader imageLoader = WeatherSource.getInstance(getContext()).getImageLoader();
+                weather_icon.setImageUrl(dayForecast.getmImageViewURL(), imageLoader);
                 return dayView;
             }
             else {
@@ -102,8 +125,64 @@ public class ResultFragment extends Fragment {
 
                 TextView averageTemp = view.findViewById(R.id.average_temp);
                 averageTemp.setText(Integer.toString(dayForecast.getmAverageTemp()));
+                clothingURLs = WeatherSource.getInstance(getContext()).getClothingImages();
                 return view;
 
+            }
+        }
+    }
+
+    private class ClothesAdapter extends BaseAdapter {
+        private Context mContext;
+        private List<String> mImages;
+        private LayoutInflater mForecastListLayout;
+
+        ClothesAdapter(Context context) {
+            mContext = context;
+            mImages = new ArrayList<>();
+            mForecastListLayout = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        }
+
+        public void setItems(List<String> imageList) {
+            mImages.clear();
+            mImages.addAll(imageList);
+            notifyDataSetChanged();
+        }
+
+        @Override
+        public int getCount() {
+            return mImages.size();
+        }
+
+        @Override
+        public Object getItem(int i) {
+            return mImages.get(i);
+        }
+
+        @Override
+        public long getItemId(int i) {
+            return i;
+        }
+
+        @Override
+        public View getView(int i, View view, ViewGroup viewGroup) {
+
+            if (view == null) {
+                View dayView = mForecastListLayout.inflate(R.layout.list_week_clothing, viewGroup, false);
+                final String url = mImages.get(i);
+
+
+                NetworkImageView clothing_icon = dayView.findViewById(R.id.clothing_img);
+                ImageLoader imageLoader = WeatherSource.getInstance(getContext()).getImageLoader();
+                clothing_icon.setImageUrl(url, imageLoader);
+                return dayView;
+            }
+            else {
+                final String url = mImages.get(i);
+                NetworkImageView clothing_icon = view.findViewById(R.id.clothing_img);
+                ImageLoader imageLoader = WeatherSource.getInstance(getContext()).getImageLoader();
+                clothing_icon.setImageUrl(url, imageLoader);
+                return view;
             }
         }
     }

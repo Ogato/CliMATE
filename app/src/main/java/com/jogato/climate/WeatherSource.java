@@ -28,14 +28,19 @@ public class WeatherSource {
     private static final String APIXU_URL = "https://api.apixu.com/v1/forecast.json?key=606241cc9f67477abce55230172107&q=";
     private static final String ZIPCODE_URL_KEY =
             "https://www.zipcodeapi.com/rest/7qajuUm9ZbseLSnqG2UT38PKy9qbHZxPqI8VCu4CGxRsqfS7hM1lVQ5uZwFHvdwW/city-zips.json/";
+    private static final String WALMART_API_URL = "http://api.walmartlabs.com/v1/search?apiKey=krqhbue4u8vb8f8z6b99vpce&query=";
+    private static final String MEN_CLOTHING_ID = "5438_1180146_1228418";
+    private static final String WOMEN_CLOTHING_ID = "5438_1180146_1228417";
     private final static int IMAGE_CACHE_COUNT = 10;
 
     private static WeatherSource sWeatherSource;
     private RequestQueue mRequestQueue;
     private Context mContext;
-    private List<DayForecast>mDayForecastList;
     private ImageLoader mImageLoader;
-    private String zipLocation;
+    private List<String> mClothingURLs;
+    private static List<String> hot_weather_clothing;
+    private static List<String> mild_weather_clothing;
+    private static List<String> cold_weather_clothing;
 
     public interface ForecastListener{
         void onForecastReceived(List<DayForecast>dayForecasts);
@@ -45,9 +50,35 @@ public class WeatherSource {
         void onZipCodeReceived(String zip);
     }
 
+    public interface ClothingListener{
+        void onClothingReceived(List<String>imageURLs);
+    }
+
+
     public static WeatherSource getInstance(Context context){
         if(sWeatherSource == null){
             sWeatherSource = new WeatherSource(context);
+            hot_weather_clothing = new ArrayList<>();
+            mild_weather_clothing = new ArrayList<>();
+            cold_weather_clothing = new ArrayList<>();
+
+            hot_weather_clothing.add("shorts");
+            hot_weather_clothing.add("tshirt");
+            hot_weather_clothing.add("sandals");
+            hot_weather_clothing.add("sunglasses");
+            hot_weather_clothing.add("hat");
+
+            mild_weather_clothing.add("jeans");
+            mild_weather_clothing.add("tshirt");
+            mild_weather_clothing.add("shoes");
+            mild_weather_clothing.add("light coat");
+            mild_weather_clothing.add("hat");
+
+            cold_weather_clothing.add("jeans");
+            cold_weather_clothing.add("heavy coat");
+            cold_weather_clothing.add("boots");
+            cold_weather_clothing.add("gloves");
+            cold_weather_clothing.add("scarf");
 
         }
         return sWeatherSource;
@@ -85,6 +116,9 @@ public class WeatherSource {
                             for(int i = 0; i < forecasts.length(); i++){
                                 JSONObject day = forecasts.getJSONObject(i);
                                 DayForecast dayForecast = new DayForecast(day);
+                                if(i == 0){
+                                    dayForecast.setmDate("Today");
+                                }
                                 dayForecasts.add(dayForecast);
                             }
                             forecastListener.onForecastReceived(dayForecasts);
@@ -133,9 +167,57 @@ public class WeatherSource {
         mRequestQueue.add(jsonObjectRequest);
     }
 
+    public void getClothing(final ClothingListener clothingListener){
+        mClothingURLs = new ArrayList<>();
+        int average_max_temp = DayForecast.sAverageMaxTemp;
+        int average_min_temp = DayForecast.sAverageMinTemp;
+        int average_temp = DayForecast.sAverageTemp;
+        String url = "";
+        List<String>typeOfWeatherList;
+        if(average_temp >= 80) {
+            typeOfWeatherList = hot_weather_clothing;
+        }
+        else if(average_temp >= 60 && average_temp < 80) {
+            typeOfWeatherList = mild_weather_clothing;
+        }
+        else {
+            typeOfWeatherList = cold_weather_clothing;
+        }
+        for(String clothing : typeOfWeatherList){
+            url = WALMART_API_URL + clothing;
+            JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
+                    Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
+                @Override
+                public void onResponse(JSONObject response) {
+                    try {
+                        JSONArray jsonArray = response.getJSONArray("items");
+                        if(jsonArray.length() > 0) {
+                            mClothingURLs.add(jsonArray.getJSONObject((int)Math.floor(Math.random()*jsonArray.length())).getString("mediumImage"));
+                        }
+                        else{
+                            Toast.makeText(mContext, "Unable to retrieve clothing suggestions at this time", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                    catch (JSONException e){
+                        e.printStackTrace();
+                    }
+                    clothingListener.onClothingReceived(mClothingURLs);
+                }
+            }, new Response.ErrorListener(){
+                @Override
+                public void onErrorResponse(VolleyError error){
+                    Toast.makeText(mContext, "Unable to retrieve clothing suggestions at this time", Toast.LENGTH_SHORT).show();
+                }
+            });
 
+            mRequestQueue.add(jsonObjectRequest);
+        }
+
+
+    }
 
 
     public ImageLoader getImageLoader(){ return mImageLoader; }
+    public List<String> getClothingImages(){ return mClothingURLs; }
 
 }

@@ -24,6 +24,11 @@
         </activity>
         <activity android:name=".MainActivity"/>
         <activity android:name=".SignUp"/>
+
+        <meta-data
+            android:name="com.google.android.geo.AIzaSyA1jxoMaXb9A_M5FEu9WbaB2uWiotNXcsM"
+            android:value="AIzaSyA1jxoMaXb9A_M5FEu9WbaB2uWiotNXcsM"/>
+
     </application>
 
 </manifest>
