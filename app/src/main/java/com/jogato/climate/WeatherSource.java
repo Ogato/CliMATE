@@ -1,9 +1,7 @@
 package com.jogato.climate;
 
 import android.content.Context;
-import android.content.res.Resources;
 import android.graphics.Bitmap;
-import android.util.Log;
 import android.util.LruCache;
 import android.widget.Toast;
 
@@ -21,7 +19,6 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 
 public class WeatherSource {
@@ -29,8 +26,8 @@ public class WeatherSource {
     private static final String ZIPCODE_URL_KEY =
             "https://www.zipcodeapi.com/rest/7qajuUm9ZbseLSnqG2UT38PKy9qbHZxPqI8VCu4CGxRsqfS7hM1lVQ5uZwFHvdwW/city-zips.json/";
     private static final String WALMART_API_URL = "http://api.walmartlabs.com/v1/search?apiKey=krqhbue4u8vb8f8z6b99vpce&query=";
-    private static final String MEN_CLOTHING_ID = "5438_1180146_1228418";
-    private static final String WOMEN_CLOTHING_ID = "5438_1180146_1228417";
+    private static final String MEN_CLOTHING_ID = "5438_133197";
+    private static final String WOMEN_CLOTHING_ID = "5438_133162";
     private final static int IMAGE_CACHE_COUNT = 10;
 
     private static WeatherSource sWeatherSource;
@@ -184,7 +181,9 @@ public class WeatherSource {
             typeOfWeatherList = cold_weather_clothing;
         }
         for(String clothing : typeOfWeatherList){
-            url = WALMART_API_URL + clothing;
+            //currently specified API request for men's clothing id
+
+            url = WALMART_API_URL + clothing + "&format=json&categoryId=" + MEN_CLOTHING_ID;
             JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
                     Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
                 @Override
