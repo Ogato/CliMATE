@@ -28,7 +28,7 @@ public class WeatherSource {
     private static final String WALMART_API_URL = "http://api.walmartlabs.com/v1/search?apiKey=krqhbue4u8vb8f8z6b99vpce&query=";
     private static final String MEN_CLOTHING_ID = "5438_133197";
     private static final String WOMEN_CLOTHING_ID = "5438_133162";
-    private final static int IMAGE_CACHE_COUNT = 10;
+    private final static int IMAGE_CACHE_COUNT = 20;
 
     private static WeatherSource sWeatherSource;
     private RequestQueue mRequestQueue;
@@ -102,35 +102,40 @@ public class WeatherSource {
         getZipCode(city, state, new ZipcodeListener() {
             @Override
             public void onZipCodeReceived(String zip) {
-                String url = APIXU_URL + zip + "&days=7";
-                JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
-                        Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        List<DayForecast>dayForecasts = new ArrayList<>();
-                        try {
-                            JSONArray forecasts = response.getJSONObject("forecast").getJSONArray("forecastday");
-                            for(int i = 0; i < forecasts.length(); i++){
-                                JSONObject day = forecasts.getJSONObject(i);
-                                DayForecast dayForecast = new DayForecast(day);
-                                if(i == 0){
-                                    dayForecast.setmDate("Today");
+                if (!zip.isEmpty()) {
+                    String url = APIXU_URL + zip + "&days=7";
+                    JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
+                            Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
+                        @Override
+                        public void onResponse(JSONObject response) {
+                            List<DayForecast> dayForecasts = new ArrayList<>();
+                            try {
+                                JSONArray forecasts = response.getJSONObject("forecast").getJSONArray("forecastday");
+                                for (int i = 0; i < forecasts.length(); i++) {
+                                    JSONObject day = forecasts.getJSONObject(i);
+                                    DayForecast dayForecast = new DayForecast(day);
+                                    if (i == 0) {
+                                        dayForecast.setmDate("Today");
+                                    }
+                                    dayForecasts.add(dayForecast);
                                 }
-                                dayForecasts.add(dayForecast);
+                                forecastListener.onForecastReceived(dayForecasts);
+                            } catch (JSONException e) {
+                                Toast.makeText(mContext, "Unable to retrieve forecast at this time", Toast.LENGTH_SHORT).show();
                             }
-                            forecastListener.onForecastReceived(dayForecasts);
                         }
-                        catch (JSONException e){
+                    }, new Response.ErrorListener() {
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
                             Toast.makeText(mContext, "Unable to retrieve forecast at this time", Toast.LENGTH_SHORT).show();
                         }
-                    }
-                }, new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        Toast.makeText(mContext, "Unable to retrieve forecast at this time", Toast.LENGTH_SHORT).show();
-                    }
-                });
-                mRequestQueue.add(jsonObjectRequest);
+                    });
+                    mRequestQueue.add(jsonObjectRequest);
+                }
+                else{
+                    Toast.makeText(mContext, "Unable to retrieve forecast at this time", Toast.LENGTH_SHORT).show();
+                    forecastListener.onForecastReceived(null);
+                }
             }
         });
     }
@@ -148,6 +153,7 @@ public class WeatherSource {
                     }
                     else{
                         Toast.makeText(mContext, "City not found", Toast.LENGTH_SHORT).show();
+                        zipcodeListener.onZipCodeReceived("");
                     }
                 }
                 catch (JSONException e){
@@ -158,6 +164,7 @@ public class WeatherSource {
             @Override
             public void onErrorResponse(VolleyError error){
                 Toast.makeText(mContext, "Unable to retrieve forecast at this time", Toast.LENGTH_SHORT).show();
+                zipcodeListener.onZipCodeReceived("");
             }
         });
 

@@ -4,12 +4,11 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.android.volley.toolbox.ImageLoader;
@@ -30,8 +29,9 @@ public class ResultFragment extends Fragment {
     private ClothesAdapter mAdapter2;
     private TwoWayView mTwoWayView1;
     private TwoWayView mTwoWayView2;
+    private ProgressBar mWeatherProgressBar;
+    private ProgressBar mClothingProgressBar;
     private List<String>clothingURLs;
-    private ArrayAdapter<String>clothAdapter;
 
     @Nullable
     @Override
@@ -45,6 +45,10 @@ public class ResultFragment extends Fragment {
 
         mTwoWayView1 = v.findViewById(R.id.temporary);
         mTwoWayView2 = v.findViewById(R.id.temporary1);
+        mWeatherProgressBar = v.findViewById(R.id.weather_loading);
+        mWeatherProgressBar.setVisibility(View.VISIBLE);
+        mClothingProgressBar = v.findViewById(R.id.clothing_loading);
+        mClothingProgressBar.setVisibility(View.VISIBLE);
 
         mAdapter = new ForecastAdapter(getContext());
         mAdapter2 = new ClothesAdapter(getContext());
@@ -55,15 +59,24 @@ public class ResultFragment extends Fragment {
         WeatherSource.getInstance(getContext()).getWeatherForecast(city, state, new WeatherSource.ForecastListener() {
             @Override
             public void onForecastReceived(List<DayForecast> dayForecasts) {
-                mAdapter.setItems(dayForecasts);
-                WeatherSource.getInstance(getContext()).getClothing(new WeatherSource.ClothingListener() {
-                    @Override
-                    public void onClothingReceived(List<String> imageURLs) {
-                        mAdapter2.setItems(imageURLs);
-                    }
-                });
+                if (dayForecasts != null) {
+                    mAdapter.setItems(dayForecasts);
+                    mWeatherProgressBar.setVisibility(View.INVISIBLE);
+                    WeatherSource.getInstance(getContext()).getClothing(new WeatherSource.ClothingListener() {
+                        @Override
+                        public void onClothingReceived(List<String> imageURLs) {
+                            mAdapter2.setItems(imageURLs);
+                            mClothingProgressBar.setVisibility(View.INVISIBLE);
+                        }
+                    });
+                }
+                else{
+                    mWeatherProgressBar.setVisibility(View.INVISIBLE);
+                    mClothingProgressBar.setVisibility(View.INVISIBLE);
+                }
             }
         });
+
         return v;
     }
 
