@@ -4,8 +4,14 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:background="@drawable/customborder"
     android:gravity="bottom">
+
+    <ProgressBar
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:visibility="invisible"
+        android:id="@+id/weather_loading"/>
 
     <LinearLayout
         android:layout_width="wrap_content"
@@ -20,6 +26,7 @@
             android:layout_weight="1"
             android:drawSelectorOnTop="false"/>
 
+
         <org.lucasr.twowayview.TwoWayView
             xmlns:android="http://schemas.android.com/apk/res/android"
             android:id="@+id/temporary1"
@@ -30,6 +37,13 @@
             android:drawSelectorOnTop="false"/>
 
     </LinearLayout>
+
+    <ProgressBar
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:visibility="invisible"
+        android:id="@+id/clothing_loading"/>
 
 
 
