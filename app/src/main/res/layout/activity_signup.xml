@@ -13,13 +13,13 @@
         <LinearLayout
             android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="130dp">
+            android:layout_height="251dp">
             <ImageView
                 android:src="@drawable/logo"
-                android:layout_marginTop="60dp"
+                android:layout_marginTop="80dp"
                 android:layout_gravity = "center"
-                android:layout_width="125dp"
-                android:layout_height="wrap_content" />
+                android:layout_width="80dp"
+                android:layout_height="125dp" />
 
         </LinearLayout>
 
@@ -46,13 +46,13 @@
 
             <EditText
                 android:lineSpacingMultiplier="3.2"
-                android:backgroundTint="#979797"
+                android:backgroundTint="#fff"
 
 
                 android:drawableStart="@drawable/ic_person_black_24dp"
                 android:drawableLeft="@drawable/ic_person_black_24dp"
                 android:textColor="#fff"
-                android:textColorHint="#979797"
+                android:textColorHint="#fff"
 
                 android:layout_marginTop="10dp"
                 android:layout_gravity="center"
@@ -66,13 +66,13 @@
 
             <EditText
                 android:lineSpacingMultiplier="3.2"
-                android:backgroundTint="#979797"
+                android:backgroundTint="#fff"
 
                 android:inputType="textPassword"
                 android:drawableStart="@drawable/ic_lock_black_24dp"
                 android:drawableLeft="@drawable/ic_lock_black_24dp"
                 android:textColor="#fff"
-                android:textColorHint="#979797"
+                android:textColorHint="#fff"
                 android:maxLines="1"
                 android:layout_marginTop="10dp"
                 android:layout_gravity="center"

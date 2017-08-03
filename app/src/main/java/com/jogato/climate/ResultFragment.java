@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -19,6 +20,7 @@ import org.lucasr.twowayview.TwoWayView;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 
 public class ResultFragment extends Fragment {
@@ -42,6 +44,7 @@ public class ResultFragment extends Fragment {
 
         final String city = getArguments().getString(USER_CITY_KEY);
         final String state = getArguments().getString(USER_STATE_KEY);;
+        ImageView cityImageView = v.findViewById(R.id.city_image);
 
         mTwoWayView1 = v.findViewById(R.id.temporary);
         mTwoWayView2 = v.findViewById(R.id.temporary1);
@@ -76,6 +79,16 @@ public class ResultFragment extends Fragment {
                 }
             }
         });
+
+        final int []imageArray={R.drawable.city1,R.drawable.city2,R.drawable.city3,R.drawable.city4,R.drawable.city5,R.drawable.city6,R.drawable.city7,R.drawable.city8};
+
+
+        //Randomly select an image for the city
+        Random randomGenerator = new Random();
+        int randomNumber = randomGenerator.nextInt(imageArray.length-1);
+
+
+        cityImageView.setImageResource(imageArray[randomNumber]);
 
         return v;
     }
