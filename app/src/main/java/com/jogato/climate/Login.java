@@ -112,6 +112,9 @@ public class Login extends AppCompatActivity implements GoogleApiClient.OnConnec
                                 }
                             });
                 }
+                else{
+                    Toast.makeText(Login.this, "FAILED", Toast.LENGTH_SHORT).show();
+                }
             }
         });
 
