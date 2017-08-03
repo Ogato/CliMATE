@@ -49,7 +49,7 @@ public class SignUp extends AppCompatActivity {
                 if(password.length() < 5){
                     Toast.makeText(SignUp.this, "Password must be at least 5 characters", Toast.LENGTH_SHORT).show();
                 }
-                else if(!email.contains(".com") || !email.contains(".org") || !email.contains(".net")){
+                else if(!email.contains(".com") && !email.contains(".org") && !email.contains(".net")){
                     Toast.makeText(SignUp.this, "Invalid Email Address", Toast.LENGTH_SHORT).show();
                 }
                 else{
