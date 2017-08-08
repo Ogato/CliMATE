@@ -13,11 +13,56 @@
         android:layout_gravity="center"
         android:visibility="invisible"
         android:id="@+id/weather_loading"/>
+    <FrameLayout android:layout_width="match_parent"
+        android:layout_height="300dp"
+        android:layout_gravity="center_horizontal"
+        xmlns:android="http://schemas.android.com/apk/res/android">
+
+        <ImageView
+            android:id="@+id/photo_img"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="@drawable/sanfran" />
+
+        <TextView
+            android:id="@+id/cityText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:layout_gravity="center"
+            android:text="hii"
+            android:textColor="#fff"
+            android:textSize="20dp"/>
+        <TextView
+            android:layout_marginTop="20dp"
+            android:id="@+id/titleText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:layout_gravity="center"
+            android:text="hii"
+            android:textColor="#fff"
+            android:textSize="10dp"
+
+            />
+        <Button
+            android:id="@+id/nextBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|right"
+            android:text="Next"
+            android:textColor="#fff"
+
+            />
+    </FrameLayout>
+
 
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="200dp"
         android:orientation="vertical">
+
+
 
         <org.lucasr.twowayview.TwoWayView
             android:id="@+id/temporary"
