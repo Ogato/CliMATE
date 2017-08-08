@@ -4,22 +4,29 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.NetworkImageView;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 
 
 import org.lucasr.twowayview.TwoWayView;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 
@@ -42,9 +49,10 @@ public class ResultFragment extends Fragment {
         setHasOptionsMenu(true);
         setRetainInstance(true);
 
-        final String city = getArguments().getString(USER_CITY_KEY);
-        final String state = getArguments().getString(USER_STATE_KEY);;
-        ImageView cityImageView = v.findViewById(R.id.city_image);
+        String city = getArguments().getString(USER_CITY_KEY);
+        String state = getArguments().getString(USER_STATE_KEY);
+        Log.i("JO_INFO", city + " " + state);
+        //ImageView cityImageView = v.findViewById(R.id.city_image);
 
         mTwoWayView1 = v.findViewById(R.id.temporary);
         mTwoWayView2 = v.findViewById(R.id.temporary1);
@@ -78,6 +86,33 @@ public class ResultFragment extends Fragment {
                     mClothingProgressBar.setVisibility(View.INVISIBLE);
                 }
             }
+        }, new WeatherSource.HistoryListener(){
+            @Override
+            public void onHistoryChanged(final Map<String, History> histories) {
+                final DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
+                Query updateHistory = databaseReference.child("users").child(User.getInstance().getmUserId()).child("hisory");
+                updateHistory.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        if(!dataSnapshot.exists()) {
+                            Log.i("JO_INFO", "NEW");
+                            databaseReference.child("users").child(User.getInstance().getmUserId())
+                                    .child("history").setValue(User.getInstance().getmUserHistory());
+                        }
+                        else{
+                            Log.i("JO_INFO", "Not New");
+                            databaseReference.child("users").child(User.getInstance().getmUserId())
+                                    .child("history").setValue(histories);
+                        }
+
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
+            }
         });
 
         final int []imageArray={R.drawable.city1,R.drawable.city2,R.drawable.city3,R.drawable.city4,R.drawable.city5,R.drawable.city6,R.drawable.city7,R.drawable.city8};
@@ -88,7 +123,7 @@ public class ResultFragment extends Fragment {
         int randomNumber = randomGenerator.nextInt(imageArray.length-1);
 
 
-        cityImageView.setImageResource(imageArray[randomNumber]);
+        //cityImageView.setImageResource(imageArray[randomNumber]);
 
         return v;
     }

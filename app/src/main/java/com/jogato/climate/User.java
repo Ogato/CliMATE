@@ -1,13 +1,25 @@
 package com.jogato.climate;
 
-import com.google.firebase.auth.FirebaseAuth;
+
+import android.util.Log;
+
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
+
+import java.util.HashMap;
+import java.util.Map;
 
 
 public class User {
     private String mUserName;
     private String mUserEmail;
-    private String mUserID;
-    private static FirebaseAuth mUserAuthState;
+    private String mUserPreference;
+    private String mUserId;
+    private static Map<String, History> mUserHistory;
     private static User sUser;
 
     public static User getInstance(){
@@ -17,36 +29,90 @@ public class User {
         return sUser;
     }
 
+    public void setHistory(){
+        final DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
+        Query getHistory = databaseReference.child("users").child(mUserId)
+                .child("history");
+        getHistory.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if(dataSnapshot.exists()){
+                    Log.i("JO_INFO", "OLD MAP");
+                    mUserHistory = (Map<String, History>) dataSnapshot.getValue();
+                }
+                else{
+                    Log.i("JO_INFO", "NEW MAP");
+                    mUserHistory = new HashMap<String, History>();
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+
     public String getmUserName() {
+
         return mUserName;
     }
 
     public void setmUserName(String mUserName) {
+
         this.mUserName = mUserName;
     }
 
     public String getmUserEmail() {
+
         return mUserEmail;
     }
 
     public void setmUserEmail(String mUserEmail) {
+
         this.mUserEmail = mUserEmail;
     }
 
-    public String getmUserID() {
-        return mUserID;
+    public String getmUserPreference() {
+        return mUserPreference;
     }
 
-    public void setmUserID(String mUserID) {
-        this.mUserID = mUserID;
+    public void setmUserPreference(String mUserPreference) {
+        this.mUserPreference = mUserPreference;
     }
 
-    public FirebaseAuth getmUserAuthState() {
-        return mUserAuthState;
+    public Map<String,History> getmUserHistory() {
+        return mUserHistory;
     }
 
-    public void setmUserAuthState(FirebaseAuth auth) {
-        mUserAuthState = auth;
+
+    public String getmUserId() {
+        return mUserId;
     }
 
+    public void setmUserId(String mUserId) {
+        this.mUserId = mUserId;
+    }
+
+    public void updateInfo(){
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("users");
+        Query getNewInfo = databaseReference.orderByChild("id").equalTo(mUserId);
+        getNewInfo.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Iterable<DataSnapshot>snapshots = dataSnapshot.getChildren();
+                for(DataSnapshot s : snapshots){
+                    mUserName = s.child("name").getValue().toString();
+                    mUserEmail = s.child("email").getValue().toString();
+                    mUserPreference = s.child("preference").getValue().toString();
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
 }

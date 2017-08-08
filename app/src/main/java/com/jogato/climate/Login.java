@@ -25,6 +25,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 
+
 public class Login extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener {
 
     public static final String AUTH_KEY = "auth_key";
@@ -38,7 +39,6 @@ public class Login extends AppCompatActivity implements GoogleApiClient.OnConnec
     private Button mSignUp;
     private EditText mEmail;
     private EditText mPassword;
-    private static User user;
     private GoogleApiClient mGoogleApiClient;
 
 
@@ -48,11 +48,7 @@ public class Login extends AppCompatActivity implements GoogleApiClient.OnConnec
         setContentView(R.layout.activity_login);
         getSupportActionBar().hide();
 
-        user = User.getInstance();
-
         mAuth = FirebaseAuth.getInstance();
-
-        user.setmUserAuthState(mAuth);
 
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestEmail()
@@ -63,14 +59,15 @@ public class Login extends AppCompatActivity implements GoogleApiClient.OnConnec
                 .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
                 .build();
 
+
         mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                FirebaseUser user = firebaseAuth.getCurrentUser();
-                if (user != null) {
+                if (firebaseAuth.getCurrentUser() != null) {
                     // User is signed in
-                    User.getInstance().setmUserName(user.getEmail());
-                    User.getInstance().setmUserID(user.getUid());
+                    User.getInstance().setmUserEmail(firebaseAuth.getCurrentUser().getEmail());
+                    User.getInstance().setmUserName(firebaseAuth.getCurrentUser().getDisplayName());
+                    User.getInstance().setmUserId(firebaseAuth.getCurrentUser().getUid());
                     Intent i = new Intent(Login.this, MainActivity.class);
                     startActivity(i);
                     finish();
@@ -107,7 +104,9 @@ public class Login extends AppCompatActivity implements GoogleApiClient.OnConnec
                                     }
                                     else{
                                         Toast.makeText(Login.this, "Successful Login", Toast.LENGTH_SHORT).show();
-                                        user.setmUserEmail(user_email);
+                                        User.getInstance().setmUserEmail(user_email);
+                                        User.getInstance().setHistory();
+                                        finish();
                                     }
                                 }
                             });
@@ -122,7 +121,6 @@ public class Login extends AppCompatActivity implements GoogleApiClient.OnConnec
         mGoogleButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Log.i("JO_INFO", "HERE");
                 Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
                 startActivityForResult(signInIntent, RC_SIGN_IN);
             }
@@ -155,8 +153,13 @@ public class Login extends AppCompatActivity implements GoogleApiClient.OnConnec
             // Signed in successfully, show authenticated UI.
             GoogleSignInAccount acct = result.getSignInAccount();
             Toast.makeText(this, "Signed in with: " + acct.getEmail(), Toast.LENGTH_SHORT).show();
+            User.getInstance().setmUserEmail(acct.getEmail());
+            User.getInstance().setmUserName(acct.getDisplayName());
+            User.getInstance().setmUserId(acct.getId());
+            User.getInstance().setHistory();
             Intent intent = new Intent(Login.this, MainActivity.class);
             startActivity(intent);
+            finish();
         } else {
             // Signed out, show unauthenticated UI.
             Toast.makeText(this, "Error signing in", Toast.LENGTH_SHORT).show();
@@ -169,6 +172,23 @@ public class Login extends AppCompatActivity implements GoogleApiClient.OnConnec
         super.onStart();
         FirebaseApp.initializeApp(this);
         mAuth.addAuthStateListener(mAuthListener);
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+        if(currentUser != null){
+            User.getInstance().setmUserEmail(currentUser.getEmail());
+            User.getInstance().setmUserName(currentUser.getDisplayName());
+            User.getInstance().setmUserId(currentUser.getUid());
+            Log.i("JO_INFO", currentUser.getUid());
+            User.getInstance().setHistory();
+            Intent i = new Intent(Login.this, MainActivity.class);
+            startActivity(i);
+            finish();
+        }
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        mAuth.removeAuthStateListener(mAuthListener);
     }
 
     @Override

@@ -13,15 +13,17 @@ import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 
-public class WeatherSource {
+public class WeatherSource{
     private static final String APIXU_URL = "https://api.apixu.com/v1/forecast.json?key=606241cc9f67477abce55230172107&q=";
     private static final String ZIPCODE_URL_KEY =
             "https://www.zipcodeapi.com/rest/7qajuUm9ZbseLSnqG2UT38PKy9qbHZxPqI8VCu4CGxRsqfS7hM1lVQ5uZwFHvdwW/city-zips.json/";
@@ -38,6 +40,10 @@ public class WeatherSource {
     private static List<String> hot_weather_clothing;
     private static List<String> mild_weather_clothing;
     private static List<String> cold_weather_clothing;
+
+    public interface HistoryListener{
+        void onHistoryChanged(Map<String, History> histories);
+    }
 
     public interface ForecastListener{
         void onForecastReceived(List<DayForecast>dayForecasts);
@@ -98,14 +104,14 @@ public class WeatherSource {
         });
     }
 
-    public void getWeatherForecast(String city, String state,final ForecastListener forecastListener){
+    public void getWeatherForecast(final String city, final String state, final ForecastListener forecastListener, final HistoryListener historyListener){
         getZipCode(city, state, new ZipcodeListener() {
             @Override
             public void onZipCodeReceived(String zip) {
                 if (!zip.isEmpty()) {
-                    String url = APIXU_URL + zip + "&days=7";
+                    final String weatherUrl = APIXU_URL + zip + "&days=7";
                     JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
-                            Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
+                            Request.Method.GET, weatherUrl, null, new Response.Listener<JSONObject>() {
                         @Override
                         public void onResponse(JSONObject response) {
                             List<DayForecast> dayForecasts = new ArrayList<>();
@@ -120,6 +126,8 @@ public class WeatherSource {
                                     dayForecasts.add(dayForecast);
                                 }
                                 forecastListener.onForecastReceived(dayForecasts);
+                                User.getInstance().getmUserHistory().put(city+","+state, new History(weatherUrl, ZIPCODE_URL_KEY + city + "/" + state));
+                                historyListener.onHistoryChanged(User.getInstance().getmUserHistory());
                             } catch (JSONException e) {
                                 Toast.makeText(mContext, "Unable to retrieve forecast at this time", Toast.LENGTH_SHORT).show();
                             }

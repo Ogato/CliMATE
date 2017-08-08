@@ -1,14 +1,17 @@
 package com.jogato.climate;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -22,27 +25,43 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 
+import com.google.firebase.auth.FirebaseAuth;
+
 import java.util.HashMap;
 import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
     private static final String USER_CITY_KEY = "city";
     private static final String USER_STATE_KEY = "state";
-    private String mSelectedState;
     private static Map<String, String> stateAbbrMap;
-    private DrawerLayout mDrawerLayout;
     private ListView mDrawerList;
     private String[] mOptions;
-    private ActionBarDrawerToggle mDrawerToggle;
+    private DrawerLayout mDrawer;
+    private Fragment mMainFragment;
+    private String mSelectedState;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        stateAbbrMap = new HashMap<>();
+        SharedPreferences pref = this.getSharedPreferences("app_opened_count", Context.MODE_PRIVATE);
+        int count = pref.getInt("app_opened_count", 0);
+        if (count == 0) {
+            SharedPreferences.Editor editor = pref.edit();
+            int new_count = count + 1;
+            editor.putInt("app_opened_count", new_count);
+            editor.apply();
+            Fragment fragment = new AccountFragment();
+            getSupportFragmentManager().beginTransaction().replace(R.id.container, fragment, "account").addToBackStack("account").commit();
+        }
+        else{
+            mMainFragment = new MainFragment();
+            getSupportFragmentManager().beginTransaction().replace(R.id.container, mMainFragment, "main").addToBackStack("main").commit();
+        }
+
         mOptions = getResources().getStringArray(R.array.navigation_options);
-        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        mDrawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawerList = (ListView) findViewById(R.id.left_drawer);
         mDrawerList.setAdapter(new ArrayAdapter<String>(this, R.layout.list_option_items, mOptions));
         mDrawerList.setOnItemClickListener(new DrawerOptionClickListener());
@@ -57,6 +76,7 @@ public class MainActivity extends AppCompatActivity {
         Resources res = getResources();
         final String[] states = res.getStringArray(R.array.state_array);
         String [] abbr = res.getStringArray(R.array.state_abbr_array);
+        stateAbbrMap = new HashMap<>();
         for(int i = 1; i < states.length; i++){
             stateAbbrMap.put(states[i], abbr[i]);
         }
@@ -65,6 +85,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+
         View view = LayoutInflater.from(this).inflate(R.layout.dialog_edit_text, null);
         final EditText editText = view.findViewById(R.id.user_query);
         final Spinner stateSpinner = view.findViewById(R.id.states);
@@ -83,6 +104,7 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
+
         AlertDialog alertDialog = new AlertDialog.Builder(this)
                 .setTitle("Search for City Forecasts")
                 .setView(view)
@@ -96,7 +118,7 @@ public class MainActivity extends AppCompatActivity {
                             bundle.putString(USER_STATE_KEY, stateAbbrMap.get(mSelectedState));
                             Fragment fragment = new ResultFragment();
                             fragment.setArguments(bundle);
-                            getSupportFragmentManager().beginTransaction().replace(R.id.container, fragment).commit();
+                            getSupportFragmentManager().beginTransaction().replace(R.id.container, fragment, "result").commit();
                         }
                         else{
                             Toast.makeText(MainActivity.this, "Please input a city and select a state", Toast.LENGTH_LONG).show();
@@ -111,12 +133,31 @@ public class MainActivity extends AppCompatActivity {
         return true;
     }
 
-    public class DrawerOptionClickListener implements ListView.OnItemClickListener{
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        int count = getSupportFragmentManager().getBackStackEntryCount();
+        MainFragment currentFrag = (MainFragment) getSupportFragmentManager().findFragmentByTag("main");
+        if(keyCode == KeyEvent.KEYCODE_BACK){
+            if(currentFrag != null && currentFrag.isVisible()){
+            }
+            else{
+                mMainFragment = new MainFragment();
+                getSupportFragmentManager().beginTransaction().replace(R.id.container, mMainFragment, "main").commit();
+            }
+        }
+        return super.onKeyDown(keyCode, event);
+    }
 
+    private class DrawerOptionClickListener implements ListView.OnItemClickListener{
         @Override
         public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-            if(i == 2){
-                User.getInstance().getmUserAuthState().signOut();
+            if(i == 1){
+                Fragment fragment = new AccountFragment();
+                getSupportFragmentManager().beginTransaction().replace(R.id.container, fragment).commit();
+                mDrawer.closeDrawers();
+            }
+            else if(i == 2){
+                FirebaseAuth.getInstance().signOut();
                 Toast.makeText(MainActivity.this,"Log out successful",Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(MainActivity.this, Login.class);
                 startActivity(intent);

@@ -15,7 +15,6 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 
-import java.util.regex.Pattern;
 
 
 public class SignUp extends AppCompatActivity {
@@ -33,19 +32,14 @@ public class SignUp extends AppCompatActivity {
 
         mEmail = (EditText) findViewById(R.id.signup_email);
         mPassword = (EditText) findViewById(R.id.signup_pw);
-        //mFullName = (EditText) findViewById(R.id.full_name);
         mSubmit = (Button) findViewById(R.id.submit);
 
         mSubmit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //String name = mFullName.getText().toString();
                 String email = mEmail.getText().toString();
                 String password = mPassword.getText().toString();
 
-                /*if(name.length() < 2){
-                    Toast.makeText(SignUp.this, "Name must have at least 2 letters", Toast.LENGTH_SHORT).show();
-                }*/
                 if(password.length() < 5){
                     Toast.makeText(SignUp.this, "Password must be at least 5 characters", Toast.LENGTH_SHORT).show();
                 }

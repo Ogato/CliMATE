@@ -6,23 +6,23 @@
     android:gravity="center">
 
     <EditText
-        android:layout_width="200dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:inputType="textEmailAddress"
         android:hint="Email"
         android:id="@+id/user_email"/>
 
     <EditText
-        android:layout_width="200dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:inputType="textPassword"
-        android:hint="Password"/>
-
-    <EditText
-        android:layout_width="200dp"
-        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
         android:id="@+id/user_name"
-        android:hint="Name"/>
+        android:hint="Name (Optional)"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Clothing Preference (Required):"/>
 
     <RadioGroup
         android:layout_width="wrap_content"
@@ -40,6 +40,12 @@
             android:layout_height="wrap_content"
             android:id="@+id/user_female"
             android:text="Female"/>
+
+        <RadioButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/user_none"
+            android:text="No Preference"/>
 
     </RadioGroup>
 

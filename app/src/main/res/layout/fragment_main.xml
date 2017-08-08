@@ -1,25 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v4.widget.DrawerLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:gravity="center"
-    android:id="@+id/drawer_layout"
-    tools:context=".MainActivity">
-
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
-
+    xmlns:tool="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:gravity="center">
 
         <Button
             android:id="@+id/imageView1"
-
             android:layout_width="match_parent"
             android:layout_height="200dp"
-            android:background="@drawable/sanfran"
+            tool:background="@drawable/sanfran"
             android:text="San Francisco"
             android:textColor="#fff"
             android:layout_marginBottom="3dp"
@@ -29,7 +20,7 @@
             android:id="@+id/imageView2"
             android:layout_width="match_parent"
             android:layout_height="240dp"
-            android:background="@drawable/dc_img"
+            tool:background="@drawable/dc_img"
             android:layout_marginBottom="3dp"
             android:text="Washington DC"
             android:textColor="#fff"
@@ -38,39 +29,10 @@
             android:id="@+id/imageView3"
             android:layout_width="match_parent"
             android:layout_height="240dp"
-            android:background="@drawable/ny_img"
+            tool:background="@drawable/ny_img"
             android:text="New York"
             android:textColor="#fff"
             android:textSize="15dp"/>
 
 
-
-    </LinearLayout>
-
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/main_layout">
-
-        <FrameLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/container"
-            android:layout_gravity="bottom">
-
-
-        </FrameLayout>
-
-    </FrameLayout>
-
-
-    <ListView android:id="@+id/left_drawer"
-        android:layout_width="240dp"
-        android:layout_height="match_parent"
-        android:layout_gravity="start"
-        android:choiceMode="singleChoice"
-        android:divider="@android:color/transparent"
-        android:dividerHeight="10dp"
-        android:background="#111"/>
-
-</android.support.v4.widget.DrawerLayout>
+</LinearLayout>
