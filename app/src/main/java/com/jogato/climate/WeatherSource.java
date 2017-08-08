@@ -2,6 +2,7 @@ package com.jogato.climate;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.support.v4.app.Fragment;
 import android.util.LruCache;
 import android.widget.Toast;
 
@@ -126,8 +127,10 @@ public class WeatherSource{
                                     dayForecasts.add(dayForecast);
                                 }
                                 forecastListener.onForecastReceived(dayForecasts);
-                                User.getInstance().getmUserHistory().put(city+","+state, new History(weatherUrl, ZIPCODE_URL_KEY + city + "/" + state));
-                                historyListener.onHistoryChanged(User.getInstance().getmUserHistory());
+                                if(dayForecasts.size() > 0) {
+                                    User.getInstance().getmUserHistory().put(city + "," + state, new History(weatherUrl, ZIPCODE_URL_KEY + city + "/" + state));
+                                    historyListener.onHistoryChanged(User.getInstance().getmUserHistory());
+                                }
                             } catch (JSONException e) {
                                 Toast.makeText(mContext, "Unable to retrieve forecast at this time", Toast.LENGTH_SHORT).show();
                             }

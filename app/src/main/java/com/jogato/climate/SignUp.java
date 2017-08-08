@@ -19,7 +19,6 @@ import com.google.firebase.auth.AuthResult;
 
 public class SignUp extends AppCompatActivity {
     private EditText mEmail;
-    private EditText mFullName;
     private EditText mPassword;
     private Button mSubmit;
 

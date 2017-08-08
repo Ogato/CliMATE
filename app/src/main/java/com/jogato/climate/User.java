@@ -3,6 +3,7 @@ package com.jogato.climate;
 
 import android.util.Log;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -29,7 +30,7 @@ public class User {
         return sUser;
     }
 
-    public void setHistory(){
+    public void setHistoryAndPrefs(){
         final DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
         Query getHistory = databaseReference.child("users").child(mUserId)
                 .child("history");
@@ -46,11 +47,34 @@ public class User {
                 }
             }
 
+
             @Override
             public void onCancelled(DatabaseError databaseError) {
 
             }
         });
+        Query getPrefs = databaseReference.child("users").child(mUserId)
+                .child("preference");
+        getPrefs.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if(dataSnapshot.exists()){
+                    Log.i("JO_INFO", "OLD Preference");
+                    sUser.setmUserPreference(dataSnapshot.getValue().toString());
+                }
+                else{
+                    Log.i("JO_INFO", "New Preference");
+                    sUser.setmUserPreference("");
+                }
+            }
+
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
     }
 
 

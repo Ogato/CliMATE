@@ -45,7 +45,7 @@ public class Login extends AppCompatActivity implements GoogleApiClient.OnConnec
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_login);
+        setContentView(R.layout.fragment_login);
         getSupportActionBar().hide();
 
         mAuth = FirebaseAuth.getInstance();
@@ -105,7 +105,7 @@ public class Login extends AppCompatActivity implements GoogleApiClient.OnConnec
                                     else{
                                         Toast.makeText(Login.this, "Successful Login", Toast.LENGTH_SHORT).show();
                                         User.getInstance().setmUserEmail(user_email);
-                                        User.getInstance().setHistory();
+                                        User.getInstance().setHistoryAndPrefs();
                                         finish();
                                     }
                                 }
@@ -156,7 +156,7 @@ public class Login extends AppCompatActivity implements GoogleApiClient.OnConnec
             User.getInstance().setmUserEmail(acct.getEmail());
             User.getInstance().setmUserName(acct.getDisplayName());
             User.getInstance().setmUserId(acct.getId());
-            User.getInstance().setHistory();
+            User.getInstance().setHistoryAndPrefs();
             Intent intent = new Intent(Login.this, MainActivity.class);
             startActivity(intent);
             finish();
@@ -178,7 +178,7 @@ public class Login extends AppCompatActivity implements GoogleApiClient.OnConnec
             User.getInstance().setmUserName(currentUser.getDisplayName());
             User.getInstance().setmUserId(currentUser.getUid());
             Log.i("JO_INFO", currentUser.getUid());
-            User.getInstance().setHistory();
+            User.getInstance().setHistoryAndPrefs();
             Intent i = new Intent(Login.this, MainActivity.class);
             startActivity(i);
             finish();

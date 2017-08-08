@@ -70,7 +70,7 @@ public class ResultFragment extends Fragment {
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, @Nullable final ViewGroup container, @Nullable Bundle savedInstanceState) {
         final View v = inflater.inflate(R.layout.fragment_results, container, false);
         setHasOptionsMenu(true);
         setRetainInstance(true);
@@ -143,6 +143,10 @@ public class ResultFragment extends Fragment {
                 else{
                     mWeatherProgressBar.setVisibility(View.INVISIBLE);
                     mClothingProgressBar.setVisibility(View.INVISIBLE);
+                    TransitionFragment transition = (TransitionFragment)getActivity().getSupportFragmentManager().findFragmentByTag("transition");
+                    getActivity().getSupportFragmentManager().beginTransaction().remove(transition).commit();
+                    //MainFragment main = (MainFragment)getActivity().getSupportFragmentManager().findFragmentByTag("main");
+                    getActivity().getSupportFragmentManager().beginTransaction().replace(container != null ? container.getId() : R.id.container, new MainFragment(), "main").commit();
                 }
             }
         }, new WeatherSource.HistoryListener(){
@@ -154,16 +158,15 @@ public class ResultFragment extends Fragment {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         if(!dataSnapshot.exists()) {
-                            Log.i("JO_INFO", "NEW");
                             databaseReference.child("users").child(User.getInstance().getmUserId())
                                     .child("history").setValue(User.getInstance().getmUserHistory());
                         }
                         else{
-                            Log.i("JO_INFO", "Not New");
                             databaseReference.child("users").child(User.getInstance().getmUserId())
                                     .child("history").setValue(histories);
                         }
-
+                        TransitionFragment transition = (TransitionFragment)getActivity().getSupportFragmentManager().findFragmentByTag("transition");
+                        getActivity().getSupportFragmentManager().beginTransaction().remove(transition).commit();
                     }
 
                     @Override
@@ -269,6 +272,7 @@ public class ResultFragment extends Fragment {
                 NetworkImageView weather_icon = dayView.findViewById(R.id.weather_img);
                 ImageLoader imageLoader = WeatherSource.getInstance(getContext()).getImageLoader();
                 weather_icon.setImageUrl(dayForecast.getmImageViewURL(), imageLoader);
+
                 return dayView;
             }
             else {

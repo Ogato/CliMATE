@@ -1,9 +1,11 @@
 package com.jogato.climate;
 
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.util.Log;
+import android.transition.Fade;
+import android.transition.Slide;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,6 +32,15 @@ public class AccountFragment extends Fragment {
     private RadioButton mUserFemale;
     private RadioButton mUserNoPref;
     private Button mUserSave;
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            setEnterTransition(new Slide());
+            setExitTransition(new Fade());
+        }
+    }
 
     @Nullable
     @Override
@@ -65,7 +76,6 @@ public class AccountFragment extends Fragment {
                         User.getInstance().setmUserPreference("none");
                     }
                     saveInfo();
-                    getActivity().getSupportFragmentManager().popBackStack("main", 0);
 
                 }
             }
@@ -117,6 +127,10 @@ public class AccountFragment extends Fragment {
                     databaseReference.child("users").child(User.getInstance().getmUserId()).child("preference").setValue(User.getInstance().getmUserPreference());
                 }
                 Toast.makeText(getActivity(), "Changes Saved", Toast.LENGTH_SHORT).show();
+                //MainFragment main = (MainFragment)getActivity().getSupportFragmentManager().findFragmentByTag("main");
+                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.container, new MainFragment(), "main").commit();
+                getActivity().getSupportFragmentManager().beginTransaction().remove(AccountFragment.this).commit();
+
             }
 
             @Override
