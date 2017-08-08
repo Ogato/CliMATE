@@ -9,19 +9,31 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageLoader;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.NetworkImageView;
+import com.android.volley.toolbox.Volley;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.squareup.picasso.Picasso;
 
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.lucasr.twowayview.TwoWayView;
 
 import java.util.ArrayList;
@@ -42,12 +54,59 @@ public class ResultFragment extends Fragment {
     private ProgressBar mClothingProgressBar;
     private List<String>clothingURLs;
 
+
+//Info image view
+    RequestQueue rq;
+    TextView farmText, serveridText, photoidText, secretText, cityT, titleT;
+    ImageView city_image;
+    Button nBtn;
+    String farm, serverid, photoid, secret, title;
+    int imageCount = 0, totalImages;
+    String city_state = "Cities San Franscisco, CA";
+    JsonObjectRequest offerObject;
+    String Url = "https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=959d473ba8cdd5d528f0231527d99591&text=" + city_state + "&format=json&nojsoncallback=1";
+
+
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         final View v = inflater.inflate(R.layout.fragment_results, container, false);
         setHasOptionsMenu(true);
         setRetainInstance(true);
+
+
+
+        rq = Volley.newRequestQueue(getContext());
+
+
+
+        city_image = (ImageView) v.findViewById(R.id.photo_img);
+        cityT = (TextView) v.findViewById(R.id.cityText);
+        titleT = (TextView) v.findViewById(R.id.titleText);
+        nBtn = (Button) v.findViewById(R.id.nextBtn);
+
+
+
+        nBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (imageCount != totalImages) {
+                    imageCount += 1;
+                    sendJsonRequest();
+                    String count = String.valueOf(imageCount);
+                    Log.d("Harold", count);
+                } else {
+
+                    imageCount = 0;
+                }
+            }
+        });
+
+        sendJsonRequest();
+
+
+
 
         String city = getArguments().getString(USER_CITY_KEY);
         String state = getArguments().getString(USER_STATE_KEY);
@@ -115,17 +174,51 @@ public class ResultFragment extends Fragment {
             }
         });
 
-        final int []imageArray={R.drawable.city1,R.drawable.city2,R.drawable.city3,R.drawable.city4,R.drawable.city5,R.drawable.city6,R.drawable.city7,R.drawable.city8};
 
 
-        //Randomly select an image for the city
-        Random randomGenerator = new Random();
-        int randomNumber = randomGenerator.nextInt(imageArray.length-1);
 
 
-        //cityImageView.setImageResource(imageArray[randomNumber]);
 
         return v;
+    }
+
+
+    public void sendJsonRequest() {
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, Url, null, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+
+                try {
+                    //  name = response.getString("photos");
+                    JSONObject photos = response.getJSONObject("photos");
+                    JSONArray photo = photos.getJSONArray("photo");
+                    totalImages = photo.length();
+                    Log.d("total image", String.valueOf(totalImages));
+
+                    JSONObject firstObj = photo.getJSONObject(imageCount);
+                    farm = firstObj.getString("farm");
+                    serverid = firstObj.getString("server");
+                    photoid = firstObj.getString("id");
+                    secret = firstObj.getString("secret");
+                    title = firstObj.getString("title");
+
+
+                    String img_url = "https://farm" + farm + ".staticflickr.com/" + serverid + "/" + photoid + "_" + secret + "_c.jpg";
+
+                    Picasso.with(getContext()).load(img_url).into(city_image);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+
+            }
+        });
+
+        rq.add(jsonObjectRequest);
     }
 
     private class ForecastAdapter extends BaseAdapter {
