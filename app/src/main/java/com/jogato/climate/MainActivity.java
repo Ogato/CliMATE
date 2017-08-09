@@ -3,11 +3,8 @@ package com.jogato.climate;
 import android.content.DialogInterface;
 import android.content.res.Resources;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -52,7 +49,6 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Log.i("JO_INFO", "START1");
 
         mOptions = getResources().getStringArray(R.array.navigation_options);
         mDrawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -124,8 +120,8 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
                             Fragment fragment = new ResultFragment();
                             Fragment transition = new TransitionFragment();
                             fragment.setArguments(bundle);
-                            getSupportFragmentManager().beginTransaction().replace(R.id.container, fragment, "result").commit();
                             getSupportFragmentManager().beginTransaction().replace(R.id.container2, transition, "transition").commit();
+                            getSupportFragmentManager().beginTransaction().replace(R.id.container, fragment, "result").commit();
                         }
                         else{
                             Toast.makeText(MainActivity.this, "Please input a city and select a state", Toast.LENGTH_LONG).show();
@@ -151,6 +147,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
         MainFragment currentFrag = (MainFragment) getSupportFragmentManager().findFragmentByTag("main");
         AccountFragment accountFragment = (AccountFragment) getSupportFragmentManager().findFragmentByTag("account");
         LoginFragment loginFragment = (LoginFragment) getSupportFragmentManager().findFragmentByTag("login");
+        SignUpFragment signUpFragment = (SignUpFragment) getSupportFragmentManager().findFragmentByTag("signup");
         if(keyCode == KeyEvent.KEYCODE_BACK){
             if(currentFrag != null && currentFrag.isVisible()){
                 finish();
@@ -162,6 +159,10 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
             }
             else if(loginFragment != null && loginFragment.isVisible()){
                 finish();
+                return true;
+            }
+            else if(signUpFragment != null && signUpFragment.isVisible()){
+                getSupportFragmentManager().beginTransaction().replace(R.id.container, new LoginFragment(), "login").commit();
                 return true;
             }
             else{

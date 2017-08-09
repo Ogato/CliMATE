@@ -22,7 +22,7 @@ public class MainFragment extends Fragment {
         Log.i("JO_INFO", "ONCREATE");
         super.onCreate(savedInstanceState);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            setEnterTransition(new Slide());
+            setEnterTransition(new Fade());
             setExitTransition(new Fade());
         }
     }

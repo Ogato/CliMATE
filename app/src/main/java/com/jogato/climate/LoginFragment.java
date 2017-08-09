@@ -111,7 +111,7 @@ public class LoginFragment extends Fragment implements GoogleApiClient.OnConnect
         mSignUp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Log.i("JO_INFO", "SIGNUP");
+                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.container, new SignUpFragment(), "signup").commit();
             }
         });
         return v;
