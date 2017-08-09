@@ -56,16 +56,15 @@ public class ResultFragment extends Fragment {
     private List<String>clothingURLs;
 
 
-//Info image view
+//Variables for image view
     RequestQueue rq;
-    TextView farmText, serveridText, photoidText, secretText, cityT, titleT;
+    TextView cityT, titleT;
     ImageView city_image;
     Button nBtn;
-    String farm, serverid, photoid, secret, title;
+    String farm, serverid, photoid, secret, title, city_text, state_text, Url;
     int imageCount = 0, totalImages;
-    String city_state = "Cities San Franscisco, CA";
     JsonObjectRequest offerObject;
-    String Url = "https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=959d473ba8cdd5d528f0231527d99591&text=" + city_state + "&format=json&nojsoncallback=1";
+
 
 
 
@@ -76,11 +75,16 @@ public class ResultFragment extends Fragment {
         setHasOptionsMenu(true);
         setRetainInstance(true);
 
+        String city = getArguments().getString(USER_CITY_KEY);
+        String state = getArguments().getString(USER_STATE_KEY);
+        city_text = city;
+        state_text = state;
+
+        Url = "https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=959d473ba8cdd5d528f0231527d99591&text=Cities of " + city_text + " " + state_text + "&format=json&nojsoncallback=1";
 
 
+        Log.d("Harold", Url);
         rq = Volley.newRequestQueue(getContext());
-
-
 
         city_image = (ImageView) v.findViewById(R.id.photo_img);
         cityT = (TextView) v.findViewById(R.id.cityText);
@@ -104,13 +108,9 @@ public class ResultFragment extends Fragment {
             }
         });
 
-        sendJsonRequest();
 
 
 
-
-        String city = getArguments().getString(USER_CITY_KEY);
-        String state = getArguments().getString(USER_STATE_KEY);
         Log.i("JO_INFO", city + " " + state);
         //ImageView cityImageView = v.findViewById(R.id.city_image);
 
@@ -125,6 +125,9 @@ public class ResultFragment extends Fragment {
         mAdapter2 = new ClothesAdapter(getContext());
         mTwoWayView1.setAdapter(mAdapter);
         mTwoWayView2.setAdapter(mAdapter2);
+
+
+        sendJsonRequest();
 
 
         WeatherSource.getInstance(getContext()).getWeatherForecast(city, state, new WeatherSource.ForecastListener() {
@@ -213,10 +216,11 @@ public class ResultFragment extends Fragment {
                     String img_url = "https://farm" + farm + ".staticflickr.com/" + serverid + "/" + photoid + "_" + secret + "_c.jpg";
 
                     Picasso.with(getContext()).load(img_url).into(city_image);
+                    cityT.setText(city_text.toUpperCase() + " " + state_text.toUpperCase());
+                    titleT.setText(title);
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-
             }
         }, new Response.ErrorListener() {
             @Override
