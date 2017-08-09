@@ -2,6 +2,7 @@ package com.jogato.climate;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -145,7 +146,6 @@ public class ResultFragment extends Fragment {
                     mClothingProgressBar.setVisibility(View.INVISIBLE);
                     TransitionFragment transition = (TransitionFragment)getActivity().getSupportFragmentManager().findFragmentByTag("transition");
                     getActivity().getSupportFragmentManager().beginTransaction().remove(transition).commit();
-                    //MainFragment main = (MainFragment)getActivity().getSupportFragmentManager().findFragmentByTag("main");
                     getActivity().getSupportFragmentManager().beginTransaction().replace(container != null ? container.getId() : R.id.container, new MainFragment(), "main").commit();
                 }
             }
@@ -157,16 +157,26 @@ public class ResultFragment extends Fragment {
                 updateHistory.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
-                        if(!dataSnapshot.exists()) {
+                        if (!dataSnapshot.exists()) {
                             databaseReference.child("users").child(User.getInstance().getmUserId())
                                     .child("history").setValue(User.getInstance().getmUserHistory());
-                        }
-                        else{
+                        } else {
                             databaseReference.child("users").child(User.getInstance().getmUserId())
                                     .child("history").setValue(histories);
                         }
-                        TransitionFragment transition = (TransitionFragment)getActivity().getSupportFragmentManager().findFragmentByTag("transition");
-                        getActivity().getSupportFragmentManager().beginTransaction().remove(transition).commit();
+                        new CountDownTimer(2000, 1000) {
+                            @Override
+                            public void onTick(long l) {
+
+                            }
+
+                            @Override
+                            public void onFinish() {
+                                TransitionFragment transition = (TransitionFragment) getActivity().getSupportFragmentManager().findFragmentByTag("transition");
+                                getActivity().getSupportFragmentManager().beginTransaction().remove(transition).commit();
+                            }
+
+                        }.start();
                     }
 
                     @Override
@@ -176,11 +186,6 @@ public class ResultFragment extends Fragment {
                 });
             }
         });
-
-
-
-
-
 
         return v;
     }
@@ -204,7 +209,6 @@ public class ResultFragment extends Fragment {
                     photoid = firstObj.getString("id");
                     secret = firstObj.getString("secret");
                     title = firstObj.getString("title");
-
 
                     String img_url = "https://farm" + farm + ".staticflickr.com/" + serverid + "/" + photoid + "_" + secret + "_c.jpg";
 

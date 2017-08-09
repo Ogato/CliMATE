@@ -26,7 +26,7 @@ public class TransitionFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            setEnterTransition(new Explode());
+            setEnterTransition(new Slide());
             setExitTransition(new Fade());
         }
     }
@@ -46,7 +46,7 @@ public class TransitionFragment extends Fragment {
         ColorDrawable[] color = {new ColorDrawable(Color.RED), new ColorDrawable(Color.BLUE)};
         TransitionDrawable trans = new TransitionDrawable(color);
         mLinearLayout.setBackground(trans);
-        trans.startTransition(4000);
+        trans.startTransition(5000);
     }
 
 }
