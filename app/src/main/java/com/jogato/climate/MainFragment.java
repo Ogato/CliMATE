@@ -4,6 +4,8 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.transition.ArcMotion;
+import android.transition.Explode;
 import android.transition.Fade;
 import android.transition.Slide;
 import android.util.Log;
@@ -30,7 +32,11 @@ public class MainFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         Log.i("JO_INFO", "CREATEVIEW");
         View v = inflater.inflate(R.layout.fragment_main, container, false);
+        if(getActivity().getActionBar() != null){
+            getActivity().getActionBar().show();
+        }
         return v;
     }
+
 
 }

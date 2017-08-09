@@ -119,7 +119,7 @@ public class AccountFragment extends Fragment {
                     userInfo.put("preference", User.getInstance().getmUserPreference());
                     userInfo.put("history", User.getInstance().getmUserHistory());
                     databaseReference.child("users").child(User.getInstance().getmUserId()).setValue(userInfo);
-                    User.getInstance().updateInfo();
+                    HistoryAndPreferenceSource.getInstance().updateInfo();
                 }
                 else{
                     databaseReference.child("users").child(User.getInstance().getmUserId()).child("email").setValue(User.getInstance().getmUserEmail());
@@ -127,7 +127,6 @@ public class AccountFragment extends Fragment {
                     databaseReference.child("users").child(User.getInstance().getmUserId()).child("preference").setValue(User.getInstance().getmUserPreference());
                 }
                 Toast.makeText(getActivity(), "Changes Saved", Toast.LENGTH_SHORT).show();
-                //MainFragment main = (MainFragment)getActivity().getSupportFragmentManager().findFragmentByTag("main");
                 getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.container, new MainFragment(), "main").commit();
                 getActivity().getSupportFragmentManager().beginTransaction().remove(AccountFragment.this).commit();
 

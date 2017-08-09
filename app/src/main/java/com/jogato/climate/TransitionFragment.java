@@ -7,6 +7,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.transition.Explode;
 import android.transition.Fade;
 import android.transition.Slide;
 import android.view.LayoutInflater;
@@ -25,7 +26,7 @@ public class TransitionFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            setEnterTransition(new Slide());
+            setEnterTransition(new Explode());
             setExitTransition(new Fade());
         }
     }

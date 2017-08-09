@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.DrawerLayout;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -45,10 +46,20 @@ public class LoginFragment extends Fragment implements GoogleApiClient.OnConnect
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        Log.i("JO_INFO", "view");
         View v = inflater.inflate(R.layout.fragment_login, container, false);
         mEmail = v.findViewById(R.id.email);
         mPassword = v.findViewById(R.id.password);
+
+        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestIdToken(getString(R.string.default_web_client_id))
+                .requestEmail()
+                .build();
+
+
+
+        mGoogleApiClient = MainActivity.getmGoogleApiClient();
+
+        mAuth = FirebaseAuth.getInstance();
 
         mLogin =  v.findViewById(R.id.login);
         mLogin.setOnClickListener(new View.OnClickListener() {
@@ -75,7 +86,7 @@ public class LoginFragment extends Fragment implements GoogleApiClient.OnConnect
                                         Toast.makeText(getActivity(), "Successful Login", Toast.LENGTH_SHORT).show();
                                         User.getInstance().setmUserEmail(user_email);
                                         User.getInstance().setmUserId(mAuth.getCurrentUser().getUid());
-                                        User.getInstance().setHistoryAndPrefs();
+                                        //User.getInstance().setHistoryAndPrefs();
                                         updateUI(mAuth.getCurrentUser());
                                     }
                                 }
@@ -106,22 +117,6 @@ public class LoginFragment extends Fragment implements GoogleApiClient.OnConnect
         return v;
     }
 
-    @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestIdToken(getString(R.string.default_web_client_id))
-                .requestEmail()
-                .build();
-
-        mGoogleApiClient = new GoogleApiClient.Builder(getActivity())
-                .enableAutoManage(getActivity() /* FragmentActivity */, this /* OnConnectionFailedListener */)
-                .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
-                .build();
-
-        mAuth = FirebaseAuth.getInstance();
-
-    }
 
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
@@ -190,41 +185,54 @@ public class LoginFragment extends Fragment implements GoogleApiClient.OnConnect
     }
 
     private void updateUI(FirebaseUser user) {
-        Log.i("JO_INFO", "UPDATE");
         String toastText = (user == null) ? "Signed out" : "Signed in as " + user.getEmail();
         Toast.makeText(getActivity(), toastText, Toast.LENGTH_SHORT).show();
 
         if(user == null){
-            Log.i("JO_INFO", "NULLL");
             Toast.makeText(getActivity(), "Unable to login", Toast.LENGTH_SHORT).show();
         }
         else{
-            Log.i("JO_INFO", "INNNN");
             User.getInstance().setmUserEmail(mAuth.getCurrentUser().getEmail());
             User.getInstance().setmUserId(mAuth.getCurrentUser().getUid());
             User.getInstance().setmUserName(mAuth.getCurrentUser().getDisplayName());
-            User.getInstance().setHistoryAndPrefs();
-            SharedPreferences pref = getActivity().getSharedPreferences("app_opened_count", Context.MODE_PRIVATE);
-            int count = pref.getInt("app_opened_count", 0);
-            Log.i("JO_IMPORTANT", ""+count);
-            if (count == 0 || User.getInstance().getmUserPreference().equals("")) {
-                SharedPreferences.Editor editor = pref.edit();
-                int new_count = count + 1;
-                editor.putInt("app_opened_count", new_count);
-                editor.apply();
-                Log.i("JO_INFO", "ACCOUNT");
-                Fragment fragment = new AccountFragment();
-                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.container, fragment, "account").addToBackStack("account").commit();
-            }
-            else{
-                Log.i("JO_INFO", "MAIN");
-                Fragment mainFragment = new MainFragment();
-                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.container, mainFragment, "main").addToBackStack("main").commit();
-            }
-            getActivity().getSupportFragmentManager().popBackStack();
+            final SharedPreferences pref = getActivity().getSharedPreferences("app_opened_count", Context.MODE_PRIVATE);
+            HistoryAndPreferenceSource.getInstance().setHistoryAndPrefs(new HistoryAndPreferenceSource.HistoryAndPreferencesListener() {
+                @Override
+                public void onHistoryAndPreferencesResults(Boolean setPref) {
+                    int count = pref.getInt("app_opened_count", 0);
+                    if (count == 0 || !setPref) {
+                        SharedPreferences.Editor editor = pref.edit();
+                        int new_count = count + 1;
+                        editor.putInt("app_opened_count", new_count);
+                        editor.apply();
+                        Fragment fragment = new AccountFragment();
+                        getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.container, fragment, "account").addToBackStack("account").commit();
+                    }
+                    else{
+                        Fragment mainFragment = new MainFragment();
+                        getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.container, mainFragment, "main").addToBackStack("main").commit();
+                    }
+                }
+            });
         }
     }
 
+    @Override
+    public void onStart() {
+        super.onStart();
+        if(((MainActivity)getActivity()).getSupportActionBar() != null){
+            ((MainActivity)getActivity()).getSupportActionBar().hide();
+        }
+        MainActivity.mDrawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+    }
 
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        if(((MainActivity)getActivity()).getSupportActionBar() != null){
+            ((MainActivity)getActivity()).getSupportActionBar().show();
+        }
+        MainActivity.mDrawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
 
+    }
 }

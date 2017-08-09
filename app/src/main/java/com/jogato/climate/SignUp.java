@@ -46,14 +46,14 @@ public class SignUp extends AppCompatActivity {
                     Toast.makeText(SignUp.this, "Invalid Email Address", Toast.LENGTH_SHORT).show();
                 }
                 else{
-                    createAccount();
+                    //createAccount();
                 }
             }
         });
 
     }
 
-    private void createAccount(){
+    /*private void createAccount(){
         Login.mAuth.createUserWithEmailAndPassword(mEmail.getText().toString(), mPassword.getText().toString())
                 .addOnCompleteListener(SignUp.this, new OnCompleteListener<AuthResult>() {
                     @Override
@@ -75,7 +75,7 @@ public class SignUp extends AppCompatActivity {
 
                     }
                 });
-    }
+    }*/
 
 
 }
