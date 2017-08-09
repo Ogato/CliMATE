@@ -215,9 +215,13 @@ public class ResultFragment extends Fragment {
 
                     String img_url = "https://farm" + farm + ".staticflickr.com/" + serverid + "/" + photoid + "_" + secret + "_c.jpg";
 
+<<<<<<< Updated upstream
                     Picasso.with(getContext()).load(img_url).into(city_image);
                     cityT.setText(city_text.toUpperCase() + " " + state_text.toUpperCase());
                     titleT.setText(title);
+=======
+                    Picasso.with(getActivity()).load(img_url).into(city_image);
+>>>>>>> Stashed changes
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
