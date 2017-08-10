@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
+
+
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -22,8 +24,9 @@
         <ImageView
             android:id="@+id/photo_img"
             android:layout_width="match_parent"
-            android:layout_height="300sp"
-            android:src="@drawable/sanfran" />
+            android:layout_height="match_parent"
+            android:src="@drawable/ny_img"
+            android:scaleType="centerCrop"/>
 
         <TextView
             android:id="@+id/cityText"
@@ -31,31 +34,22 @@
             android:layout_height="wrap_content"
             android:gravity="center_horizontal"
             android:layout_gravity="center"
-            android:text="hii"
+            android:text="Getting Images ..."
             android:textColor="#fff"
             android:textSize="20dp"/>
         <TextView
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="40dp"
             android:id="@+id/titleText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center_horizontal"
             android:layout_gravity="center"
-            android:text="hii"
+
             android:textColor="#fff"
             android:textSize="15dp"
 
             />
-        <Button
-            android:id="@+id/nextBtn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom|right"
-            android:text="Next>>"
-            android:textColor="#000"
-            android:background="@android:color/transparent"
 
-            />
     </FrameLayout>
 
 

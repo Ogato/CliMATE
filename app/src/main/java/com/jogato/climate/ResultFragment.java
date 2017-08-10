@@ -60,7 +60,6 @@ public class ResultFragment extends Fragment {
     RequestQueue rq;
     TextView cityT, titleT;
     ImageView city_image;
-    Button nBtn;
     String farm, serverid, photoid, secret, title, city_text, state_text, Url;
     int imageCount = 0, totalImages;
     JsonObjectRequest offerObject;
@@ -80,7 +79,7 @@ public class ResultFragment extends Fragment {
         city_text = city;
         state_text = state;
 
-        Url = "https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=959d473ba8cdd5d528f0231527d99591&text=Cities of " + city_text + " " + state_text + "&format=json&nojsoncallback=1";
+        Url = "https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=959d473ba8cdd5d528f0231527d99591&text=Buildings in " + city_text + " " + state_text + "&format=json&nojsoncallback=1";
 
 
         Log.d("Harold", Url);
@@ -89,13 +88,16 @@ public class ResultFragment extends Fragment {
         city_image = (ImageView) v.findViewById(R.id.photo_img);
         cityT = (TextView) v.findViewById(R.id.cityText);
         titleT = (TextView) v.findViewById(R.id.titleText);
-        nBtn = (Button) v.findViewById(R.id.nextBtn);
 
 
 
-        nBtn.setOnClickListener(new View.OnClickListener() {
+
+        new Runnable() {
+            int updateInterval = 6000; //=one second
+
             @Override
-            public void onClick(View view) {
+            public void run() {
+
                 if (imageCount != totalImages) {
                     imageCount += 1;
                     sendJsonRequest();
@@ -105,8 +107,11 @@ public class ResultFragment extends Fragment {
 
                     imageCount = 0;
                 }
+
+                city_image.postDelayed(this, updateInterval);
             }
-        });
+        }.run();
+
 
 
 
@@ -217,8 +222,9 @@ public class ResultFragment extends Fragment {
 
                     cityT.setText(city_text.toUpperCase() + " " + state_text.toUpperCase());
                     titleT.setText(title);
-
-                    Picasso.with(getActivity()).load(img_url).into(city_image);
+                    if (getActivity() != null) {
+                        Picasso.with(getActivity()).load(img_url).into(city_image);
+                    }
 
                 } catch (JSONException e) {
                     e.printStackTrace();

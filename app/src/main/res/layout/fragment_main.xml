@@ -1,5 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent" >
+
+<LinearLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:tool="http://schemas.android.com/tools"
@@ -11,29 +17,56 @@
             android:id="@+id/imageView1"
             android:layout_width="match_parent"
             android:layout_height="200dp"
-            tool:background="@drawable/sanfran"
-            android:text="San Francisco"
+            android:background="@drawable/sanfran"
+            android:text="San Francisco CA"
             android:textColor="#fff"
             android:layout_marginBottom="3dp"
             android:textSize="15dp" />
 
         <Button
+            android:id="@+id/imageView3"
+            android:layout_width="match_parent"
+            android:layout_marginBottom="3dp"
+            android:layout_height="240dp"
+            android:background="@drawable/ny_img"
+            android:text="Albany NY"
+            android:textColor="#fff"
+            android:textSize="15dp"/>
+
+        <Button
+            android:id="@+id/imageView4"
+            android:layout_width="match_parent"
+            android:layout_marginBottom="3dp"
+            android:layout_height="240dp"
+            android:background="@drawable/miami_img"
+            android:text="Miami FL"
+            android:textColor="#fff"
+            android:textSize="15dp"/>
+        
+        <Button
             android:id="@+id/imageView2"
             android:layout_width="match_parent"
             android:layout_height="240dp"
-            tool:background="@drawable/dc_img"
+            android:background="@drawable/dc_img"
             android:layout_marginBottom="3dp"
             android:text="Washington DC"
             android:textColor="#fff"
             android:textSize="15dp"/>
+
+
+
+
         <Button
-            android:id="@+id/imageView3"
+            android:id="@+id/imageView5"
             android:layout_width="match_parent"
+            android:layout_marginBottom="3dp"
             android:layout_height="240dp"
-            tool:background="@drawable/ny_img"
-            android:text="New York"
+            android:background="@drawable/austin_img"
+            android:text="Austin TX"
             android:textColor="#fff"
             android:textSize="15dp"/>
 
 
 </LinearLayout>
+
+</ScrollView>
