@@ -5,7 +5,7 @@
     xmlns:tool="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:gravity="center">
-       
+
 
         <Button
             android:id="@+id/imageView1"
