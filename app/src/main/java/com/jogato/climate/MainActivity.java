@@ -1,13 +1,16 @@
 package com.jogato.climate;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.res.Resources;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.AttributeSet;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -40,6 +43,8 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
     public static ListView mDrawerList;
     private String[] mOptions;
     public static    DrawerLayout mDrawer;
+    private ActionBarDrawerToggle mDrawerToggle;
+    private String mActivityTitle;
     private Fragment mMainFragment;
     private String mSelectedState;
     private static GoogleApiClient mGoogleApiClient;
@@ -50,11 +55,18 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeButtonEnabled(true);
+
+
         mOptions = getResources().getStringArray(R.array.navigation_options);
         mDrawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        mActivityTitle = getTitle().toString();
         mDrawerList = (ListView) findViewById(R.id.left_drawer);
         mDrawerList.setAdapter(new ArrayAdapter<String>(this, R.layout.list_option_items, mOptions));
         mDrawerList.setOnItemClickListener(new DrawerOptionClickListener());
+
+        setupDrawer();
 
 
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -66,6 +78,30 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
                 .enableAutoManage(this /* FragmentActivity */, this /* OnConnectionFailedListener */)
                 .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
                 .build();
+
+        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        if(currentUser == null){
+            getSupportFragmentManager().beginTransaction().replace(R.id.container, new LoginFragment(), "login").commit();
+        }
+        else {
+            User.getInstance().setmUserEmail(currentUser.getEmail());
+            User.getInstance().setmUserId(currentUser.getUid());
+            User.getInstance().setmUserName(currentUser.getDisplayName());
+            HistoryAndPreferenceSource.getInstance().setHistoryAndPrefs(new HistoryAndPreferenceSource.HistoryAndPreferencesListener() {
+                @Override
+                public void onHistoryAndPreferencesResults(Boolean setPref) {
+                    if (!setPref) {
+                        Fragment fragment = new AccountFragment();
+                        getSupportFragmentManager().beginTransaction().replace(R.id.container, fragment, "account").addToBackStack("account").commit();
+                    } else if (setPref) {
+                        getSupportFragmentManager().beginTransaction().replace(R.id.container, new MainFragment(), "main").commit();
+
+                    } else {
+                        Toast.makeText(MainActivity.this, "Error reading from database", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            });
+        }
 
     }
 
@@ -86,6 +122,10 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+
+        if (mDrawerToggle.onOptionsItemSelected(item)) {
+            return true;
+        }
 
         View view = LayoutInflater.from(this).inflate(R.layout.dialog_edit_text, null);
         final EditText editText = view.findViewById(R.id.user_query);
@@ -182,7 +222,12 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
     private class DrawerOptionClickListener implements ListView.OnItemClickListener{
         @Override
         public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-            if(i == 1){
+            if(i == 0){
+                Fragment fragment = new HistoryFragment();
+                getSupportFragmentManager().beginTransaction().replace(R.id.container, fragment  , "history").commit();
+                mDrawer.closeDrawers();
+            }
+            else if(i == 1){
                 Fragment fragment = new AccountFragment();
                 getSupportFragmentManager().beginTransaction().replace(R.id.container, fragment).commit();
                 mDrawer.closeDrawers();
@@ -197,39 +242,28 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
         }
     }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
-        if(currentUser == null){
-            getSupportFragmentManager().beginTransaction().replace(R.id.container, new LoginFragment(), "login").commit();
-        }
-        else{
-            User.getInstance().setmUserEmail(currentUser.getEmail());
-            User.getInstance().setmUserId(currentUser.getUid());
-            User.getInstance().setmUserName(currentUser.getDisplayName());
-            HistoryAndPreferenceSource.getInstance().setHistoryAndPrefs(new HistoryAndPreferenceSource.HistoryAndPreferencesListener() {
-                @Override
-                public void onHistoryAndPreferencesResults(Boolean setPref) {
-                    if(!setPref){
-                        Fragment fragment = new AccountFragment();
-                        getSupportFragmentManager().beginTransaction().replace(R.id.container, fragment, "account").addToBackStack("account").commit();
-                    }
-                    else if(setPref){
-                        getSupportFragmentManager().beginTransaction().replace(R.id.container, new MainFragment(), "main").commit();
+    private void setupDrawer() {
+        mDrawerToggle = new ActionBarDrawerToggle(this, mDrawer, R.string.drawer_open, R.string.drawer_close){
 
-                    }
-                    else{
-                        Toast.makeText(MainActivity.this, "Error reading from database", Toast.LENGTH_SHORT).show();
-                    }
-                }
-            });
-        }
+            @Override
+            public void onDrawerOpened(View drawerView) {
+                super.onDrawerOpened(drawerView);
+                invalidateOptionsMenu();
+            }
+
+            @Override
+            public void onDrawerClosed(View drawerView) {
+                super.onDrawerClosed(drawerView);
+                invalidateOptionsMenu();
+            }
+        };
+        mDrawerToggle.setDrawerIndicatorEnabled(true);
+        mDrawer.addDrawerListener(mDrawerToggle);
     }
 
-
-
-
-
-
+    @Override
+    protected void onPostCreate(Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+        mDrawerToggle.syncState();
+    }
 }
