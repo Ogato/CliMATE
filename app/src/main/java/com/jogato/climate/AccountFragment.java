@@ -36,10 +36,10 @@ public class AccountFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            setEnterTransition(new Fade());
-            setExitTransition(new Fade());
-        }
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+//            setEnterTransition(new Fade());
+//            setExitTransition(new Fade());
+//        }
     }
 
     @Nullable

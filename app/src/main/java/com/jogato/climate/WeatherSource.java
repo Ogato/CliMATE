@@ -13,6 +13,8 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ServerValue;
 
 
 import org.json.JSONArray;
@@ -165,7 +167,8 @@ public class WeatherSource{
                                 }
                                 forecastListener.onForecastReceived(dayForecasts);
                                 if(dayForecasts.size() > 0) {
-                                    User.getInstance().getmUserHistory().put(city + "," + state, new History(weatherUrl, ZIPCODE_URL_KEY + city + "/" + state));
+                                    User.getInstance().getmUserHistory().put(city + "," + state, new History(weatherUrl, ZIPCODE_URL_KEY, ServerValue.TIMESTAMP));
+
                                     historyListener.onHistoryChanged(User.getInstance().getmUserHistory());
                                 }
                             } catch (JSONException e) {

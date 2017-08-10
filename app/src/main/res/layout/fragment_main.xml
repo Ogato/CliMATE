@@ -3,7 +3,8 @@
 
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
-    android:layout_height="fill_parent" >
+    android:layout_height="fill_parent"
+    android:id="@+id/scrollView">
 
 <LinearLayout
     android:layout_width="match_parent"
@@ -54,8 +55,6 @@
             android:textSize="15dp"/>
 
 
-
-
         <Button
             android:id="@+id/imageView5"
             android:layout_width="match_parent"
@@ -66,6 +65,37 @@
             android:textColor="#fff"
             android:textSize="15dp"/>
 
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:layout_marginBottom="3dp"
+            android:id="@+id/history1"
+            android:textColor="#ffffff"
+            android:visibility="gone"/>
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:layout_marginBottom="3dp"
+            android:id="@+id/history2"
+            android:visibility="gone"/>
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:layout_marginBottom="3dp"
+            android:id="@+id/history3"
+            android:visibility="gone"/>
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:layout_marginBottom="3dp"
+            android:id="@+id/history4"
+            android:visibility="gone"/>
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:layout_marginBottom="3dp"
+            android:id="@+id/history5"
+            android:visibility="gone"/>
 
 </LinearLayout>
 

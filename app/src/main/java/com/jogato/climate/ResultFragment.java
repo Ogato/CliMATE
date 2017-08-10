@@ -28,6 +28,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
+import com.google.firebase.database.ServerValue;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
@@ -74,8 +75,8 @@ public class ResultFragment extends Fragment {
         setHasOptionsMenu(true);
         setRetainInstance(true);
 
-        String city = getArguments().getString(USER_CITY_KEY);
-        String state = getArguments().getString(USER_STATE_KEY);
+        final String city = getArguments().getString(USER_CITY_KEY);
+        final String state = getArguments().getString(USER_STATE_KEY);
         city_text = city;
         state_text = state;
 
@@ -138,6 +139,7 @@ public class ResultFragment extends Fragment {
         WeatherSource.getInstance(getContext()).getWeatherForecast(city, state, new WeatherSource.ForecastListener() {
             @Override
             public void onForecastReceived(List<DayForecast> dayForecasts) {
+                Log.i("JO_INFO", "DOOOONNEEE"+city+state );
                 if (dayForecasts != null) {
                     mAdapter.setItems(dayForecasts);
                     mWeatherProgressBar.setVisibility(View.INVISIBLE);
@@ -168,9 +170,11 @@ public class ResultFragment extends Fragment {
                         if (!dataSnapshot.exists()) {
                             databaseReference.child("users").child(User.getInstance().getmUserId())
                                     .child("history").setValue(User.getInstance().getmUserHistory());
+
                         } else {
                             databaseReference.child("users").child(User.getInstance().getmUserId())
                                     .child("history").setValue(histories);
+
                         }
                         new CountDownTimer(2000, 1000) {
                             @Override
