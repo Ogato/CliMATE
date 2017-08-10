@@ -38,9 +38,13 @@ public class WeatherSource{
     private Context mContext;
     private ImageLoader mImageLoader;
     private List<String> mClothingURLs;
-    private static List<String> hot_weather_clothing;
-    private static List<String> mild_weather_clothing;
-    private static List<String> cold_weather_clothing;
+    private static List<String> above_90;
+    private static List<String> low_70s_high_80s;
+    private static List<String> range_60s;
+    private static List<String> range_50s;
+    private static List<String> range_40s;
+    private static List<String> just_above_freezing;
+    private static List<String> below_freezing;
 
     public interface HistoryListener{
         void onHistoryChanged(Map<String, History> histories);
@@ -62,27 +66,60 @@ public class WeatherSource{
     public static WeatherSource getInstance(Context context){
         if(sWeatherSource == null){
             sWeatherSource = new WeatherSource(context);
-            hot_weather_clothing = new ArrayList<>();
-            mild_weather_clothing = new ArrayList<>();
-            cold_weather_clothing = new ArrayList<>();
+            above_90 = new ArrayList<>();
+            low_70s_high_80s = new ArrayList<>();
+            range_60s = new ArrayList<>();
+            range_50s = new ArrayList<>();
+            range_40s = new ArrayList<>();
+            just_above_freezing = new ArrayList<>();
+            below_freezing = new ArrayList<>();
 
-            hot_weather_clothing.add("shorts");
-            hot_weather_clothing.add("tshirt");
-            hot_weather_clothing.add("sandals");
-            hot_weather_clothing.add("sunglasses");
-            hot_weather_clothing.add("hat");
+            above_90.add("shorts");
+            above_90.add("tank");
+            above_90.add("sandals");
+            above_90.add("sunglasses");
+            above_90.add("hat");
 
-            mild_weather_clothing.add("jeans");
-            mild_weather_clothing.add("tshirt");
-            mild_weather_clothing.add("shoes");
-            mild_weather_clothing.add("light coat");
-            mild_weather_clothing.add("hat");
+            low_70s_high_80s.add("shorts");
+            low_70s_high_80s.add("jeans");
+            low_70s_high_80s.add("t-shirt");
+            low_70s_high_80s.add("sneakers");
 
-            cold_weather_clothing.add("jeans");
-            cold_weather_clothing.add("heavy coat");
-            cold_weather_clothing.add("boots");
-            cold_weather_clothing.add("gloves");
-            cold_weather_clothing.add("scarf");
+
+            range_60s.add("jeans");
+            range_60s.add("long sleeved shirt");
+            range_60s.add("sneakers");
+            range_60s.add("jacket");
+
+            range_50s.add("pants");
+            range_50s.add("light coat");
+            range_50s.add("long sleeved shirt");
+            range_50s.add("jeans");
+            range_50s.add("hat");
+
+            range_40s.add("gloves");
+            range_40s.add("long sleeved shirt");
+            range_40s.add("light coat");
+            range_40s.add("boots");
+            range_40s.add("sunglasses");
+            range_40s.add("hat");
+            range_40s.add("thermal underwear");
+
+            just_above_freezing.add("jeans");
+            just_above_freezing.add("long sleeved shirt");
+            just_above_freezing.add("boots");
+            just_above_freezing.add("gloves");
+            just_above_freezing.add("coat");
+            just_above_freezing.add("hat");
+            just_above_freezing.add("thermal underwear");
+
+            below_freezing.add("pants");
+            below_freezing.add("long sleeved shirt");
+            below_freezing.add("heavy coat");
+            below_freezing.add("boots");
+            below_freezing.add("gloves");
+            below_freezing.add("scarf");
+            below_freezing.add("thermal underwear");
 
         }
         return sWeatherSource;
@@ -189,15 +226,28 @@ public class WeatherSource{
         int average_temp = DayForecast.sAverageTemp;
         String url = "";
         List<String>typeOfWeatherList;
-        if(average_temp >= 80) {
-            typeOfWeatherList = hot_weather_clothing;
+        if(average_temp >= 90) {
+            typeOfWeatherList = above_90;
         }
-        else if(average_temp >= 60 && average_temp < 80) {
-            typeOfWeatherList = mild_weather_clothing;
+        else if(average_temp >= 70 && average_temp < 90) {
+            typeOfWeatherList = low_70s_high_80s;
+        }
+        else if(average_temp >= 60 && average_temp < 70) {
+            typeOfWeatherList = range_60s;
+        }
+        else if(average_temp >= 50 && average_temp < 60) {
+            typeOfWeatherList = range_50s;
+        }
+        else if(average_temp >= 40 && average_temp < 50) {
+            typeOfWeatherList = range_40s;
+        }
+        else if(average_temp >= 32 && average_temp < 40) {
+            typeOfWeatherList = just_above_freezing;
         }
         else {
-            typeOfWeatherList = cold_weather_clothing;
+            typeOfWeatherList = below_freezing;
         }
+
         for(String clothing : typeOfWeatherList){
             //currently specified API request for men's clothing id
 
