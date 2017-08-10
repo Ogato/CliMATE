@@ -71,7 +71,7 @@
             <Button
 
                 android:radius="10dip"
-                android:background="@drawable/loginwall"
+                android:background="@drawable/login_button"
                 android:textColor="#fff"
                 android:text="sign Up"
                 android:id="@+id/submit"

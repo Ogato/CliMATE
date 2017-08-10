@@ -58,7 +58,7 @@
 
             <Button
                 android:radius="10dip"
-                android:background="@drawable/loginwall"
+                android:background="@drawable/login_button"
                 android:textColor="#fff"
                 android:text="Log in"
 
@@ -85,7 +85,7 @@
 
                 android:textColor="#fff"
                 android:text="Log in with Facebook"
-                android:background="@drawable/fbwall"
+                android:background="@drawable/fb_button"
                 android:layout_marginTop="20dp"
                 android:layout_gravity="center"
                 android:layout_width="300dp"
@@ -94,7 +94,7 @@
             <Button
 
                 android:radius="10dip"
-                android:background="@drawable/gmailwall"
+                android:background="@drawable/gmail_button"
                 android:textColor="#fff"
                 android:text="Log in with Gmail"
 
