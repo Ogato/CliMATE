@@ -14,12 +14,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 /**
  * Created by jogato on 8/7/17.
  */
 
 public class TransitionFragment extends Fragment {
+    private String mCaption;
+    private TextView loadingCaption;
 
 
     @Override
@@ -29,6 +32,8 @@ public class TransitionFragment extends Fragment {
             setEnterTransition(new Slide());
             setExitTransition(new Fade());
         }
+
+        mCaption = getArguments().getString("caption");
     }
 
     private LinearLayout mLinearLayout;
@@ -36,6 +41,8 @@ public class TransitionFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_transition, container, false);
+        loadingCaption = v.findViewById(R.id.loading_caption);
+        loadingCaption.setText(mCaption);
         return v;
     }
 

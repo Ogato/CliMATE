@@ -5,6 +5,7 @@ import android.content.DialogInterface;
 import android.content.res.Resources;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
@@ -157,9 +158,12 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
                             Bundle bundle = new Bundle();
                             bundle.putString(USER_CITY_KEY, user_query);
                             bundle.putString(USER_STATE_KEY, stateAbbrMap.get(mSelectedState));
+                            Bundle caption = new Bundle();
+                            caption.putString("caption", "Loading requested results");
                             Fragment fragment = new ResultFragment();
                             Fragment transition = new TransitionFragment();
                             fragment.setArguments(bundle);
+                            transition.setArguments(caption);
                             getSupportFragmentManager().beginTransaction().replace(R.id.container2, transition, "transition").commit();
                             getSupportFragmentManager().beginTransaction().replace(R.id.container, fragment, "result").commit();
                         }
@@ -223,8 +227,14 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
         @Override
         public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
             if(i == 0){
+                FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
                 Fragment fragment = new HistoryFragment();
-                getSupportFragmentManager().beginTransaction().replace(R.id.container, fragment  , "history").commit();
+                Fragment transition = new TransitionFragment();
+                Bundle caption = new Bundle();
+                caption.putString("caption", "Loading History");
+                transition.setArguments(caption);
+                ft.replace(R.id.container2, transition  , "transition");
+                ft.replace(R.id.container, fragment  , "history").commit();
                 mDrawer.closeDrawers();
             }
             else if(i == 1){

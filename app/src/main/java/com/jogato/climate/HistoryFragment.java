@@ -39,6 +39,8 @@ public class HistoryFragment extends Fragment {
             @Override
             public void onCityImageResults(List<String> cityImages) {
                 cityImageAdapter.setItems(cityImages);
+                TransitionFragment transition = (TransitionFragment) getActivity().getSupportFragmentManager().findFragmentByTag("transition");
+                getActivity().getSupportFragmentManager().beginTransaction().remove(transition).commit();
             }
         });
 
