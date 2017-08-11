@@ -2,7 +2,6 @@ package com.jogato.climate;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.os.CountDownTimer;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -10,7 +9,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -31,7 +29,6 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -40,7 +37,6 @@ import org.lucasr.twowayview.TwoWayView;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 
 
 public class ResultFragment extends Fragment {
@@ -79,6 +75,8 @@ public class ResultFragment extends Fragment {
         city_text = city;
         state_text = state;
 
+
+
         Url = "https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=959d473ba8cdd5d528f0231527d99591&text=Buildings in " + city_text + " " + state_text + "&format=json&nojsoncallback=1";
 
 
@@ -90,27 +88,49 @@ public class ResultFragment extends Fragment {
         titleT = (TextView) v.findViewById(R.id.titleText);
 
 
-
+        sendJsonRequest();
 
         new Runnable() {
             int updateInterval = 6000; //=one second
 
             @Override
             public void run() {
-
+                android.os.Process.setThreadPriority(android.os.Process.THREAD_PRIORITY_BACKGROUND);
                 if (imageCount != totalImages) {
+                    Log.i("ImageCount true state", imageCount + "");
+                    Log.i("totalImages true state", totalImages + "");
+
                     imageCount += 1;
                     sendJsonRequest();
                     String count = String.valueOf(imageCount);
                     Log.d("Harold", count);
                 } else {
-
+                    Log.i("ImageCount -RUN method", imageCount + "");
+                    Log.i("TotalImages -RUN method", totalImages + "");
+                    Log.i("Is image count 0", "Seems so");
                     imageCount = 0;
                 }
 
                 city_image.postDelayed(this, updateInterval);
             }
         }.run();
+//        for (int i = 0; i < 10; i++){
+//            if (imageCount != totalImages){
+//                Log.i("ImageCount", imageCount + "");
+//                Log.i("TotalImages", totalImages + "");
+//                imageCount += 1;
+//                sendJsonRequest();
+//            }else{
+//                if (i == 0){
+//                    sendJsonRequest();
+//                }
+//                Log.i("ImageCount -RUN method", imageCount + "");
+//                Log.i("TotalImages -RUN method", totalImages + "");
+//                imageCount = 0;
+//            }
+//        }
+
+
 
 
 
@@ -128,11 +148,11 @@ public class ResultFragment extends Fragment {
 
         mAdapter = new ForecastAdapter(getContext());
         mAdapter2 = new ClothesAdapter(getContext());
+
         mTwoWayView1.setAdapter(mAdapter);
         mTwoWayView2.setAdapter(mAdapter2);
 
 
-        sendJsonRequest();
 
 
         WeatherSource.getInstance(getContext()).getWeatherForecast(city, state, new WeatherSource.ForecastListener() {
@@ -172,19 +192,24 @@ public class ResultFragment extends Fragment {
                             databaseReference.child("users").child(User.getInstance().getmUserId())
                                     .child("history").setValue(histories);
                         }
-                        new CountDownTimer(2000, 1000) {
-                            @Override
-                            public void onTick(long l) {
-
-                            }
-
-                            @Override
-                            public void onFinish() {
-                                TransitionFragment transition = (TransitionFragment) getActivity().getSupportFragmentManager().findFragmentByTag("transition");
-                                getActivity().getSupportFragmentManager().beginTransaction().remove(transition).commit();
-                            }
-
-                        }.start();
+//                        new CountDownTimer(2000, 1000) {
+//                            @Override
+//                            public void onTick(long l) {
+//
+//                            }
+//
+//                            @Override
+//                            public void onFinish() {
+//                                if(getActivity() != null) {
+//                                    Fragment transition = getActivity().getSupportFragmentManager().findFragmentByTag("transition");
+//                                    getActivity().getSupportFragmentManager().beginTransaction().remove(transition).commit();
+//                                }
+//                                else{
+//                                    Log.i("INFO", "NULL");
+//                                }
+//                            }
+//
+//                        }.start();
                     }
 
                     @Override
@@ -209,7 +234,7 @@ public class ResultFragment extends Fragment {
                     JSONObject photos = response.getJSONObject("photos");
                     JSONArray photo = photos.getJSONArray("photo");
                     totalImages = photo.length();
-                    Log.d("total image", String.valueOf(totalImages));
+                    //Log.d("total image", String.valueOf(totalImages));
 
                     JSONObject firstObj = photo.getJSONObject(imageCount);
                     farm = firstObj.getString("farm");
@@ -259,6 +284,7 @@ public class ResultFragment extends Fragment {
 
         @Override
         public int getCount() {
+            Log.i("Count of the days", mDays.size() + "");
             return mDays.size();
         }
 
@@ -274,10 +300,10 @@ public class ResultFragment extends Fragment {
 
         @Override
         public View getView(int i, View view, ViewGroup viewGroup) {
-
+            Log.i("View check", "Get view is called");
             if (view == null) {
                 View dayView = mForecastListLayout.inflate(R.layout.list_week_forecast, viewGroup, false);
-                final DayForecast dayForecast = mDays.get(i);
+                DayForecast dayForecast = mDays.get(i);
 
                 TextView date = dayView.findViewById(R.id.date);
                 date.setText(dayForecast.getmDate());
@@ -292,7 +318,7 @@ public class ResultFragment extends Fragment {
                 return dayView;
             }
             else {
-                final DayForecast dayForecast = mDays.get(i);
+                DayForecast dayForecast = mDays.get(i);
 
                 TextView date = view.findViewById(R.id.date);
                 date.setText(dayForecast.getmDate());
@@ -325,6 +351,7 @@ public class ResultFragment extends Fragment {
 
         @Override
         public int getCount() {
+            Log.i("Count of the Images", mImages.size() + "");
             return mImages.size();
         }
 
@@ -343,7 +370,7 @@ public class ResultFragment extends Fragment {
 
             if (view == null) {
                 View dayView = mForecastListLayout.inflate(R.layout.list_week_clothing, viewGroup, false);
-                final String url = mImages.get(i);
+                String url = mImages.get(i);
 
 
                 NetworkImageView clothing_icon = dayView.findViewById(R.id.clothing_img);
@@ -352,7 +379,7 @@ public class ResultFragment extends Fragment {
                 return dayView;
             }
             else {
-                final String url = mImages.get(i);
+                String url = mImages.get(i);
                 NetworkImageView clothing_icon = view.findViewById(R.id.clothing_img);
                 ImageLoader imageLoader = WeatherSource.getInstance(getContext()).getImageLoader();
                 clothing_icon.setImageUrl(url, imageLoader);

@@ -2,7 +2,7 @@ package com.jogato.climate;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.util.LruCache;
 import android.widget.Toast;
 
@@ -13,13 +13,17 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
-
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -143,6 +147,7 @@ public class WeatherSource{
     }
 
     public void getWeatherForecast(final String city, final String state, final ForecastListener forecastListener, final HistoryListener historyListener){
+        Log.i("WeatherSource", city + " " + state);
         getZipCode(city, state, new ZipcodeListener() {
             @Override
             public void onZipCodeReceived(String zip) {
@@ -155,6 +160,7 @@ public class WeatherSource{
                             List<DayForecast> dayForecasts = new ArrayList<>();
                             try {
                                 JSONArray forecasts = response.getJSONObject("forecast").getJSONArray("forecastday");
+                                Log.i("Forecast check", "Requesting JSON forecasts");
                                 for (int i = 0; i < forecasts.length(); i++) {
                                     JSONObject day = forecasts.getJSONObject(i);
                                     DayForecast dayForecast = new DayForecast(day);
@@ -190,6 +196,7 @@ public class WeatherSource{
 
     public void getZipCode(String city, String state, final  ZipcodeListener zipcodeListener){
         String url = ZIPCODE_URL_KEY + city + "/" + state;
+        Log.i("ZIPCODE", url);
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
                 Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
             @Override
@@ -224,6 +231,7 @@ public class WeatherSource{
         int average_max_temp = DayForecast.sAverageMaxTemp;
         int average_min_temp = DayForecast.sAverageMinTemp;
         int average_temp = DayForecast.sAverageTemp;
+        Log.i("Average Temperature", average_temp + "");
         String url = "";
         List<String>typeOfWeatherList;
         if(average_temp >= 90) {
@@ -247,7 +255,7 @@ public class WeatherSource{
         else {
             typeOfWeatherList = below_freezing;
         }
-
+        Log.i("Type of Weather List", typeOfWeatherList.get(0));
         for(String clothing : typeOfWeatherList){
             //currently specified API request for men's clothing id
 
@@ -258,6 +266,7 @@ public class WeatherSource{
                 public void onResponse(JSONObject response) {
                     try {
                         JSONArray jsonArray = response.getJSONArray("items");
+                        Log.i("JSON response", jsonArray.toString());
                         if(jsonArray.length() > 0) {
                             mClothingURLs.add(jsonArray.getJSONObject((int)Math.floor(Math.random()*jsonArray.length())).getString("mediumImage"));
                         }
@@ -273,7 +282,7 @@ public class WeatherSource{
             }, new Response.ErrorListener(){
                 @Override
                 public void onErrorResponse(VolleyError error){
-                    Toast.makeText(mContext, "Unable to retrieve clothing suggestions at this time", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(mContext, "Unable to retrieve clothing suggestions at this time. Test Toast", Toast.LENGTH_SHORT).show();
                 }
             });
 
@@ -287,4 +296,26 @@ public class WeatherSource{
     public ImageLoader getImageLoader(){ return mImageLoader; }
     public List<String> getClothingImages(){ return mClothingURLs; }
 
+    public static void pushDatetoSchedule(String dayDate, String monthDate, String yearDate, String city, String state){
+
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        String userId = user.getUid();
+        String userName = user.getEmail();
+        DatabaseReference forecastRef = databaseReference.child("forecasts");
+        DatabaseReference pushRef = forecastRef.push();
+        Map<String, Object> dateMap = new HashMap<String, Object>();
+        dateMap.put("userId", userId);
+        dateMap.put("userName", userName);
+        dateMap.put("day", dayDate);
+        dateMap.put("month", monthDate);
+        dateMap.put("year", yearDate);
+        dateMap.put("city", city);
+        dateMap.put("state", state);
+        String completeDate = yearDate + "-" + monthDate + "-" + dayDate;
+        dateMap.put("Date", completeDate);
+        Log.i("PushAS", userId);
+        pushRef.setValue(dateMap);
+
+    }
 }

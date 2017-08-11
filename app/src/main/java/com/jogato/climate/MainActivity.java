@@ -1,13 +1,16 @@
 package com.jogato.climate;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.res.Resources;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -17,11 +20,11 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.Toast;
-
 
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
@@ -30,8 +33,10 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.TimeZone;
 
 public class MainActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener {
     private static final String USER_CITY_KEY = "city";
@@ -50,6 +55,9 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+
+
+
         mOptions = getResources().getStringArray(R.array.navigation_options);
         mDrawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawerList = (ListView) findViewById(R.id.left_drawer);
@@ -67,7 +75,32 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
                 .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
                 .build();
 
+        String city = getIntent().getStringExtra(USER_CITY_KEY);
+        String state = getIntent().getStringExtra(USER_STATE_KEY);
+
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+
+        if (city != null){
+
+            Bundle bundle = new Bundle();
+            bundle.putString(USER_CITY_KEY, city);
+            bundle.putString(USER_STATE_KEY, state);
+
+            Log.i("CityCheck", city + " " + state);
+
+            Fragment fragment = new ResultFragment();
+            //Fragment transition = new TransitionFragment();
+            fragment.setArguments(bundle);
+            //fragmentTransaction.replace(R.id.container2, transition, "transition");
+            Log.i("CLIMATE", "stopped");
+            getSupportFragmentManager().beginTransaction().replace(R.id.container, fragment).commit();
+
+        }
+
     }
+
+
 
 
     @Override
@@ -90,6 +123,13 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
         View view = LayoutInflater.from(this).inflate(R.layout.dialog_edit_text, null);
         final EditText editText = view.findViewById(R.id.user_query);
         final Spinner stateSpinner = view.findViewById(R.id.states);
+
+        final DatePicker datePicker = view.findViewById(R.id.date_picker);
+        Calendar calendar = Calendar.getInstance(TimeZone.getDefault());
+        final String currentYear = calendar.get(Calendar.YEAR) + "";
+        final String currentMonth = calendar.get(Calendar.MONTH) + "";
+        final String currentDay = calendar.get(Calendar.DATE) + "";
+
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
                 R.array.state_array, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -117,11 +157,16 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
                             Bundle bundle = new Bundle();
                             bundle.putString(USER_CITY_KEY, user_query);
                             bundle.putString(USER_STATE_KEY, stateAbbrMap.get(mSelectedState));
-                            Fragment fragment = new ResultFragment();
-                            Fragment transition = new TransitionFragment();
-                            fragment.setArguments(bundle);
-                            getSupportFragmentManager().beginTransaction().replace(R.id.container2, transition, "transition").commit();
-                            getSupportFragmentManager().beginTransaction().replace(R.id.container, fragment, "result").commit();
+
+                            if (validRequestDate(datePicker.getDayOfMonth()+"", datePicker.getMonth()+"", datePicker.getYear()+"", currentDay, currentMonth, currentYear)) {
+                                Fragment fragment = new ResultFragment();
+                                Fragment transition = new TransitionFragment();
+                                fragment.setArguments(bundle);
+                                getSupportFragmentManager().beginTransaction().replace(R.id.container2, transition, "transition").commit();
+                                getSupportFragmentManager().beginTransaction().replace(R.id.container, fragment, "result").commit();
+                            }else{
+                                WeatherSource.pushDatetoSchedule(datePicker.getDayOfMonth()+"", datePicker.getMonth()+"", datePicker.getYear()+"", user_query, stateAbbrMap.get(mSelectedState));
+                            }
                         }
                         else{
                             Toast.makeText(MainActivity.this, "Please input a city and select a state", Toast.LENGTH_LONG).show();
@@ -134,6 +179,23 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
         alertDialog.show();
 
         return true;
+    }
+
+    public boolean validRequestDate(String dayDate,String monthDate,String yearDate, String currentDay, String currentMonth, String currentYear){
+
+        if (yearDate.equals(currentYear)){
+            if (monthDate.equals(currentMonth)){
+                if (Integer.parseInt(dayDate)  <= Integer.parseInt(currentDay) + 3){
+                    return true;
+                }else{
+                    return false;
+                }
+            }else{
+                return false;
+            }
+        }else{
+            return false;
+        }
     }
 
     public static GoogleApiClient getmGoogleApiClient(){
@@ -200,6 +262,8 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
     @Override
     protected void onStart() {
         super.onStart();
+        Intent i = new Intent(this, NotificationService.class);
+        stopService(i);
         FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
         if(currentUser == null){
             getSupportFragmentManager().beginTransaction().replace(R.id.container, new LoginFragment(), "login").commit();
@@ -224,9 +288,19 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
                     }
                 }
             });
+
         }
+
+
     }
 
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        Intent i = new Intent(this, NotificationService.class);
+        startService(i);
+    }
 
 
 
