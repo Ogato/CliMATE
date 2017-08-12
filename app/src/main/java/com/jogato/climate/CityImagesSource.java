@@ -1,9 +1,7 @@
 package com.jogato.climate;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.drawable.Drawable;
-import android.util.Log;
+
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -15,39 +13,38 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
-import com.squareup.picasso.Picasso;
-import com.squareup.picasso.Target;
+
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by jogato on 8/10/17.
- */
 
 public class CityImagesSource {
     private static CityImagesSource sCityImage;
     private Context mContext;
     private RequestQueue mRequestQueue;
-    private List<String>cityImages;
-    private String farm, serverid, photoid, secret, title;
-    private List<String>cityUrlList;
-    private String[] city_state;
+    private List<String> mCityImages;
+    private String mFarm, mServerId, mPhotoId, mSecret, mTitle;
+    private List<String> mCityUrlList;
+    private String[] mCityState;
 
+    //Public interface for other classes to receive image urls from the flikr api
     public interface CityImageListener{
         void onCityImageResults(List<String>cityImageURL);
     }
 
+    //Internal interface to listen for when the database entries have been received
     private interface UserHistoryListener{
         void onHistoryReceived(List<String>cityUrl, String[]cityState);
     }
 
+    //Only create one instance of this class
     public static CityImagesSource getInstance(Context context){
         if(sCityImage == null){
             sCityImage = new CityImagesSource(context);
@@ -55,113 +52,108 @@ public class CityImagesSource {
         return sCityImage;
     }
 
-    CityImagesSource(Context context){
-        cityUrlList = new ArrayList<>();
+    //Internal constructor
+    private CityImagesSource(Context context){
+        mCityUrlList = new ArrayList<>();
         mContext = context;
         mRequestQueue = Volley.newRequestQueue(mContext);
     }
 
+    //Method to receive images from flikr api based on current user's history
     public void getCityImages(final CityImageListener cityImageListener){
-        cityImages = new ArrayList<>();
+        mCityImages = new ArrayList<>();
         getUserHistory(new UserHistoryListener() {
             @Override
             public void onHistoryReceived(List<String> cityUrl, final String[] cityState) {
-                final List<Bitmap> img = new ArrayList<Bitmap>();
-                //final String url = cityUrl.get(0);
-                for (String url : cityUrl) {
-                    JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
-                        @Override
-                        public void onResponse(JSONObject response) {
 
-                            try {
-                                //  name = response.getString("photos");
-                                JSONObject photos = response.getJSONObject("photos");
-                                JSONArray photo = photos.getJSONArray("photo");
+                //Send null result if any errors have occured
+                if (cityUrl == null || cityState == null) {
+                    cityImageListener.onCityImageResults(null);
+                } else {
 
-                                JSONObject firstObj = photo.getJSONObject(0);
-                                farm = firstObj.getString("farm");
-                                serverid = firstObj.getString("server");
-                                photoid = firstObj.getString("id");
-                                secret = firstObj.getString("secret");
-                                title = firstObj.getString("title");
+                    //Must get 1 photo for every city-state pair in current user's history
+                    for (String url : cityUrl) {
+                        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
+                            @Override
+                            public void onResponse(JSONObject response) {
 
-                                String img_url = "https://farm" + farm + ".staticflickr.com/" + serverid + "/" + photoid + "_" + secret + "_c.jpg";
-                                cityImages.add(img_url);
-//                                if (mContext != null) {
-//                                    try {
-//                                        Picasso.with(mContext).load(img_url).into(new Target() {
-//                                            @Override
-//                                            public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
-//                                                cityImages.add(bitmap);
-//                                                Log.i("JO_INFO", cityImages.size() + "last");
-//                                            }
-//
-//                                            @Override
-//                                            public void onBitmapFailed(Drawable errorDrawable) {
-//
-//                                            }
-//
-//                                            @Override
-//                                            public void onPrepareLoad(Drawable placeHolderDrawable) {
-//
-//                                            }
-//                                        });
-//
-//                                    } catch (Exception e) {
-//                                        e.printStackTrace();
-//                                    }
-//                                }
+                                try {
+                                    //Grab a random photo for each URL passed
+                                    JSONObject photos = response.getJSONObject("photos");
+                                    JSONArray photo = photos.getJSONArray("photo");
+                                    JSONObject firstObj = photo.getJSONObject((int) (Math.random() * photo.length()));
 
-                            } catch (JSONException e) {
-                                e.printStackTrace();
+                                    mFarm = firstObj.getString("farm");
+                                    mServerId = firstObj.getString("server");
+                                    mPhotoId = firstObj.getString("id");
+                                    mSecret = firstObj.getString("secret");
+                                    mTitle = firstObj.getString("title");
+
+                                    //Compile the image urls for processing in the fragment
+                                    String img_url = "https://farm" + mFarm + ".staticflickr.com/" + mServerId + "/" + mPhotoId + "_" + mSecret + "_c.jpg";
+                                    mCityImages.add(img_url);
+
+
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
                             }
-                        }
-                    }, new Response.ErrorListener() {
-                        @Override
-                        public void onErrorResponse(VolleyError error) {
+                        }, new Response.ErrorListener() {
+                            @Override
+                            public void onErrorResponse(VolleyError error) {
+                                error.printStackTrace();
+                                cityImageListener.onCityImageResults(null);
+                            }
+                        });
 
-                        }
-                    });
-                    //cityImageListener.onCityImageResults(img);
-                    mRequestQueue.add(jsonObjectRequest);
+                        mRequestQueue.add(jsonObjectRequest);
+                    }
                 }
             }
         });
 
 
+        //Only send image URLS when all image's from history have been processed and clear the lists
         mRequestQueue.addRequestFinishedListener(new RequestQueue.RequestFinishedListener<Object>() {
             @Override
             public void onRequestFinished(Request<Object> request) {
-                Log.i("JO_INFO", "DONE:"+request.getUrl());
-                if(cityImages.size() >= cityUrlList.size()){
-                    cityImageListener.onCityImageResults(cityImages);
+                if(mCityImages.size() >= mCityUrlList.size()){
+                    cityImageListener.onCityImageResults(mCityImages);
+                    mCityImages.clear();
+                    mCityUrlList.clear();
+                    mRequestQueue.removeRequestFinishedListener(this);
                 }
             }
         });
-
-
-
     }
 
+
+    //Gets the user's last 10 search's from history entry
     private void getUserHistory(final UserHistoryListener userHistoryListener){
         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
-        final DatabaseReference userHistory = databaseReference.child("users").child(User.getInstance().getmUserId()).child("history");
+        final Query userHistory = databaseReference.child("users").child(User.getInstance().getmUserId()).child("history").limitToLast(10);
         userHistory.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                Log.i("JO_INFO", "LISTENING");
                 if(dataSnapshot.exists()){
                     for(DataSnapshot s : dataSnapshot.getChildren()){
-                        city_state = s.getKey().split(",");
-                        cityUrlList.add("https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=959d473ba8cdd5d528f0231527d99591&text=Buildings in " + city_state[0] + " " + city_state[1] + "&format=json&nojsoncallback=1");
+
+                        // 'city,ST' -> [city, ST]
+                        mCityState = s.getKey().split(",");
+                        mCityUrlList.add("https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=959d473ba8cdd5d528f0231527d99591&text=Buildings in " + mCityState[0] + " " + mCityState[1] + "&format=json&nojsoncallback=1");
                     }
-                    userHistoryListener.onHistoryReceived(cityUrlList, city_state);
+
+                    //Send the database entries to the public getCityImages method
+                    userHistoryListener.onHistoryReceived(mCityUrlList, mCityState);
+                }
+                else{
+                    userHistoryListener.onHistoryReceived(null, null);
                 }
             }
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-
+                userHistoryListener.onHistoryReceived(null, null);
             }
         });
     }

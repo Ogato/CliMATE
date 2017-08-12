@@ -6,97 +6,63 @@
     android:layout_height="fill_parent"
     android:id="@+id/scrollView">
 
-<LinearLayout
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    xmlns:tool="http://schemas.android.com/tools"
-    android:orientation="vertical"
-    android:gravity="center">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center">
+
+                <Button
+                    android:id="@+id/imageView1"
+                    android:layout_width="match_parent"
+                    android:layout_height="200dp"
+                    android:background="@drawable/sanfran"
+                    android:text="@string/san_francisco_ca"
+                    android:textColor="#fff"
+                    android:layout_marginBottom="3dp"
+                    android:textSize="15sp" />
+
+                <Button
+                    android:id="@+id/imageView3"
+                    android:layout_width="match_parent"
+                    android:layout_marginBottom="3dp"
+                    android:layout_height="240dp"
+                    android:background="@drawable/ny_img"
+                    android:text="@string/albany_ny"
+                    android:textColor="#fff"
+                    android:textSize="15sp"/>
+
+                <Button
+                    android:id="@+id/imageView4"
+                    android:layout_width="match_parent"
+                    android:layout_marginBottom="3dp"
+                    android:layout_height="240dp"
+                    android:background="@drawable/miami_img"
+                    android:text="@string/miami_fl"
+                    android:textColor="#fff"
+                    android:textSize="15sp"/>
+
+                <Button
+                    android:id="@+id/imageView2"
+                    android:layout_width="match_parent"
+                    android:layout_height="240dp"
+                    android:background="@drawable/dc_img"
+                    android:layout_marginBottom="3dp"
+                    android:text="@string/washington_dc"
+                    android:textColor="#fff"
+                    android:textSize="15sp"/>
 
 
-        <Button
-            android:id="@+id/imageView1"
-            android:layout_width="match_parent"
-            android:layout_height="200dp"
-            android:background="@drawable/sanfran"
-            android:text="San Francisco CA"
-            android:textColor="#fff"
-            android:layout_marginBottom="3dp"
-            android:textSize="15dp" />
+                <Button
+                    android:id="@+id/imageView5"
+                    android:layout_width="match_parent"
+                    android:layout_marginBottom="3dp"
+                    android:layout_height="240dp"
+                    android:background="@drawable/austin_img"
+                    android:text="@string/austin_tx"
+                    android:textColor="#fff"
+                    android:textSize="15sp"/>
 
-        <Button
-            android:id="@+id/imageView3"
-            android:layout_width="match_parent"
-            android:layout_marginBottom="3dp"
-            android:layout_height="240dp"
-            android:background="@drawable/ny_img"
-            android:text="Albany NY"
-            android:textColor="#fff"
-            android:textSize="15dp"/>
-
-        <Button
-            android:id="@+id/imageView4"
-            android:layout_width="match_parent"
-            android:layout_marginBottom="3dp"
-            android:layout_height="240dp"
-            android:background="@drawable/miami_img"
-            android:text="Miami FL"
-            android:textColor="#fff"
-            android:textSize="15dp"/>
-        
-        <Button
-            android:id="@+id/imageView2"
-            android:layout_width="match_parent"
-            android:layout_height="240dp"
-            android:background="@drawable/dc_img"
-            android:layout_marginBottom="3dp"
-            android:text="Washington DC"
-            android:textColor="#fff"
-            android:textSize="15dp"/>
-
-
-        <Button
-            android:id="@+id/imageView5"
-            android:layout_width="match_parent"
-            android:layout_marginBottom="3dp"
-            android:layout_height="240dp"
-            android:background="@drawable/austin_img"
-            android:text="Austin TX"
-            android:textColor="#fff"
-            android:textSize="15dp"/>
-
-        <Button
-            android:layout_width="match_parent"
-            android:layout_height="200dp"
-            android:layout_marginBottom="3dp"
-            android:id="@+id/history1"
-            android:textColor="#ffffff"
-            android:visibility="gone"/>
-        <Button
-            android:layout_width="match_parent"
-            android:layout_height="200dp"
-            android:layout_marginBottom="3dp"
-            android:id="@+id/history2"
-            android:visibility="gone"/>
-        <Button
-            android:layout_width="match_parent"
-            android:layout_height="200dp"
-            android:layout_marginBottom="3dp"
-            android:id="@+id/history3"
-            android:visibility="gone"/>
-        <Button
-            android:layout_width="match_parent"
-            android:layout_height="200dp"
-            android:layout_marginBottom="3dp"
-            android:id="@+id/history4"
-            android:visibility="gone"/>
-        <Button
-            android:layout_width="match_parent"
-            android:layout_height="200dp"
-            android:layout_marginBottom="3dp"
-            android:id="@+id/history5"
-            android:visibility="gone"/>
-
-</LinearLayout>
+        </LinearLayout>
 
 </ScrollView>

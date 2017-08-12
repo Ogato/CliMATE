@@ -15,7 +15,8 @@
             android:layout_marginTop="50dp"
             android:layout_gravity = "center"
             android:layout_width="80dp"
-            android:layout_height="125dp" />
+            android:layout_height="125dp"
+            android:contentDescription="@string/logo" />
 
 
         <LinearLayout
@@ -32,13 +33,13 @@
                 android:textColorHint="#fff"
                 android:layout_marginTop="50dp"
                 android:layout_gravity="center"
-                android:hint="Email"
+                android:hint="@string/email"
                 android:padding="10dp"
                 android:layout_width="300dp"
                 android:layout_height="wrap_content"
                 android:maxLines="1"
                 android:inputType="textEmailAddress"
-                android:id="@+id/email"/>
+                android:id="@+id/login_email"/>
 
             <EditText
                 android:lineSpacingMultiplier="3.2"
@@ -49,55 +50,52 @@
                 android:textColorHint="#fff"
                 android:layout_marginTop="10dp"
                 android:layout_gravity="center"
-                android:hint="Password"
+                android:hint="@string/password"
                 android:padding="10dp"
                 android:layout_width="300dp"
                 android:layout_height="wrap_content"
-                android:id="@+id/password"
+                android:id="@+id/login_password"
                 android:maxLines="1"/>
 
             <Button
                 android:radius="10dip"
                 android:background="@drawable/login_button"
                 android:textColor="#fff"
-                android:text="Log in"
-
+                android:text="@string/log_in"
                 android:layout_marginTop="20dp"
                 android:layout_gravity="center"
                 android:layout_width="130dp"
                 android:layout_height="40dp"
-                android:id="@+id/login"
-                />
+                android:id="@+id/login_button" />
 
 
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="OR"
+                android:text="@string/or"
                 android:textColor="#fff"
                 android:layout_gravity="center"
                 android:layout_marginTop="20dp"/>
 
-            <Button
+            <com.facebook.login.widget.LoginButton
 
                 android:radius="10dip"
-
                 android:textColor="#fff"
-                android:text="Log in with Facebook"
+                android:text="@string/log_in_with_facebook"
                 android:background="@drawable/fb_button"
                 android:layout_marginTop="20dp"
                 android:layout_gravity="center"
                 android:layout_width="300dp"
-                android:layout_height="40dp" />
+                android:layout_height="40dp"
+                android:id="@+id/facebook_button"/>
 
             <Button
 
                 android:radius="10dip"
                 android:background="@drawable/gmail_button"
                 android:textColor="#fff"
-                android:text="Log in with Gmail"
-
+                android:text="@string/log_in_with_gmail"
                 android:layout_marginTop="10dp"
                 android:layout_gravity="center"
                 android:layout_width="300dp"
@@ -108,17 +106,13 @@
                 android:radius="10dip"
                 android:background="@android:color/transparent"
                 android:textColor="#fff"
-                android:text="Create a new account"
+                android:text="@string/create_a_new_account"
                 android:layout_marginTop="10dp"
                 android:layout_gravity="center"
                 android:layout_width="300dp"
                 android:layout_height="wrap_content"
-                android:id="@+id/sign_up"
-                />
+                android:id="@+id/sign_up" />
 
         </LinearLayout>
     </LinearLayout>
-
-
-
 </LinearLayout>

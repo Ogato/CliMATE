@@ -1,6 +1,5 @@
 package com.jogato.climate;
 
-import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -47,9 +46,9 @@ public class SignUpFragment extends Fragment {
         if(((MainActivity)getActivity()).getSupportActionBar() != null){
             ((MainActivity)getActivity()).getSupportActionBar().hide();
         }
-        mEmail = v.findViewById(R.id.signup_email);
-        mPassword =  v.findViewById(R.id.signup_pw);
-        mSubmit =  v.findViewById(R.id.submit);
+        mEmail = (EditText) v.findViewById(R.id.signup_email);
+        mPassword = (EditText) v.findViewById(R.id.signup_pw);
+        mSubmit = (Button) v.findViewById(R.id.submit);
         mSubmit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -87,7 +86,7 @@ public class SignUpFragment extends Fragment {
                         }
                         else{
                             Toast.makeText(getActivity(), "Account created, Please sign in",Toast.LENGTH_SHORT).show();
-                            getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.container, new LoginFragment(), "login").commit();
+                            getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new LoginFragment(), "login").commit();
                             getActivity().getSupportFragmentManager().beginTransaction().remove(SignUpFragment.this).commit();
                         }
 

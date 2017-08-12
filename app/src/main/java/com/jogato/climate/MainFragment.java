@@ -11,26 +11,13 @@ import android.view.ViewGroup;
 
 public class MainFragment extends Fragment {
 
-
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-//            setEnterTransition(new Fade());
-//            setExitTransition(new Fade());
-//        }
-    }
-
-
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         final View v = inflater.inflate(R.layout.fragment_main, container, false);
-        if(getActivity().getActionBar() != null){
-            getActivity().getActionBar().show();
+        if(getActivity() != null && !((MainActivity)getActivity()).getSupportActionBar().isShowing()){
+            ((MainActivity)getActivity()).getSupportActionBar().show();
         }
-
-
 
         return v;
     }

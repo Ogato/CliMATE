@@ -1,6 +1,5 @@
 package com.jogato.climate;
 
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.res.Resources;
 import android.support.annotation.NonNull;
@@ -11,8 +10,6 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.AttributeSet;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -21,12 +18,15 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
-
+import com.facebook.FacebookSdk;
+import com.facebook.appevents.AppEventsLogger;
+import com.facebook.login.LoginManager;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.ConnectionResult;
@@ -43,26 +43,26 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
     private static Map<String, String> stateAbbrMap;
     public static ListView mDrawerList;
     private String[] mOptions;
-    public static    DrawerLayout mDrawer;
+    public static  DrawerLayout mDrawer;
     private ActionBarDrawerToggle mDrawerToggle;
-    private String mActivityTitle;
     private Fragment mMainFragment;
     private String mSelectedState;
     private static GoogleApiClient mGoogleApiClient;
+    private DatePicker mDatePicker;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        FacebookSdk.sdkInitialize(getApplicationContext());
+        AppEventsLogger.activateApp(this);
         setContentView(R.layout.activity_main);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
 
-
         mOptions = getResources().getStringArray(R.array.navigation_options);
         mDrawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        mActivityTitle = getTitle().toString();
         mDrawerList = (ListView) findViewById(R.id.left_drawer);
         mDrawerList.setAdapter(new ArrayAdapter<String>(this, R.layout.list_option_items, mOptions));
         mDrawerList.setOnItemClickListener(new DrawerOptionClickListener());
@@ -82,7 +82,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
 
         FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
         if(currentUser == null){
-            getSupportFragmentManager().beginTransaction().replace(R.id.container, new LoginFragment(), "login").commit();
+            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new LoginFragment(), "login").commit();
         }
         else {
             User.getInstance().setmUserEmail(currentUser.getEmail());
@@ -93,9 +93,9 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
                 public void onHistoryAndPreferencesResults(Boolean setPref) {
                     if (!setPref) {
                         Fragment fragment = new AccountFragment();
-                        getSupportFragmentManager().beginTransaction().replace(R.id.container, fragment, "account").addToBackStack("account").commit();
+                        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, fragment, "account").addToBackStack("account").commit();
                     } else if (setPref) {
-                        getSupportFragmentManager().beginTransaction().replace(R.id.container, new MainFragment(), "main").commit();
+                        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new MainFragment(), "main").commit();
 
                     } else {
                         Toast.makeText(MainActivity.this, "Error reading from database", Toast.LENGTH_SHORT).show();
@@ -123,18 +123,19 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        View view = LayoutInflater.from(this).inflate(R.layout.dialog_edit_text, null);
+        final EditText editText = (EditText) view.findViewById(R.id.user_query);
+        final Spinner stateSpinner = (Spinner) view.findViewById(R.id.states);
+        mDatePicker = (DatePicker) view.findViewById(R.id.date_picker);
+        mDatePicker.setMinDate(System.currentTimeMillis() - 1000);
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.state_array, android.R.layout.simple_spinner_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        stateSpinner.setAdapter(adapter);
 
         if (mDrawerToggle.onOptionsItemSelected(item)) {
             return true;
         }
 
-        View view = LayoutInflater.from(this).inflate(R.layout.dialog_edit_text, null);
-        final EditText editText = view.findViewById(R.id.user_query);
-        final Spinner stateSpinner = view.findViewById(R.id.states);
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
-                R.array.state_array, android.R.layout.simple_spinner_item);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        stateSpinner.setAdapter(adapter);
         stateSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
@@ -164,8 +165,8 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
                             Fragment transition = new TransitionFragment();
                             fragment.setArguments(bundle);
                             transition.setArguments(caption);
-                            getSupportFragmentManager().beginTransaction().replace(R.id.container2, transition, "transition").commit();
-                            getSupportFragmentManager().beginTransaction().replace(R.id.container, fragment, "result").commit();
+                            getSupportFragmentManager().beginTransaction().replace(R.id.transition_container, transition, "transition").commit();
+                            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, fragment, "result").commit();
                         }
                         else{
                             Toast.makeText(MainActivity.this, "Please input a city and select a state", Toast.LENGTH_LONG).show();
@@ -206,12 +207,12 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
                 return true;
             }
             else if(signUpFragment != null && signUpFragment.isVisible()){
-                getSupportFragmentManager().beginTransaction().replace(R.id.container, new LoginFragment(), "login").commit();
+                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new LoginFragment(), "login").commit();
                 return true;
             }
             else{
                 mMainFragment = new MainFragment();
-                getSupportFragmentManager().beginTransaction().replace(R.id.container, mMainFragment, "main").commit();
+                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, mMainFragment, "main").commit();
                 return true;
             }
         }
@@ -223,6 +224,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
 
     }
 
+
     private class DrawerOptionClickListener implements ListView.OnItemClickListener{
         @Override
         public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
@@ -233,24 +235,26 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
                 Bundle caption = new Bundle();
                 caption.putString("caption", "Loading History");
                 transition.setArguments(caption);
-                ft.replace(R.id.container2, transition  , "transition");
-                ft.replace(R.id.container, fragment  , "history").commit();
+                ft.replace(R.id.transition_container, transition  , "transition");
+                ft.replace(R.id.fragment_container, fragment  , "history").commit();
                 mDrawer.closeDrawers();
             }
             else if(i == 1){
                 Fragment fragment = new AccountFragment();
-                getSupportFragmentManager().beginTransaction().replace(R.id.container, fragment).commit();
+                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, fragment).commit();
                 mDrawer.closeDrawers();
             }
             else if(i == 2){
                 FirebaseAuth.getInstance().signOut();
+                LoginManager.getInstance().logOut();
                 Toast.makeText(MainActivity.this,"Log out successful",Toast.LENGTH_SHORT).show();
-                getSupportFragmentManager().beginTransaction().replace(R.id.container, new LoginFragment(), "login").commit();
+                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new LoginFragment(), "login").commit();
                 mDrawer.closeDrawers();
                 mDrawer.setEnabled(false);
             }
         }
     }
+
 
     private void setupDrawer() {
         mDrawerToggle = new ActionBarDrawerToggle(this, mDrawer, R.string.drawer_open, R.string.drawer_close){

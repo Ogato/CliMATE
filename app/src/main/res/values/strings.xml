@@ -16,9 +16,35 @@
     <string name="permission_rationale">"Contacts permissions are needed for providing email
         completions."
     </string>
+    <string name="facebook_app_id">342363109531781</string>
+    <string name="fb_login_protocol_scheme">fb342363109531781</string>
     <string name="auth_failed">AUTHENTICATION FAILED</string>
+    <string name="city">City</string>
+    <string name="email">Email</string>
+    <string name="name_optional">Name (Optional)</string>
+    <string name="clothing_preference_required">Clothing Preference (Required):</string>
+    <string name="male">Male</string>
+    <string name="female">Female</string>
+    <string name="no_preference">No Preference</string>
+    <string name="save">Save</string>
+    <string name="logo">Logo</string>
+    <string name="password">Password</string>
+    <string name="log_in">Log in</string>
+    <string name="or">OR</string>
+    <string name="log_in_with_facebook">Log in with Facebook</string>
+    <string name="log_in_with_gmail">Log in with Gmail</string>
+    <string name="create_a_new_account">Create a new account</string>
+    <string name="san_francisco_ca">San Francisco CA</string>
+    <string name="albany_ny">Albany NY</string>
+    <string name="miami_fl">Miami FL</string>
+    <string name="washington_dc">Washington DC</string>
+    <string name="austin_tx">Austin TX</string>
+    <string name="city_slide_show">City Slide Show</string>
+    <string name="getting_images">Getting Images …</string>
+    <string name="sign_up">sign Up</string>
+    <string name="city_pics">City Pics</string>
 
-<string-array name="state_array">
+    <string-array name="state_array">
     <item>States</item>
     <item>Alabama</item>
     <item>Alaska</item>
@@ -73,7 +99,7 @@
     <item>Wyoming</item>
 </string-array>
 <string-array name="state_abbr_array">
-    <item></item>
+    <item>""</item>
     <item>AL</item>
     <item>AK</item>
     <item>AZ</item>

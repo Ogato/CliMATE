@@ -10,7 +10,7 @@
         android:layout_width="300dp"
         android:layout_height="wrap_content"
         android:inputType="textEmailAddress"
-        android:hint="Email"
+        android:hint="@string/email"
         android:textColor="#fff"
         android:textColorHint="#fff"
         android:backgroundTint="#fff"
@@ -25,14 +25,14 @@
         android:textColor="#fff"
         android:textColorHint="#fff"
         android:backgroundTint="#fff"
-        android:hint="Name (Optional)"
+        android:hint="@string/name_optional"
         android:textAlignment="center"
         />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Clothing Preference (Required):"
+        android:text="@string/clothing_preference_required"
         android:textColor="#fff"
         />
 
@@ -45,7 +45,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/user_male"
-            android:text="Male"
+            android:text="@string/male"
             android:textColor="#fff"
 
             />
@@ -54,15 +54,15 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/user_female"
-            android:text="Female"
+            android:text="@string/female"
             android:textColor="#fff"
             />
 
         <RadioButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/user_none"
-            android:text="No Preference"
+            android:id="@+id/user_no_preference"
+            android:text="@string/no_preference"
             android:textColor="#fff"
             />
 
@@ -71,11 +71,9 @@
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Save"
+        android:text="@string/save"
         android:id="@+id/user_save_info"
         android:textColor="#fff"
-        android:background="@color/themecolor"
-
-        />
+        android:background="@color/themecolor" />
 
 </LinearLayout>

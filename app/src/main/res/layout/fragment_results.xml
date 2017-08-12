@@ -1,101 +1,79 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent" >
 
-<LinearLayout
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:background="#fff"
-    android:gravity="center"
-    android:weightSum="1">
-
-
-    <FrameLayout android:layout_width="match_parent"
-        android:layout_height="300dp"
-        android:layout_gravity="center_horizontal"
-        xmlns:android="http://schemas.android.com/apk/res/android">
-
-        <ProgressBar
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:visibility="invisible"
-            android:id="@+id/weather_loading"/>
-
-        <ImageView
-            android:id="@+id/photo_img"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:src="@drawable/ny_img"
-            android:scaleType="centerCrop"/>
-
-        <TextView
-            android:id="@+id/cityText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="center_horizontal"
-            android:layout_gravity="center"
-            android:text="Getting Images ..."
-            android:textColor="#fff"
-            android:textSize="20dp"/>
-        <TextView
-            android:layout_marginTop="40dp"
-            android:id="@+id/titleText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="center_horizontal"
-            android:layout_gravity="center"
-
-            android:textColor="#fff"
-            android:textSize="15dp"
-
-            />
-
-    </FrameLayout>
-
-
     <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="400dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:orientation="vertical"
-       >
+        android:background="#fff"
+        android:gravity="center"
+        android:weightSum="1">
 
 
+        <FrameLayout android:layout_width="match_parent"
+            android:layout_height="300dp"
+            android:layout_gravity="center_horizontal">
 
-        <org.lucasr.twowayview.TwoWayView
-            android:id="@+id/temporary"
-            style="@style/TwoWayView"
+            <ImageView
+                android:id="@+id/photo_img"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="centerCrop"
+                android:contentDescription="@string/city_slide_show"/>
+
+            <TextView
+                android:id="@+id/cityText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:layout_gravity="center"
+                android:text="@string/getting_images"
+                android:textColor="#fff"
+                android:textSize="20sp"/>
+
+            <TextView
+                android:layout_marginTop="40dp"
+                android:id="@+id/titleText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:layout_gravity="center"
+                android:textColor="#fff"
+                android:textSize="15sp" />
+
+        </FrameLayout>
+
+        <LinearLayout
             android:layout_width="wrap_content"
-            android:layout_height="0dp"
-            android:layout_weight="0.4"
-            android:drawSelectorOnTop="false"/>
+            android:layout_height="400dp"
+            android:orientation="vertical">
+
+            <org.lucasr.twowayview.TwoWayView
+                android:id="@+id/temporary"
+                style="@style/TwoWayView"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:layout_weight="0.4"
+                android:drawSelectorOnTop="false"/>
 
 
-        <org.lucasr.twowayview.TwoWayView
-            xmlns:android="http://schemas.android.com/apk/res/android"
-            android:id="@+id/temporary1"
-            style="@style/TwoWayView"
-            android:layout_width="wrap_content"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:drawSelectorOnTop="false"/>
+            <org.lucasr.twowayview.TwoWayView
+                xmlns:android="http://schemas.android.com/apk/res/android"
+                android:id="@+id/temporary1"
+                style="@style/TwoWayView"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:drawSelectorOnTop="false"/>
+
+        </LinearLayout>
 
     </LinearLayout>
-
-    <ProgressBar
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:visibility="invisible"
-        android:id="@+id/clothing_loading"/>
-
-
-
-</LinearLayout>
 
 
 </ScrollView>

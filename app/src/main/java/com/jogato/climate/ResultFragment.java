@@ -10,7 +10,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -28,7 +27,6 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
-import com.google.firebase.database.ServerValue;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
@@ -41,7 +39,6 @@ import org.lucasr.twowayview.TwoWayView;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 
 
 public class ResultFragment extends Fragment {
@@ -52,10 +49,6 @@ public class ResultFragment extends Fragment {
     private ClothesAdapter mAdapter2;
     private TwoWayView mTwoWayView1;
     private TwoWayView mTwoWayView2;
-    private ProgressBar mWeatherProgressBar;
-    private ProgressBar mClothingProgressBar;
-    private List<String>clothingURLs;
-
 
 //Variables for image view
     RequestQueue rq;
@@ -63,10 +56,6 @@ public class ResultFragment extends Fragment {
     ImageView city_image;
     String farm, serverid, photoid, secret, title, city_text, state_text, Url;
     int imageCount = 0, totalImages;
-    JsonObjectRequest offerObject;
-
-
-
 
     @Nullable
     @Override
@@ -113,50 +102,31 @@ public class ResultFragment extends Fragment {
             }
         }.run();
 
-
-
-
-
-        Log.i("JO_INFO", city + " " + state);
-        //ImageView cityImageView = v.findViewById(R.id.city_image);
-
-        mTwoWayView1 = v.findViewById(R.id.temporary);
-        mTwoWayView2 = v.findViewById(R.id.temporary1);
-        mWeatherProgressBar = v.findViewById(R.id.weather_loading);
-        mWeatherProgressBar.setVisibility(View.VISIBLE);
-        mClothingProgressBar = v.findViewById(R.id.clothing_loading);
-        mClothingProgressBar.setVisibility(View.VISIBLE);
-
+        mTwoWayView1 = (TwoWayView) v.findViewById(R.id.temporary);
+        mTwoWayView2 = (TwoWayView) v.findViewById(R.id.temporary1);
         mAdapter = new ForecastAdapter(getContext());
         mAdapter2 = new ClothesAdapter(getContext());
         mTwoWayView1.setAdapter(mAdapter);
         mTwoWayView2.setAdapter(mAdapter2);
 
-
         sendJsonRequest();
-
 
         WeatherSource.getInstance(getContext()).getWeatherForecast(city, state, new WeatherSource.ForecastListener() {
             @Override
             public void onForecastReceived(List<DayForecast> dayForecasts) {
-                Log.i("JO_INFO", "DOOOONNEEE"+city+state );
                 if (dayForecasts != null) {
                     mAdapter.setItems(dayForecasts);
-                    mWeatherProgressBar.setVisibility(View.INVISIBLE);
                     WeatherSource.getInstance(getContext()).getClothing(new WeatherSource.ClothingListener() {
                         @Override
                         public void onClothingReceived(List<String> imageURLs) {
                             mAdapter2.setItems(imageURLs);
-                            mClothingProgressBar.setVisibility(View.INVISIBLE);
                         }
                     });
                 }
                 else{
-                    mWeatherProgressBar.setVisibility(View.INVISIBLE);
-                    mClothingProgressBar.setVisibility(View.INVISIBLE);
                     TransitionFragment transition = (TransitionFragment)getActivity().getSupportFragmentManager().findFragmentByTag("transition");
                     getActivity().getSupportFragmentManager().beginTransaction().remove(transition).commit();
-                    getActivity().getSupportFragmentManager().beginTransaction().replace(container != null ? container.getId() : R.id.container, new MainFragment(), "main").commit();
+                    getActivity().getSupportFragmentManager().beginTransaction().replace(container != null ? container.getId() : R.id.fragment_container, new MainFragment(), "main").commit();
                 }
             }
         }, new WeatherSource.HistoryListener(){
@@ -201,7 +171,6 @@ public class ResultFragment extends Fragment {
 
         return v;
     }
-
 
     public void sendJsonRequest() {
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, Url, null, new Response.Listener<JSONObject>() {
@@ -283,13 +252,13 @@ public class ResultFragment extends Fragment {
                 View dayView = mForecastListLayout.inflate(R.layout.list_week_forecast, viewGroup, false);
                 final DayForecast dayForecast = mDays.get(i);
 
-                TextView date = dayView.findViewById(R.id.date);
+                TextView date = (TextView) dayView.findViewById(R.id.date);
                 date.setText(dayForecast.getmDate());
 
-                TextView averageTemp = dayView.findViewById(R.id.average_temp);
+                TextView averageTemp = (TextView) dayView.findViewById(R.id.average_temp);
                 averageTemp.setText(Integer.toString(dayForecast.getmAverageTemp()));
 
-                NetworkImageView weather_icon = dayView.findViewById(R.id.weather_img);
+                NetworkImageView weather_icon = (NetworkImageView) dayView.findViewById(R.id.weather_img);
                 ImageLoader imageLoader = WeatherSource.getInstance(getContext()).getImageLoader();
                 weather_icon.setImageUrl(dayForecast.getmImageViewURL(), imageLoader);
 
@@ -298,12 +267,11 @@ public class ResultFragment extends Fragment {
             else {
                 final DayForecast dayForecast = mDays.get(i);
 
-                TextView date = view.findViewById(R.id.date);
+                TextView date = (TextView) view.findViewById(R.id.date);
                 date.setText(dayForecast.getmDate());
 
-                TextView averageTemp = view.findViewById(R.id.average_temp);
+                TextView averageTemp = (TextView) view.findViewById(R.id.average_temp);
                 averageTemp.setText(Integer.toString(dayForecast.getmAverageTemp()));
-                clothingURLs = WeatherSource.getInstance(getContext()).getClothingImages();
                 return view;
 
             }
@@ -350,14 +318,14 @@ public class ResultFragment extends Fragment {
                 final String url = mImages.get(i);
 
 
-                NetworkImageView clothing_icon = dayView.findViewById(R.id.clothing_img);
+                NetworkImageView clothing_icon = (NetworkImageView) dayView.findViewById(R.id.clothing_img);
                 ImageLoader imageLoader = WeatherSource.getInstance(getContext()).getImageLoader();
                 clothing_icon.setImageUrl(url, imageLoader);
                 return dayView;
             }
             else {
                 final String url = mImages.get(i);
-                NetworkImageView clothing_icon = view.findViewById(R.id.clothing_img);
+                NetworkImageView clothing_icon = (NetworkImageView) view.findViewById(R.id.clothing_img);
                 ImageLoader imageLoader = WeatherSource.getInstance(getContext()).getImageLoader();
                 clothing_icon.setImageUrl(url, imageLoader);
                 return view;

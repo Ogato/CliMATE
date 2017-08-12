@@ -16,9 +16,9 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.facebook.CallbackManager;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.auth.api.signin.GoogleSignInResult;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -32,6 +32,16 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 
+import com.facebook.AccessToken;
+import com.facebook.CallbackManager;
+import com.facebook.FacebookCallback;
+import com.facebook.FacebookException;
+import com.facebook.FacebookSdk;
+import com.facebook.login.LoginManager;
+import com.facebook.login.LoginResult;
+import com.google.firebase.auth.FacebookAuthProvider;
+import com.facebook.login.widget.LoginButton;
+
 
 public class LoginFragment extends Fragment implements GoogleApiClient.OnConnectionFailedListener {
     private static final int RC_SIGN_IN = 9001;
@@ -39,29 +49,23 @@ public class LoginFragment extends Fragment implements GoogleApiClient.OnConnect
     private GoogleApiClient mGoogleApiClient;
     private Button mLogin;
     private Button mGoogleButton;
+    private LoginButton mFacebookButton;
     private Button mSignUp;
     private EditText mEmail;
     private EditText mPassword;
+    private CallbackManager mCallbackManager;
+
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_login, container, false);
-        mEmail = v.findViewById(R.id.email);
-        mPassword = v.findViewById(R.id.password);
-
-        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestIdToken(getString(R.string.default_web_client_id))
-                .requestEmail()
-                .build();
-
-
-
+        mEmail = (EditText) v.findViewById(R.id.login_email);
+        mPassword = (EditText) v.findViewById(R.id.login_password);
         mGoogleApiClient = MainActivity.getmGoogleApiClient();
-
         mAuth = FirebaseAuth.getInstance();
 
-        mLogin =  v.findViewById(R.id.login);
+        mLogin = (Button) v.findViewById(R.id.login_button);
         mLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -98,7 +102,7 @@ public class LoginFragment extends Fragment implements GoogleApiClient.OnConnect
             }
         });
 
-        mGoogleButton = v.findViewById(R.id.google_signin);
+        mGoogleButton = (Button) v.findViewById(R.id.google_signin);
         mGoogleButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -107,12 +111,37 @@ public class LoginFragment extends Fragment implements GoogleApiClient.OnConnect
             }
         });
 
-        mSignUp = v.findViewById(R.id.sign_up);
+
+        mFacebookButton = (LoginButton) v.findViewById(R.id.facebook_button);
+        mFacebookButton.setFragment(this);
+        mFacebookButton.setReadPermissions("email");
+        mCallbackManager = CallbackManager.Factory.create();
+        mFacebookButton.registerCallback(mCallbackManager, new FacebookCallback<LoginResult>() {
+            @Override
+            public void onSuccess(LoginResult loginResult) {
+                Log.d("JO_INFO", "facebook:onSuccess:" + loginResult);
+                handleFacebookAccessToken(loginResult.getAccessToken());
+            }
+
+            @Override
+            public void onCancel() {
+                Log.d("JO_INFO", "facebook:onCancel");
+                updateUI(null);
+            }
+
+            @Override
+            public void onError(FacebookException error) {
+                Log.d("JO_INFO", "facebook:onError", error);
+                updateUI(null);
+            }
+        });
+
+        mSignUp = (Button) v.findViewById(R.id.sign_up);
         mSignUp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                
-                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.container, new SignUpFragment(), "signup").commit();
+                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new SignUpFragment(), "signup").commit();
             }
         });
         return v;
@@ -127,6 +156,8 @@ public class LoginFragment extends Fragment implements GoogleApiClient.OnConnect
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        Log.i("JO_INFO", "HERE2");
+        mCallbackManager.onActivityResult(requestCode, resultCode, data);
 
         // Result returned from launching the Intent from GoogleSignInApi.getSignInIntent(...);
         if (requestCode == RC_SIGN_IN) {
@@ -166,6 +197,32 @@ public class LoginFragment extends Fragment implements GoogleApiClient.OnConnect
                 });
     }
 
+
+
+    private void handleFacebookAccessToken(AccessToken token) {
+        Log.i("JO_INFO", "HERE400");
+        Log.d("JO_INFO", "handleFacebookAccessToken:" + token);
+        AuthCredential credential = FacebookAuthProvider.getCredential(token.getToken());
+        mAuth.signInWithCredential(credential)
+                .addOnCompleteListener(getActivity(), new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if (task.isSuccessful()) {
+                            // Sign in success, update UI with the signed-in user's information
+                            Log.d("JO_INFO", "signInWithCredential:success");
+                            FirebaseUser user = mAuth.getCurrentUser();
+                            updateUI(user);
+                        } else {
+                            // If sign in fails, display a message to the user.
+                            Log.w("JO_INFO", "signInWithCredential:failure", task.getException());
+                            Toast.makeText(getActivity(), "Authentication failed.", Toast.LENGTH_SHORT).show();
+                            updateUI(null);
+                        }
+                    }
+                });
+    }
+
+
     private void signIn() {
         Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
         startActivityForResult(signInIntent, RC_SIGN_IN);
@@ -186,6 +243,7 @@ public class LoginFragment extends Fragment implements GoogleApiClient.OnConnect
     }
 
     private void updateUI(FirebaseUser user) {
+        Log.i("JO_INFO", "HERE1");
         String toastText = (user == null) ? "Signed out" : "Signed in as " + user.getEmail();
         Toast.makeText(getActivity(), toastText, Toast.LENGTH_SHORT).show();
 
@@ -207,11 +265,11 @@ public class LoginFragment extends Fragment implements GoogleApiClient.OnConnect
                         editor.putInt("app_opened_count", new_count);
                         editor.apply();
                         Fragment fragment = new AccountFragment();
-                        getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.container, fragment, "account").addToBackStack("account").commit();
+                        getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, fragment, "account").addToBackStack("account").commit();
                     }
                     else{
                         Fragment mainFragment = new MainFragment();
-                        getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.container, mainFragment, "main").addToBackStack("main").commit();
+                        getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, mainFragment, "main").addToBackStack("main").commit();
                     }
                 }
             });
