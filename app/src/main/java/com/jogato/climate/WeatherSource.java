@@ -3,6 +3,7 @@ package com.jogato.climate;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.util.LruCache;
 import android.widget.Toast;
 
@@ -190,7 +191,7 @@ public class WeatherSource{
         });
     }
 
-    public void getZipCode(String city, String state, final  ZipcodeListener zipcodeListener){
+    private void getZipCode(String city, String state, final  ZipcodeListener zipcodeListener){
         String url = ZIPCODE_URL_KEY + city + "/" + state;
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
                 Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
@@ -214,6 +215,7 @@ public class WeatherSource{
             @Override
             public void onErrorResponse(VolleyError error){
                 Toast.makeText(mContext, "Unable to retrieve forecast at this time", Toast.LENGTH_SHORT).show();
+                error.printStackTrace();
                 zipcodeListener.onZipCodeReceived("");
             }
         });
@@ -251,9 +253,16 @@ public class WeatherSource{
         }
 
         for(String clothing : typeOfWeatherList){
-            //currently specified API request for men's clothing id
 
-            url = WALMART_API_URL + clothing + "&format=json&categoryId=" + MEN_CLOTHING_ID;
+            if(User.getInstance().getmUserPreference().equals("male")) {
+                url = WALMART_API_URL + clothing + "&format=json&categoryId=" + MEN_CLOTHING_ID;
+            }
+            else if(User.getInstance().getmUserPreference().equals("female")){
+                url = WALMART_API_URL + clothing + "&format=json&categoryId=" + WOMEN_CLOTHING_ID;
+            }
+            else {
+                url = WALMART_API_URL + clothing + "&format=json&categoryId=" + MEN_CLOTHING_ID;
+            }
             JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
                     Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
                 @Override
@@ -287,6 +296,5 @@ public class WeatherSource{
 
 
     public ImageLoader getImageLoader(){ return mImageLoader; }
-    public List<String> getClothingImages(){ return mClothingURLs; }
 
 }

@@ -1,17 +1,19 @@
 package com.jogato.climate;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.android.volley.Request;
@@ -47,8 +49,8 @@ public class ResultFragment extends Fragment {
     private static final String USER_STATE_KEY = "state";
     private ForecastAdapter mAdapter;
     private ClothesAdapter mAdapter2;
-    private TwoWayView mTwoWayView1;
-    private TwoWayView mTwoWayView2;
+    private TwoWayView mTwoWayViewWeather;
+    private TwoWayView mTwoWayViewClothing;
 
 //Variables for image view
     RequestQueue rq;
@@ -80,8 +82,6 @@ public class ResultFragment extends Fragment {
         titleT = (TextView) v.findViewById(R.id.titleText);
 
 
-
-
         new Runnable() {
             int updateInterval = 6000; //=one second
 
@@ -102,14 +102,63 @@ public class ResultFragment extends Fragment {
             }
         }.run();
 
-        mTwoWayView1 = (TwoWayView) v.findViewById(R.id.temporary);
-        mTwoWayView2 = (TwoWayView) v.findViewById(R.id.temporary1);
+        mTwoWayViewWeather = (TwoWayView) v.findViewById(R.id.temporary);
+        mTwoWayViewClothing = (TwoWayView) v.findViewById(R.id.temporary1);
         mAdapter = new ForecastAdapter(getContext());
         mAdapter2 = new ClothesAdapter(getContext());
-        mTwoWayView1.setAdapter(mAdapter);
-        mTwoWayView2.setAdapter(mAdapter2);
+        mTwoWayViewWeather.setAdapter(mAdapter);
+        mTwoWayViewWeather.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                DayForecast forecastObject = ((DayForecast)adapterView.getItemAtPosition(i));
+                ImageLoader imageLoader = WeatherSource.getInstance(getContext()).getImageLoader();
+                View forecastView = LayoutInflater.from(getActivity()).inflate(R.layout.dialog_day_forecast, null);
 
+                NetworkImageView weatherIcon = (NetworkImageView) forecastView.findViewById(R.id.weather_img);
+                weatherIcon.setImageUrl(forecastObject.getmImageViewURL(), imageLoader);
+
+                TextView averageTemp = (TextView) forecastView.findViewById(R.id.average_temp);
+                averageTemp.setText("Average Temp: " + forecastObject.getmAverageTemp());
+
+                TextView description = (TextView) forecastView.findViewById(R.id.description);
+                description.setText("Condition: " + forecastObject.getmDescription());
+
+                TextView minTemp = (TextView) forecastView.findViewById(R.id.min_temp);
+                minTemp.setText("Min Temp: " + forecastObject.getmMinTemp());
+
+                TextView maxTemp = (TextView) forecastView.findViewById(R.id.max_temp);
+                maxTemp.setText("Max Temp: " + forecastObject.getmMaxTemp());
+
+                TextView windSpeed = (TextView) forecastView.findViewById(R.id.wind_speed);
+                windSpeed.setText("Wind Speed: " + forecastObject.getmWindSpeed());
+
+                TextView humidity = (TextView) forecastView.findViewById(R.id.humidity);
+                humidity.setText("Humidity: " + forecastObject.getmHumidity());
+
+                String date = forecastObject.getmDate();
+               AlertDialog alertDialog = new AlertDialog.Builder(getActivity())
+                       .setTitle(date)
+                       .setView(forecastView)
+                       .setPositiveButton("Done", new DialogInterface.OnClickListener() {
+                           @Override
+                           public void onClick(DialogInterface dialogInterface, int i) {
+                               dialogInterface.dismiss();
+                           }
+                       })
+                       .create();
+
+                alertDialog.show();
+            }
+        });
+        mTwoWayViewClothing.setAdapter(mAdapter2);
+        mTwoWayViewClothing.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                Log.i("JO_INFO", "CLOTHING"+i);
+            }
+        });
         sendJsonRequest();
+
 
         WeatherSource.getInstance(getContext()).getWeatherForecast(city, state, new WeatherSource.ForecastListener() {
             @Override
