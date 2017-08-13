@@ -10,6 +10,7 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -156,17 +157,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
                     public void onClick(DialogInterface dialogInterface, int i) {
                         String user_query = editText.getText().toString().toLowerCase();
                         if(user_query.length() > 0 && !mSelectedState.isEmpty() && stateAbbrMap.containsKey(mSelectedState)) {
-                            Bundle bundle = new Bundle();
-                            bundle.putString(USER_CITY_KEY, user_query);
-                            bundle.putString(USER_STATE_KEY, stateAbbrMap.get(mSelectedState));
-                            Bundle caption = new Bundle();
-                            caption.putString("caption", "Loading requested results");
-                            Fragment fragment = new ResultFragment();
-                            Fragment transition = new TransitionFragment();
-                            fragment.setArguments(bundle);
-                            transition.setArguments(caption);
-                            getSupportFragmentManager().beginTransaction().replace(R.id.transition_container, transition, "transition").commit();
-                            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, fragment, "result").commit();
+                            sendResults(user_query, stateAbbrMap.get(mSelectedState));
                         }
                         else{
                             Toast.makeText(MainActivity.this, "Please input a city and select a state", Toast.LENGTH_LONG).show();
@@ -183,6 +174,20 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
 
     public static GoogleApiClient getmGoogleApiClient(){
         return mGoogleApiClient;
+    }
+
+    public void sendResults(String city, String state){
+        Bundle bundle = new Bundle();
+        bundle.putString(USER_CITY_KEY, city);
+        bundle.putString(USER_STATE_KEY, state);
+        Bundle caption = new Bundle();
+        caption.putString("caption", "Loading requested results");
+        Fragment fragment = new ResultFragment();
+        Fragment transition = new TransitionFragment();
+        fragment.setArguments(bundle);
+        transition.setArguments(caption);
+        getSupportFragmentManager().beginTransaction().replace(R.id.overlay_container, transition, "transition").commit();
+        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, fragment, "result").commit();
     }
 
 
@@ -235,7 +240,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
                 Bundle caption = new Bundle();
                 caption.putString("caption", "Loading History");
                 transition.setArguments(caption);
-                ft.replace(R.id.transition_container, transition  , "transition");
+                ft.replace(R.id.overlay_container, transition  , "transition");
                 ft.replace(R.id.fragment_container, fragment  , "history").commit();
                 mDrawer.closeDrawers();
             }
