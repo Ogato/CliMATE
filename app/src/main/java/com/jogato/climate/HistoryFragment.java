@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
@@ -22,6 +23,8 @@ import java.util.List;
 public class HistoryFragment extends Fragment {
     private ListView historyListView;
     private CityImageAdapter cityImageAdapter;
+
+
 
 
     @Nullable
@@ -36,7 +39,7 @@ public class HistoryFragment extends Fragment {
 
         CityImagesSource.getInstance(getActivity()).getCityImages(new CityImagesSource.CityImageListener() {
             @Override
-            public void onCityImageResults(List<String> cityImages) {
+            public void onCityImageResults(List<LocalHistory> cityImages) {
                 if(cityImages != null && cityImages.size() > 0) {
                     cityImageAdapter.setItems(cityImages);
                     if (getActivity() != null) {
@@ -60,7 +63,7 @@ public class HistoryFragment extends Fragment {
                 else{
                     TransitionFragment transition = (TransitionFragment) getActivity().getSupportFragmentManager().findFragmentByTag("transition");
                     getActivity().getSupportFragmentManager().beginTransaction().remove(transition).commit();
-                    Toast.makeText(getActivity(), "History Empty", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(), "RemoteHistory Empty", Toast.LENGTH_SHORT).show();
                     getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new MainFragment()).commit();
 
 
@@ -74,7 +77,7 @@ public class HistoryFragment extends Fragment {
 
     private class CityImageAdapter extends BaseAdapter {
         private Context mContext;
-        private List<String> imgURLs;
+        private List<LocalHistory> imgURLs;
         private LayoutInflater mHistroyLayout;
 
         CityImageAdapter(Context context) {
@@ -83,7 +86,7 @@ public class HistoryFragment extends Fragment {
             mHistroyLayout = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         }
 
-        public void setItems(List<String> imgList) {
+        public void setItems(List<LocalHistory> imgList) {
             imgURLs.clear();
             imgURLs.addAll(imgList);
             notifyDataSetChanged();
@@ -109,20 +112,28 @@ public class HistoryFragment extends Fragment {
 
             if (view == null) {
                 View historyView = mHistroyLayout.inflate(R.layout.list_history_pics, viewGroup, false);
-                String imageURL = imgURLs.get(i);
-                ImageView cityImage = (ImageView) historyView.findViewById(R.id.cityImage);
+                LocalHistory localHistory = imgURLs.get(i);
 
+                ImageView cityImage = (ImageView) historyView.findViewById(R.id.cityImage);
                 Picasso.with(mContext)
-                        .load(imageURL)
+                        .load(localHistory.getmImageURL())
                         .into(cityImage);
+
+                TextView cityName = (TextView) historyView.findViewById(R.id.history_city);
+                cityName.setText(localHistory.getmCity());
+
+
 
                 return historyView;
             } else {
-                String imageURL = imgURLs.get(i);
+                LocalHistory localHistory = imgURLs.get(i);
                 ImageView cityImage = (ImageView) view.findViewById(R.id.cityImage);
                 Picasso.with(mContext)
-                        .load(imageURL)
+                        .load(localHistory.getmImageURL())
                         .into(cityImage);
+
+                TextView cityName = (TextView) view.findViewById(R.id.history_city);
+                cityName.setText(localHistory.getmCity());
                 return view;
 
             }
