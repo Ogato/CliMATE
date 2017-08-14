@@ -12,6 +12,8 @@ public class DayForecast{
     public static int sAverageMaxTemp;
     public static int sAverageTemp;
     public static int sAverageMinTemp;
+    public static int sWind;
+    public static int sHumidity;
     private String mDate;
     private int mMaxTemp;
     private int mMinTemp;
@@ -32,6 +34,8 @@ public class DayForecast{
             mDescription = dayObject.getJSONObject("day").getJSONObject("condition").getString("text");
             mImageViewURL = "https:" + dayObject.getJSONObject("day").getJSONObject("condition").getString("icon");
             sNumDays++;
+            sWind = (int) mWindSpeed;
+            sHumidity = (int) mHumidity;
             sTotalMaxTemp += mMaxTemp;
             sTotalMinTemp += mMinTemp;
             sTotalAverageTemp += mAverageTemp;
