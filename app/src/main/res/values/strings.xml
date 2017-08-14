@@ -35,7 +35,7 @@
     <string name="log_in_with_gmail">Log in with Gmail</string>
     <string name="create_a_new_account">Create a new account</string>
     <string name="san_francisco_ca">San Francisco, CA</string>
-    <string name="albany_ny">Albany, NY</string>
+    <string name="newyork_ny">New York City, NY</string>
     <string name="miami_fl">Miami, FL</string>
     <string name="washington_dc">Washington, DC</string>
     <string name="austin_tx">Austin, TX</string>
@@ -153,11 +153,13 @@
     <item>WY</item>
 </string-array>
 
-    <string-array name="navigation_options">
-        <item>History</item>
-        <item>Account</item>
-        <item>LogOut</item>
-    </string-array>
+
+<string-array name="navigation_options">
+    <item>History</item>
+    <item>Account</item>
+    <item>LogOut</item>
+</string-array>
+
 
 </resources>
 

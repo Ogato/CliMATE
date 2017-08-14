@@ -1,7 +1,6 @@
 package com.jogato.climate;
 
 
-
 import java.util.Map;
 
 
@@ -66,4 +65,5 @@ public class User {
     public void setmUserHistory(Map<String, History> mUserHistory) {
         User.mUserHistory = mUserHistory;
     }
+
 }

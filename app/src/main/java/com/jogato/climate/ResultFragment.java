@@ -1,6 +1,5 @@
 package com.jogato.climate;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
@@ -50,9 +49,13 @@ public class ResultFragment extends Fragment {
     private static final String USER_CITY_KEY = "city";
     private static final String USER_STATE_KEY = "state";
     private ForecastAdapter mAdapter;
-    private ClothesAdapter mAdapter2;
+    private ActiveWearAdapter activeWearAdapter;
+    private OfficeWearAdapter officeWearAdapter;
+    private CasualWearAdapter casualWearAdapter;
     private TwoWayView mTwoWayViewWeather;
-    private TwoWayView mTwoWayViewClothing;
+    private TwoWayView mTwoWayViewActiveClothing;
+    private TwoWayView mTwoWayViewOfficeClothing;
+    private TwoWayView mTwoWayViewCasualClothing;
 
 //Variables for image view
     RequestQueue rq;
@@ -74,40 +77,46 @@ public class ResultFragment extends Fragment {
         state_text = state;
 
         Url = "https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=959d473ba8cdd5d528f0231527d99591&text=Buildings in " + city_text + " " + state_text + "&format=json&nojsoncallback=1";
-
-
-        Log.d("Harold", Url);
         rq = Volley.newRequestQueue(getContext());
 
         city_image = (ImageView) v.findViewById(R.id.photo_img);
         cityT = (TextView) v.findViewById(R.id.cityText);
         titleT = (TextView) v.findViewById(R.id.titleText);
 
+        new Runnable() {
+            int updateInterval = 6000; //=one second
 
-//        new Runnable() {
-//            int updateInterval = 6000; //=one second
-//
-//            @Override
-//            public void run() {
-//
-//                if (imageCount != totalImages) {
-//                    imageCount += 1;
-//                    sendJsonRequest();
-//                    String count = String.valueOf(imageCount);
-//                    Log.d("Harold", count);
-//                } else {
-//
-//                    imageCount = 0;
-//                }
-//
-//                city_image.postDelayed(this, updateInterval);
-//            }
-//        }.run();
+            @Override
+            public void run() {
 
-        mTwoWayViewWeather = (TwoWayView) v.findViewById(R.id.temporary);
-        mTwoWayViewClothing = (TwoWayView) v.findViewById(R.id.temporary1);
+                if (imageCount != totalImages) {
+                    imageCount += 1;
+                    sendJsonRequest();
+                    String count = String.valueOf(imageCount);
+                    Log.d("Harold", count);
+                } else {
+
+                    imageCount = 0;
+                }
+
+                city_image.postDelayed(this, updateInterval);
+            }
+        }.run();
+
+        final List<String> activeWearList = new ArrayList<>();
+        final List<String> officeWearList = new ArrayList<>();
+        final List<String> casualWearList = new ArrayList<>();
+
+        mTwoWayViewWeather = (TwoWayView) v.findViewById(R.id.weather);
+        mTwoWayViewActiveClothing = (TwoWayView) v.findViewById(R.id.active_wear);
+        mTwoWayViewOfficeClothing = (TwoWayView) v.findViewById(R.id.office_wear);
+        mTwoWayViewCasualClothing = (TwoWayView) v.findViewById(R.id.casual_wear);
+
         mAdapter = new ForecastAdapter(getContext());
-        mAdapter2 = new ClothesAdapter(getContext());
+        activeWearAdapter = new ActiveWearAdapter(getContext());
+        officeWearAdapter = new OfficeWearAdapter(getContext());
+        casualWearAdapter = new CasualWearAdapter(getContext());
+
         mTwoWayViewWeather.setAdapter(mAdapter);
         mTwoWayViewWeather.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -152,13 +161,20 @@ public class ResultFragment extends Fragment {
                 alertDialog.show();
             }
         });
-        mTwoWayViewClothing.setAdapter(mAdapter2);
-        mTwoWayViewClothing.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+        mTwoWayViewActiveClothing.setAdapter(activeWearAdapter);
+        mTwoWayViewActiveClothing.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 Log.i("JO_INFO", "CLOTHING"+i);
             }
         });
+
+        mTwoWayViewOfficeClothing.setAdapter(officeWearAdapter);
+        mTwoWayViewCasualClothing.setAdapter(casualWearAdapter);
+
+
+
         sendJsonRequest();
 
         final FragmentManager fm = getActivity().getSupportFragmentManager();
@@ -167,12 +183,49 @@ public class ResultFragment extends Fragment {
             public void onForecastReceived(List<DayForecast> dayForecasts) {
                 if (dayForecasts != null) {
                     mAdapter.setItems(dayForecasts);
-                    WeatherSource.getInstance(getContext()).getClothing(new WeatherSource.ClothingListener() {
+                    WeatherSource.getInstance(getContext()).getActiveClothing(new WeatherSource.ActiveClothingListener() {
                         @Override
-                        public void onClothingReceived(List<String> imageURLs) {
-                            mAdapter2.setItems(imageURLs);
+                        public void onClothingReceived(List<String> activeImageURLs) {
+                                activeWearAdapter.setItems(activeImageURLs);
                         }
                     });
+                    new CountDownTimer(1000, 1000) {
+                        @Override
+                        public void onTick(long l) {
+
+                        }
+
+                        @Override
+                        public void onFinish() {
+                            WeatherSource.getInstance(getContext()).getOfficeClothing(new WeatherSource.OfficeClothingListener() {
+                                @Override
+                                public void onClothingReceived(List<String> officeImageURLs) {
+                                    officeWearAdapter.setItems(officeImageURLs);
+                                }
+                            });
+                        }
+
+                    }.start();
+
+                    new CountDownTimer(2500, 1000) {
+                        @Override
+                        public void onTick(long l) {
+
+                        }
+
+                        @Override
+                        public void onFinish() {
+                            WeatherSource.getInstance(getContext()).getCasualClothing(new WeatherSource.CasualClothingListener() {
+                                @Override
+                                public void onClothingReceived(List<String> casualImageURLs) {
+                                    casualWearAdapter.setItems(casualImageURLs);
+                                }
+                            });
+                        }
+
+                    }.start();
+
+
                 }
                 else{
                     TransitionFragment transition = (TransitionFragment)getActivity().getSupportFragmentManager().findFragmentByTag("transition");
@@ -332,12 +385,122 @@ public class ResultFragment extends Fragment {
         }
     }
 
-    private class ClothesAdapter extends BaseAdapter {
+    private class ActiveWearAdapter extends BaseAdapter {
         private Context mContext;
         private List<String> mImages;
         private LayoutInflater mForecastListLayout;
 
-        ClothesAdapter(Context context) {
+        ActiveWearAdapter(Context context) {
+            mContext = context;
+            mImages = new ArrayList<>();
+            mForecastListLayout = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        }
+
+        public void setItems(List<String> imageList) {
+            mImages.clear();
+            mImages.addAll(imageList);
+            notifyDataSetChanged();
+        }
+
+        @Override
+        public int getCount() {
+            return mImages.size();
+        }
+
+        @Override
+        public Object getItem(int i) {
+            return mImages.get(i);
+        }
+
+        @Override
+        public long getItemId(int i) {
+            return i;
+        }
+
+        @Override
+        public View getView(int i, View view, ViewGroup viewGroup) {
+
+            if (view == null) {
+                View dayView = mForecastListLayout.inflate(R.layout.list_week_clothing, viewGroup, false);
+                final String url = mImages.get(i);
+
+
+                NetworkImageView clothing_icon = (NetworkImageView) dayView.findViewById(R.id.clothing_img);
+                ImageLoader imageLoader = WeatherSource.getInstance(getContext()).getImageLoader();
+                clothing_icon.setImageUrl(url, imageLoader);
+                return dayView;
+            }
+            else {
+                final String url = mImages.get(i);
+                NetworkImageView clothing_icon = (NetworkImageView) view.findViewById(R.id.clothing_img);
+                ImageLoader imageLoader = WeatherSource.getInstance(getContext()).getImageLoader();
+                clothing_icon.setImageUrl(url, imageLoader);
+                return view;
+            }
+        }
+    }
+
+    private class OfficeWearAdapter extends BaseAdapter {
+        private Context mContext;
+        private List<String> mImages;
+        private LayoutInflater mForecastListLayout;
+
+        OfficeWearAdapter(Context context) {
+            mContext = context;
+            mImages = new ArrayList<>();
+            mForecastListLayout = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        }
+
+        public void setItems(List<String> imageList) {
+            mImages.clear();
+            mImages.addAll(imageList);
+            notifyDataSetChanged();
+        }
+
+        @Override
+        public int getCount() {
+            return mImages.size();
+        }
+
+        @Override
+        public Object getItem(int i) {
+            return mImages.get(i);
+        }
+
+        @Override
+        public long getItemId(int i) {
+            return i;
+        }
+
+        @Override
+        public View getView(int i, View view, ViewGroup viewGroup) {
+
+            if (view == null) {
+                View dayView = mForecastListLayout.inflate(R.layout.list_week_clothing, viewGroup, false);
+                final String url = mImages.get(i);
+
+
+                NetworkImageView clothing_icon = (NetworkImageView) dayView.findViewById(R.id.clothing_img);
+                ImageLoader imageLoader = WeatherSource.getInstance(getContext()).getImageLoader();
+                clothing_icon.setImageUrl(url, imageLoader);
+                return dayView;
+            }
+            else {
+                final String url = mImages.get(i);
+                NetworkImageView clothing_icon = (NetworkImageView) view.findViewById(R.id.clothing_img);
+                ImageLoader imageLoader = WeatherSource.getInstance(getContext()).getImageLoader();
+                clothing_icon.setImageUrl(url, imageLoader);
+                return view;
+            }
+        }
+    }
+
+    private class CasualWearAdapter extends BaseAdapter {
+        private Context mContext;
+        private List<String> mImages;
+        private LayoutInflater mForecastListLayout;
+
+        CasualWearAdapter(Context context) {
             mContext = context;
             mImages = new ArrayList<>();
             mForecastListLayout = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);

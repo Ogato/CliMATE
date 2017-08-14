@@ -50,25 +50,41 @@
 
         <LinearLayout
             android:layout_width="wrap_content"
-            android:layout_height="400dp"
+            android:layout_height="wrap_content"
             android:orientation="vertical">
 
+
             <org.lucasr.twowayview.TwoWayView
-                android:id="@+id/temporary"
+                android:id="@+id/weather"
                 style="@style/TwoWayView"
                 android:layout_width="wrap_content"
-                android:layout_height="0dp"
-                android:layout_weight="0.4"
-                android:drawSelectorOnTop="false"/>
+                android:layout_marginBottom="5dp"
+                android:layout_height="100dp"
+                android:drawSelectorOnTop="false" />
 
 
             <org.lucasr.twowayview.TwoWayView
                 xmlns:android="http://schemas.android.com/apk/res/android"
-                android:id="@+id/temporary1"
+                android:id="@+id/active_wear"
                 style="@style/TwoWayView"
                 android:layout_width="wrap_content"
-                android:layout_height="0dp"
-                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:drawSelectorOnTop="false"/>
+
+            <org.lucasr.twowayview.TwoWayView
+                xmlns:android="http://schemas.android.com/apk/res/android"
+                android:id="@+id/office_wear"
+                style="@style/TwoWayView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:drawSelectorOnTop="false"/>
+
+            <org.lucasr.twowayview.TwoWayView
+                xmlns:android="http://schemas.android.com/apk/res/android"
+                android:id="@+id/casual_wear"
+                style="@style/TwoWayView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:drawSelectorOnTop="false"/>
 
         </LinearLayout>

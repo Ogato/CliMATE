@@ -53,7 +53,7 @@ public class TransitionFragment extends Fragment {
         ColorDrawable[] color = {new ColorDrawable(Color.RED), new ColorDrawable(Color.BLUE)};
         TransitionDrawable trans = new TransitionDrawable(color);
         mLinearLayout.setBackground(trans);
-        trans.startTransition(5000);
+        trans.startTransition(6000);
     }
 
 }

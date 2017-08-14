@@ -28,7 +28,7 @@
                     android:layout_marginBottom="3dp"
                     android:layout_height="240dp"
                     android:background="@drawable/ny_img"
-                    android:text="@string/albany_ny"
+                    android:text="@string/newyork_ny"
                     android:textColor="#fff"
                     android:textSize="15sp"/>
 

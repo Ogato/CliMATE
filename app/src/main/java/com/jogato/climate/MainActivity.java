@@ -37,7 +37,6 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
-import java.io.Serializable;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
@@ -66,6 +65,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
+
 
         mOptions = getResources().getStringArray(R.array.navigation_options);
         mDrawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -261,7 +261,8 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
         AccountFragment accountFragment = (AccountFragment) getSupportFragmentManager().findFragmentByTag("account");
         LoginFragment loginFragment = (LoginFragment) getSupportFragmentManager().findFragmentByTag("login");
         SignUpFragment signUpFragment = (SignUpFragment) getSupportFragmentManager().findFragmentByTag("signup");
-        if(keyCode == KeyEvent.KEYCODE_BACK){
+        TransitionFragment transitionFragment = (TransitionFragment) getSupportFragmentManager().findFragmentByTag("transition");
+        if(keyCode == KeyEvent.KEYCODE_BACK && !transitionFragment.isVisible()){
             if(currentFrag != null && currentFrag.isVisible()){
                 finish();
                 return true;

@@ -53,18 +53,18 @@ public class HistoryFragment extends Fragment {
 
                             @Override
                             public void onFinish() {
-                                TransitionFragment transition = (TransitionFragment) getActivity().getSupportFragmentManager().findFragmentByTag("transition");
-                                getActivity().getSupportFragmentManager().beginTransaction().remove(transition).commit();
+                                TransitionFragment transition = (TransitionFragment) getFragmentManager().findFragmentByTag("transition");
+                                getFragmentManager().beginTransaction().remove(transition).commit();
                             }
                         }.start();
 
                     }
                 }
                 else{
-                    TransitionFragment transition = (TransitionFragment) getActivity().getSupportFragmentManager().findFragmentByTag("transition");
-                    getActivity().getSupportFragmentManager().beginTransaction().remove(transition).commit();
+                    TransitionFragment transition = (TransitionFragment) getFragmentManager().findFragmentByTag("transition");
+                    getFragmentManager().beginTransaction().remove(transition).commit();
                     Toast.makeText(getActivity(), "RemoteHistory Empty", Toast.LENGTH_SHORT).show();
-                    getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new MainFragment()).commit();
+                    getFragmentManager().beginTransaction().replace(R.id.fragment_container, new MainFragment()).commit();
 
 
                 }
