@@ -14,6 +14,10 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ServerValue;
 
 
@@ -22,6 +26,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -296,5 +301,28 @@ public class WeatherSource{
 
 
     public ImageLoader getImageLoader(){ return mImageLoader; }
+
+    public static void pushDatetoSchedule(String dayDate, String monthDate, String yearDate, String city, String state){
+
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        String userId = user.getUid();
+        String userName = user.getEmail();
+        DatabaseReference forecastRef = databaseReference.child("forecasts");
+        DatabaseReference pushRef = forecastRef.push();
+        Map<String, Object> dateMap = new HashMap<String, Object>();
+        dateMap.put("userId", userId);
+        dateMap.put("userName", userName);
+        dateMap.put("day", dayDate);
+        dateMap.put("month", monthDate);
+        dateMap.put("year", yearDate);
+        dateMap.put("city", city);
+        dateMap.put("state", state);
+        String completeDate = yearDate + "-" + monthDate + "-" + dayDate;
+        dateMap.put("Date", completeDate);
+        Log.i("PushAS", userId);
+        pushRef.setValue(dateMap);
+
+    }
 
 }

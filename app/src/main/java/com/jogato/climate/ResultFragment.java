@@ -1,11 +1,13 @@
 package com.jogato.climate;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -82,25 +84,25 @@ public class ResultFragment extends Fragment {
         titleT = (TextView) v.findViewById(R.id.titleText);
 
 
-        new Runnable() {
-            int updateInterval = 6000; //=one second
-
-            @Override
-            public void run() {
-
-                if (imageCount != totalImages) {
-                    imageCount += 1;
-                    sendJsonRequest();
-                    String count = String.valueOf(imageCount);
-                    Log.d("Harold", count);
-                } else {
-
-                    imageCount = 0;
-                }
-
-                city_image.postDelayed(this, updateInterval);
-            }
-        }.run();
+//        new Runnable() {
+//            int updateInterval = 6000; //=one second
+//
+//            @Override
+//            public void run() {
+//
+//                if (imageCount != totalImages) {
+//                    imageCount += 1;
+//                    sendJsonRequest();
+//                    String count = String.valueOf(imageCount);
+//                    Log.d("Harold", count);
+//                } else {
+//
+//                    imageCount = 0;
+//                }
+//
+//                city_image.postDelayed(this, updateInterval);
+//            }
+//        }.run();
 
         mTwoWayViewWeather = (TwoWayView) v.findViewById(R.id.temporary);
         mTwoWayViewClothing = (TwoWayView) v.findViewById(R.id.temporary1);
@@ -159,7 +161,7 @@ public class ResultFragment extends Fragment {
         });
         sendJsonRequest();
 
-
+        final FragmentManager fm = getActivity().getSupportFragmentManager();
         WeatherSource.getInstance(getContext()).getWeatherForecast(city, state, new WeatherSource.ForecastListener() {
             @Override
             public void onForecastReceived(List<DayForecast> dayForecasts) {
@@ -175,7 +177,7 @@ public class ResultFragment extends Fragment {
                 else{
                     TransitionFragment transition = (TransitionFragment)getActivity().getSupportFragmentManager().findFragmentByTag("transition");
                     getActivity().getSupportFragmentManager().beginTransaction().remove(transition).commit();
-                    getActivity().getSupportFragmentManager().beginTransaction().replace(container != null ? container.getId() : R.id.fragment_container, new MainFragment(), "main").commit();
+                    getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new MainFragment(), "main").commit();
                 }
             }
         }, new WeatherSource.HistoryListener(){
@@ -203,8 +205,10 @@ public class ResultFragment extends Fragment {
 
                             @Override
                             public void onFinish() {
-                                TransitionFragment transition = (TransitionFragment) getActivity().getSupportFragmentManager().findFragmentByTag("transition");
-                                getActivity().getSupportFragmentManager().beginTransaction().remove(transition).commit();
+                                TransitionFragment transition = (TransitionFragment) fm.findFragmentByTag("transition");
+                                if(transition != null) {
+                                    fm.beginTransaction().remove(transition).commit();
+                                }
                             }
 
                         }.start();
@@ -220,6 +224,7 @@ public class ResultFragment extends Fragment {
 
         return v;
     }
+
 
     public void sendJsonRequest() {
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, Url, null, new Response.Listener<JSONObject>() {

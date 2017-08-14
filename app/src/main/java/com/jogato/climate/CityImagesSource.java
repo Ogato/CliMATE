@@ -14,6 +14,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
+import com.google.firebase.database.ServerValue;
 import com.google.firebase.database.ValueEventListener;
 
 
@@ -22,7 +23,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 public class CityImagesSource {
@@ -142,11 +145,9 @@ public class CityImagesSource {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if(dataSnapshot.exists()){
                     for(DataSnapshot s : dataSnapshot.getChildren()){
-
                         // 'city,ST' -> [city, ST]
                         mCityState = s.getKey().split(",");
                         mLocalHistoryList.add(new LocalHistory(mCityState[0], mCityState[1], "https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=959d473ba8cdd5d528f0231527d99591&text=Buildings in " + mCityState[0] + " " + mCityState[1] + "&format=json&nojsoncallback=1"));
-
                     }
 
                     //Send the database entries to the public getCityImages method
