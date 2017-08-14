@@ -233,8 +233,22 @@ public class WeatherSource{
         int average_max_temp = DayForecast.sAverageMaxTemp;
         int average_min_temp = DayForecast.sAverageMinTemp;
         int average_temp = DayForecast.sAverageTemp;
+        int wind_factor = DayForecast.sWind;
+        int humidity_factor = DayForecast.sHumidity;
         String url = "";
         List<String>typeOfWeatherList;
+        if (wind_factor > 11)
+        {
+            average_temp -=5;
+        }
+        if (humidity_factor < 10 && average_temp < 63)
+        {
+            average_temp -=5;
+        }
+        else if (humidity_factor > 65 && average_temp > 80)
+        {
+            average_temp +=5;
+        }
         if(average_temp >= 90) {
             typeOfWeatherList = above_90;
         }
