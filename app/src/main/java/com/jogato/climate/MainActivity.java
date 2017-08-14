@@ -262,27 +262,25 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
         LoginFragment loginFragment = (LoginFragment) getSupportFragmentManager().findFragmentByTag("login");
         SignUpFragment signUpFragment = (SignUpFragment) getSupportFragmentManager().findFragmentByTag("signup");
         TransitionFragment transitionFragment = (TransitionFragment) getSupportFragmentManager().findFragmentByTag("transition");
-        if(keyCode == KeyEvent.KEYCODE_BACK && !transitionFragment.isVisible()){
-            if(currentFrag != null && currentFrag.isVisible()){
-                finish();
-                return true;
-            }
-            else if(accountFragment != null && accountFragment.isVisible()){
-                Toast.makeText(this, "Please save account info", Toast.LENGTH_SHORT).show();
-                return false;
-            }
-            else if(loginFragment != null && loginFragment.isVisible()){
-                finish();
-                return true;
-            }
-            else if(signUpFragment != null && signUpFragment.isVisible()){
-                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new LoginFragment(), "login").commit();
-                return true;
-            }
-            else{
-                mMainFragment = new MainFragment();
-                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, mMainFragment, "main").commit();
-                return true;
+        if(keyCode == KeyEvent.KEYCODE_BACK) {
+            if (transitionFragment == null || !transitionFragment.isVisible()) {
+                if (currentFrag != null && currentFrag.isVisible()) {
+                    finish();
+                    return true;
+                } else if (accountFragment != null && accountFragment.isVisible()) {
+                    Toast.makeText(this, "Please save account info", Toast.LENGTH_SHORT).show();
+                    return false;
+                } else if (loginFragment != null && loginFragment.isVisible()) {
+                    finish();
+                    return true;
+                } else if (signUpFragment != null && signUpFragment.isVisible()) {
+                    getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new LoginFragment(), "login").commit();
+                    return true;
+                } else {
+                    mMainFragment = new MainFragment();
+                    getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, mMainFragment, "main").commit();
+                    return true;
+                }
             }
         }
         return super.onKeyDown(keyCode, event);
