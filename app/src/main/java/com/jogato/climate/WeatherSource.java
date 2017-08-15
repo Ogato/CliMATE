@@ -184,7 +184,7 @@ public class WeatherSource{
                                     historyListener.onHistoryChanged(User.getInstance().getmUserHistory());
                                 }
                             } catch (JSONException e) {
-                                Toast.makeText(mContext, "Unable to retrieve forecast at this time", Toast.LENGTH_SHORT).show();
+                                //Toast.makeText(mContext, "Unable to retrieve forecast at this time", Toast.LENGTH_SHORT).show();
                             }
                         }
                     }, new Response.ErrorListener() {
@@ -310,7 +310,7 @@ public class WeatherSource{
                     }, new Response.ErrorListener() {
                         @Override
                         public void onErrorResponse(VolleyError error) {
-                            if (mActiveClothingURLs.size() == 0) {
+                            if(error.networkResponse.statusCode != 403){
                                 Toast.makeText(mContext, "Unable to retrieve clothing suggestions at this time", Toast.LENGTH_SHORT).show();
                             }
                         }
@@ -351,7 +351,7 @@ public class WeatherSource{
                 }, new Response.ErrorListener(){
                     @Override
                     public void onErrorResponse(VolleyError error){
-                        if(mActiveClothingURLs.size() == 0) {
+                        if(error.networkResponse.statusCode != 403){
                             Toast.makeText(mContext, "Unable to retrieve clothing suggestions at this time", Toast.LENGTH_SHORT).show();
                         }
                     }
@@ -462,7 +462,7 @@ public class WeatherSource{
                     }, new Response.ErrorListener() {
                         @Override
                         public void onErrorResponse(VolleyError error) {
-                            if (mOfficeClothingURLs.size() == 0) {
+                            if(error.networkResponse.statusCode != 403){
                                 Toast.makeText(mContext, "Unable to retrieve clothing suggestions at this time", Toast.LENGTH_SHORT).show();
                             }
                         }
@@ -503,7 +503,7 @@ public class WeatherSource{
                 }, new Response.ErrorListener(){
                     @Override
                     public void onErrorResponse(VolleyError error){
-                        if(mOfficeClothingURLs.size() == 0) {
+                        if(error.networkResponse.statusCode != 403){
                             Toast.makeText(mContext, "Unable to retrieve clothing suggestions at this time", Toast.LENGTH_SHORT).show();
                         }
                     }
@@ -588,7 +588,7 @@ public class WeatherSource{
                     }, new Response.ErrorListener() {
                         @Override
                         public void onErrorResponse(VolleyError error) {
-                            if (mCasualClothingURLs.size() == 0) {
+                            if(error.networkResponse.statusCode != 403){
                                 Toast.makeText(mContext, "Unable to retrieve clothing suggestions at this time", Toast.LENGTH_SHORT).show();
                             }
                         }
@@ -630,7 +630,7 @@ public class WeatherSource{
                 }, new Response.ErrorListener(){
                     @Override
                     public void onErrorResponse(VolleyError error){
-                        if(mCasualClothingURLs.size() == 0) {
+                        if(error.networkResponse.statusCode != 403){
                             Toast.makeText(mContext, "Unable to retrieve clothing suggestions at this time", Toast.LENGTH_SHORT).show();
                         }
                     }

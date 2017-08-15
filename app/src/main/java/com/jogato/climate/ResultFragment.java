@@ -75,6 +75,10 @@ public class ResultFragment extends Fragment {
         setHasOptionsMenu(true);
         setRetainInstance(true);
 
+        if(((MainActivity)getActivity()).getSupportActionBar() != null) {
+            ((MainActivity) getActivity()).getSupportActionBar().setTitle("CLiMATE");
+        }
+
         final String city = getArguments().getString(USER_CITY_KEY);
         final String state = getArguments().getString(USER_STATE_KEY);
         city_text = city;
@@ -119,49 +123,7 @@ public class ResultFragment extends Fragment {
         casualWearAdapter = new CasualWearAdapter(getContext());
 
         mTwoWayViewWeather.setAdapter(mAdapter);
-        mTwoWayViewWeather.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                DayForecast forecastObject = ((DayForecast)adapterView.getItemAtPosition(i));
-                ImageLoader imageLoader = WeatherSource.getInstance(getContext()).getImageLoader();
-                View forecastView = LayoutInflater.from(getActivity()).inflate(R.layout.dialog_day_forecast, null);
 
-                NetworkImageView weatherIcon = (NetworkImageView) forecastView.findViewById(R.id.weather_img);
-                weatherIcon.setImageUrl(forecastObject.getmImageViewURL(), imageLoader);
-
-                TextView averageTemp = (TextView) forecastView.findViewById(R.id.average_temp);
-                averageTemp.setText("Average Temp: " + forecastObject.getmAverageTemp());
-
-                TextView description = (TextView) forecastView.findViewById(R.id.description);
-                description.setText("Condition: " + forecastObject.getmDescription());
-
-                TextView minTemp = (TextView) forecastView.findViewById(R.id.min_temp);
-                minTemp.setText("Min Temp: " + forecastObject.getmMinTemp());
-
-                TextView maxTemp = (TextView) forecastView.findViewById(R.id.max_temp);
-                maxTemp.setText("Max Temp: " + forecastObject.getmMaxTemp());
-
-                TextView windSpeed = (TextView) forecastView.findViewById(R.id.wind_speed);
-                windSpeed.setText("Wind Speed: " + forecastObject.getmWindSpeed());
-
-                TextView humidity = (TextView) forecastView.findViewById(R.id.humidity);
-                humidity.setText("Humidity: " + forecastObject.getmHumidity());
-
-                String date = forecastObject.getmDate();
-               AlertDialog alertDialog = new AlertDialog.Builder(getActivity())
-                       .setTitle(date)
-                       .setView(forecastView)
-                       .setPositiveButton("Done", new DialogInterface.OnClickListener() {
-                           @Override
-                           public void onClick(DialogInterface dialogInterface, int i) {
-                               dialogInterface.dismiss();
-                           }
-                       })
-                       .create();
-
-                alertDialog.show();
-            }
-        });
 
         mTwoWayViewActiveClothing.setAdapter(activeWearAdapter);
         mTwoWayViewActiveClothing.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -307,6 +269,49 @@ public class ResultFragment extends Fragment {
                                 if(transition != null) {
                                     fm.beginTransaction().remove(transition).commitAllowingStateLoss();
                                     ((MainActivity)getActivity()).setDrawerAccess(true);
+                                    mTwoWayViewWeather.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                                        @Override
+                                        public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                                            DayForecast forecastObject = ((DayForecast)adapterView.getItemAtPosition(i));
+                                            ImageLoader imageLoader = WeatherSource.getInstance(getContext()).getImageLoader();
+                                            View forecastView = LayoutInflater.from(getActivity()).inflate(R.layout.dialog_day_forecast, null);
+
+                                            NetworkImageView weatherIcon = (NetworkImageView) forecastView.findViewById(R.id.weather_img);
+                                            weatherIcon.setImageUrl(forecastObject.getmImageViewURL(), imageLoader);
+
+                                            TextView averageTemp = (TextView) forecastView.findViewById(R.id.average_temp);
+                                            averageTemp.setText("Average Temp: " + forecastObject.getmAverageTemp());
+
+                                            TextView description = (TextView) forecastView.findViewById(R.id.description);
+                                            description.setText("Condition: " + forecastObject.getmDescription());
+
+                                            TextView minTemp = (TextView) forecastView.findViewById(R.id.min_temp);
+                                            minTemp.setText("Min Temp: " + forecastObject.getmMinTemp());
+
+                                            TextView maxTemp = (TextView) forecastView.findViewById(R.id.max_temp);
+                                            maxTemp.setText("Max Temp: " + forecastObject.getmMaxTemp());
+
+                                            TextView windSpeed = (TextView) forecastView.findViewById(R.id.wind_speed);
+                                            windSpeed.setText("Wind Speed: " + forecastObject.getmWindSpeed());
+
+                                            TextView humidity = (TextView) forecastView.findViewById(R.id.humidity);
+                                            humidity.setText("Humidity: " + forecastObject.getmHumidity());
+
+                                            String date = forecastObject.getmDate();
+                                            AlertDialog alertDialog = new AlertDialog.Builder(getActivity())
+                                                    .setTitle(date)
+                                                    .setView(forecastView)
+                                                    .setPositiveButton("Done", new DialogInterface.OnClickListener() {
+                                                        @Override
+                                                        public void onClick(DialogInterface dialogInterface, int i) {
+                                                            dialogInterface.dismiss();
+                                                        }
+                                                    })
+                                                    .create();
+
+                                            alertDialog.show();
+                                        }
+                                    });
                                 }
                             }
 

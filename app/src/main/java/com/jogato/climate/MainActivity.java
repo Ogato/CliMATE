@@ -121,7 +121,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
                 public void onHistoryAndPreferencesResults(Boolean setPref) {
                     if (!setPref) {
                         Fragment fragment = new AccountFragment();
-                        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, fragment, "account").addToBackStack("account").commit();
+                        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, fragment, "account").commit();
                     } else if (setPref) {
                         getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new MainFragment(), "main").commit();
 
@@ -296,27 +296,39 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
     private class DrawerOptionClickListener implements ListView.OnItemClickListener{
         @Override
         public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+            MainFragment main = (MainFragment) getSupportFragmentManager().findFragmentByTag("main");
+            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
             if(i == 0){
-                FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+                Log.i("JO_INFO", "HISTORY");
                 Fragment fragment = new HistoryFragment();
                 Fragment transition = new TransitionFragment();
                 Bundle caption = new Bundle();
                 caption.putString("caption", "Loading History");
                 transition.setArguments(caption);
+                if(main != null){
+                    Log.i("JO_INFO", "REMOVE");
+                    ft.remove(main);
+                }
                 ft.replace(R.id.overlay_container, transition  , "transition");
                 ft.replace(R.id.fragment_container, fragment  , "history").commit();
                 mDrawer.closeDrawers();
             }
             else if(i == 1){
                 Fragment fragment = new AccountFragment();
-                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, fragment).commit();
+                ft.replace(R.id.fragment_container, fragment, "account").commit();
+                if(main != null){
+                    ft.remove(main);
+                }
                 mDrawer.closeDrawers();
             }
             else if(i == 2){
                 FirebaseAuth.getInstance().signOut();
                 LoginManager.getInstance().logOut();
                 Toast.makeText(MainActivity.this,"Log out successful",Toast.LENGTH_SHORT).show();
-                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new LoginFragment(), "login").commit();
+                if(main != null){
+                    ft.remove(main);
+                }
+                ft.replace(R.id.fragment_container, new LoginFragment(), "login").commit();
                 mDrawer.closeDrawers();
                 mDrawer.setEnabled(false);
             }
@@ -346,11 +358,9 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
 
     public void setDrawerAccess(boolean access){
         if(access){
-            Log.i("JO_INFO", "unlocked");
             mDrawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
         }
         else{
-            Log.i("JO_INFO", "locked");
             mDrawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
         }
     }

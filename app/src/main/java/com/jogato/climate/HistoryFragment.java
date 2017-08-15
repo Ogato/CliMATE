@@ -33,13 +33,6 @@ public class HistoryFragment extends Fragment {
         historyListView = (ListView) v.findViewById(R.id.city_listview);
         cityImageAdapter = new CityImageAdapter(getContext());
         historyListView.setAdapter(cityImageAdapter);
-        historyListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                LocalHistory localHistory = (LocalHistory) adapterView.getItemAtPosition(i);
-                ((MainActivity)getActivity()).sendResults(localHistory.getmCity().toLowerCase(), localHistory.getmState().trim());
-            }
-        });
 
         if(((MainActivity)getActivity()).getSupportActionBar() != null) {
             ((MainActivity) getActivity()).getSupportActionBar().setTitle("History");
@@ -61,9 +54,20 @@ public class HistoryFragment extends Fragment {
 
                         @Override
                         public void onFinish() {
-                            TransitionFragment transition = (TransitionFragment) getFragmentManager().findFragmentByTag("transition");
-                            if(transition != null) {
-                                getFragmentManager().beginTransaction().remove(transition).commitAllowingStateLoss();
+                            if(getFragmentManager() != null) {
+                                TransitionFragment transition = (TransitionFragment) getFragmentManager().findFragmentByTag("transition");
+                                if (transition != null) {
+                                    getFragmentManager().beginTransaction().remove(transition).commitAllowingStateLoss();
+                                    ((MainActivity) getActivity()).setDrawerAccess(true);
+                                    historyListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                                        @Override
+                                        public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                                            LocalHistory localHistory = (LocalHistory) adapterView.getItemAtPosition(i);
+                                            ((MainActivity)getActivity()).sendResults(localHistory.getmCity().toLowerCase(), localHistory.getmState().trim());
+                                        }
+                                    });
+
+                                }
                             }
                         }
                     }.start();

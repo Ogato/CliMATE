@@ -37,6 +37,10 @@ public class AccountFragment extends Fragment {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             setExitTransition(new Fade());
         }
+
+        if(((MainActivity)getActivity()).getSupportActionBar() != null) {
+            ((MainActivity) getActivity()).getSupportActionBar().setTitle("Account");
+        }
     }
 
     @Nullable
