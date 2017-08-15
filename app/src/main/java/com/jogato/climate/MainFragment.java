@@ -25,8 +25,11 @@ public class MainFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable final ViewGroup container, @Nullable Bundle savedInstanceState) {
         final View v = inflater.inflate(R.layout.fragment_main, container, false);
+        ((MainActivity)getActivity()).getSupportActionBar().setTitle("CliMATE");
         if(getActivity() != null && !((MainActivity)getActivity()).getSupportActionBar().isShowing()){
             ((MainActivity)getActivity()).getSupportActionBar().show();
+
+
         }
 
         mPopularDestinations = new ArrayList<>();

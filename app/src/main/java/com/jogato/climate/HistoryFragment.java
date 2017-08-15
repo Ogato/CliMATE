@@ -36,6 +36,7 @@ public class HistoryFragment extends Fragment {
         cityImageAdapter = new CityImageAdapter(getContext());
         historyListView.setAdapter(cityImageAdapter);
 
+        ((MainActivity)getActivity()).getSupportActionBar().setTitle("History");
 
         CityImagesSource.getInstance(getActivity()).getCityImages(new CityImagesSource.CityImageListener() {
             @Override
@@ -124,7 +125,7 @@ public class HistoryFragment extends Fragment {
                         .into(cityImage);
 
                 TextView cityName = (TextView) historyView.findViewById(R.id.history_city);
-                cityName.setText(localHistory.getmCity());
+                cityName.setText("  "+localHistory.getmCity().toUpperCase() + " " + localHistory.getmState().toUpperCase()+ "  ");
 
 
 
@@ -137,7 +138,7 @@ public class HistoryFragment extends Fragment {
                         .into(cityImage);
 
                 TextView cityName = (TextView) view.findViewById(R.id.history_city);
-                cityName.setText(localHistory.getmCity());
+                cityName.setText("  "+localHistory.getmCity().toUpperCase() + " " + localHistory.getmState().toUpperCase()+ "  ");
                 return view;
 
             }
