@@ -1,7 +1,10 @@
 package com.jogato.climate;
 
+import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.annotation.Nullable;
@@ -166,12 +169,55 @@ public class ResultFragment extends Fragment {
         mTwoWayViewActiveClothing.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                Log.i("JO_INFO", "CLOTHING"+i);
+                Clothing clothing = (Clothing)adapterView.getItemAtPosition(i);
+                Intent intent=new Intent(Intent.ACTION_VIEW, Uri.parse(clothing.getmProductURL()));
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                intent.setPackage("com.android.chrome");
+                try {
+                    getContext().startActivity(intent);
+                } catch (ActivityNotFoundException ex) {
+                    // Chrome browser presumably not installed so allow user to choose instead
+                    intent.setPackage(null);
+                    getContext().startActivity(intent);
+                }
             }
         });
 
         mTwoWayViewOfficeClothing.setAdapter(officeWearAdapter);
+        mTwoWayViewOfficeClothing.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                Clothing clothing = (Clothing)adapterView.getItemAtPosition(i);
+                Intent intent=new Intent(Intent.ACTION_VIEW, Uri.parse(clothing.getmProductURL()));
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                intent.setPackage("com.android.chrome");
+                try {
+                    getContext().startActivity(intent);
+                } catch (ActivityNotFoundException ex) {
+                    // Chrome browser presumably not installed so allow user to choose instead
+                    intent.setPackage(null);
+                    getContext().startActivity(intent);
+                }
+            }
+        });
+
         mTwoWayViewCasualClothing.setAdapter(casualWearAdapter);
+        mTwoWayViewCasualClothing.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                Clothing clothing = (Clothing)adapterView.getItemAtPosition(i);
+                Intent intent=new Intent(Intent.ACTION_VIEW, Uri.parse(clothing.getmProductURL()));
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                intent.setPackage("com.android.chrome");
+                try {
+                    getContext().startActivity(intent);
+                } catch (ActivityNotFoundException ex) {
+                    // Chrome browser presumably not installed so allow user to choose instead
+                    intent.setPackage(null);
+                    getContext().startActivity(intent);
+                }
+            }
+        });
 
 
 

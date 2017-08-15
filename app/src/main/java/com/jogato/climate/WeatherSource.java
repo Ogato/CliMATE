@@ -296,8 +296,9 @@ public class WeatherSource{
                                     JSONObject clothing = jsonArray.getJSONObject((int) Math.floor(Math.random() * jsonArray.length()));
                                     String imageURL = clothing.getString("mediumImage");
                                     String description = clothing.getString("name");
+                                    String product = clothing.getString("productUrl");
                                     double price = clothing.getDouble("salePrice");
-                                    mActiveClothingURLs.add(new Clothing(price, description, imageURL));
+                                    mActiveClothingURLs.add(new Clothing(price, description, imageURL, product));
 
                                 } else {
                                     Toast.makeText(mContext, "Unable to retrieve clothing suggestions at this time", Toast.LENGTH_SHORT).show();
@@ -338,8 +339,9 @@ public class WeatherSource{
                                 JSONObject clothing = jsonArray.getJSONObject((int) Math.floor(Math.random() * jsonArray.length()));
                                 String imageURL = clothing.getString("mediumImage");
                                 String description = clothing.getString("name");
+                                String product = clothing.getString("productUrl");
                                 double price = clothing.getDouble("salePrice");
-                                mActiveClothingURLs.add(new Clothing(price, description, imageURL));
+                                mActiveClothingURLs.add(new Clothing(price, description, imageURL, product));
                             }
                             else{
                                 Toast.makeText(mContext, "Unable to retrieve clothing suggestions at this time", Toast.LENGTH_SHORT).show();
@@ -451,8 +453,9 @@ public class WeatherSource{
                                     JSONObject clothing = jsonArray.getJSONObject((int) Math.floor(Math.random() * jsonArray.length()));
                                     String imageURL = clothing.getString("mediumImage");
                                     String description = clothing.getString("name");
+                                    String product = clothing.getString("productUrl");
                                     double price = clothing.getDouble("salePrice");
-                                    mOfficeClothingURLs.add(new Clothing(price, description, imageURL));
+                                    mOfficeClothingURLs.add(new Clothing(price, description, imageURL, product));
                                 } else {
                                     Toast.makeText(mContext, "Unable to retrieve clothing suggestions at this time", Toast.LENGTH_SHORT).show();
                                 }
@@ -492,8 +495,9 @@ public class WeatherSource{
                                 JSONObject clothing = jsonArray.getJSONObject((int) Math.floor(Math.random() * jsonArray.length()));
                                 String imageURL = clothing.getString("mediumImage");
                                 String description = clothing.getString("name");
+                                String product = clothing.getString("productUrl");
                                 double price = clothing.getDouble("salePrice");
-                                mOfficeClothingURLs.add(new Clothing(price, description, imageURL));
+                                mOfficeClothingURLs.add(new Clothing(price, description, imageURL, product));
                             }
                             else{
                                 Toast.makeText(mContext, "Unable to retrieve clothing suggestions at this time", Toast.LENGTH_SHORT).show();
@@ -579,8 +583,9 @@ public class WeatherSource{
                                     JSONObject clothing = jsonArray.getJSONObject((int) Math.floor(Math.random() * jsonArray.length()));
                                     String imageURL = clothing.getString("mediumImage");
                                     String description = clothing.getString("name");
+                                    String product = clothing.getString("productUrl");
                                     double price = clothing.getDouble("salePrice");
-                                    mCasualClothingURLs.add(new Clothing(price, description, imageURL));
+                                    mCasualClothingURLs.add(new Clothing(price, description, imageURL, product));
                                 } else {
                                     Toast.makeText(mContext, "Unable to retrieve clothing suggestions at this time", Toast.LENGTH_SHORT).show();
                                 }
@@ -620,8 +625,9 @@ public class WeatherSource{
                                 JSONObject clothing = jsonArray.getJSONObject((int) Math.floor(Math.random() * jsonArray.length()));
                                 String imageURL = clothing.getString("mediumImage");
                                 String description = clothing.getString("name");
+                                String product = clothing.getString("productUrl");
                                 double price = clothing.getDouble("salePrice");
-                                mCasualClothingURLs.add(new Clothing(price, description, imageURL));
+                                mCasualClothingURLs.add(new Clothing(price, description, imageURL, product));
                             }
                             else{
                                 Toast.makeText(mContext, "Unable to retrieve clothing suggestions at this time", Toast.LENGTH_SHORT).show();

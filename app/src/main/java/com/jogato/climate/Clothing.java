@@ -5,11 +5,13 @@ public class Clothing {
     private double mPrice;
     private String mDescription;
     private String mImageURL;
+    private String mProductURL;
 
-    Clothing(double price, String description, String imageURL){
+    Clothing(double price, String description, String imageURL, String productURL){
         mPrice = price;
         mDescription = description;
         mImageURL = imageURL;
+        mProductURL = productURL;
     }
 
     public double getmPrice() {
@@ -22,5 +24,9 @@ public class Clothing {
 
     public String getmImageURL() {
         return mImageURL;
+    }
+
+    public String getmProductURL() {
+        return mProductURL;
     }
 }
