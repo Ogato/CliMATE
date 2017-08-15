@@ -5,9 +5,11 @@ import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -35,6 +37,13 @@ public class HistoryFragment extends Fragment {
         historyListView = (ListView) v.findViewById(R.id.city_listview);
         cityImageAdapter = new CityImageAdapter(getContext());
         historyListView.setAdapter(cityImageAdapter);
+        historyListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                LocalHistory localHistory = (LocalHistory) adapterView.getItemAtPosition(i);
+                ((MainActivity)getActivity()).sendResults(localHistory.getmCity().toLowerCase(), localHistory.getmState().trim());
+            }
+        });
 
         ((MainActivity)getActivity()).getSupportActionBar().setTitle("History");
 
@@ -68,7 +77,7 @@ public class HistoryFragment extends Fragment {
                     if(transition != null) {
                         getFragmentManager().beginTransaction().remove(transition).commit();
                     }
-                    Toast.makeText(getActivity(), "RemoteHistory Empty", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(), "History is empty", Toast.LENGTH_SHORT).show();
                     getFragmentManager().beginTransaction().replace(R.id.fragment_container, new MainFragment()).commit();
 
 

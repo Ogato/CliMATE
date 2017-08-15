@@ -243,7 +243,6 @@ public class LoginFragment extends Fragment implements GoogleApiClient.OnConnect
     }
 
     private void updateUI(FirebaseUser user) {
-        Log.i("JO_INFO", "HERE1");
         String toastText = (user == null) ? "Signed out" : "Signed in as " + user.getEmail();
         Toast.makeText(getActivity(), toastText, Toast.LENGTH_SHORT).show();
 
