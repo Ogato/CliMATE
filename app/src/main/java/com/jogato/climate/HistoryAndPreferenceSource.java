@@ -3,6 +3,7 @@ package com.jogato.climate;
 import android.util.Log;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -103,33 +104,41 @@ public class HistoryAndPreferenceSource {
         });
     }
 
-    public void deleteOldQuery(){
-        final DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
-        final DatabaseReference newqueryReference = databaseReference.child("forecasts");
-        Query queryReference = newqueryReference.orderByChild("Date");
-        queryReference.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                Iterable<DataSnapshot> dataSnap = dataSnapshot.getChildren();
-                for (DataSnapshot snap : dataSnap){
-                    Log.i("AS",snap.child("userId").getValue() + "");
-                    if ((snap.child("userId").getValue(String.class).equals(FirebaseAuth.getInstance().getCurrentUser().getUid()))){
-                        Log.i("JO_INFO", "delete");
-                        String key = newqueryReference.child(FirebaseAuth.getInstance().getCurrentUser().getUid()).getKey();
-                        databaseReference.child(key).removeValue();
-                        break;
-                    }
-                    else{
-                        Log.i("JO_INFO", "nope");
+    public void deleteHandledData(){
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
+        final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if(user != null) {
+            final String userId = user.getUid();
+            final String userName = user.getEmail();
+            DatabaseReference newforecastRef = databaseReference.child("forecasts");
+            Query forecastRef = newforecastRef.orderByChild("Date");
+            forecastRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    Iterable<DataSnapshot> dataSnapshots = dataSnapshot.getChildren();
+                    for (DataSnapshot snap : dataSnapshots) {
+                        Log.i("JO_INFO", "USER: " + userId);
+                        Log.i("JO_INFO", "DATABSE USER: " + snap.child("userId").toString());
+                        if ((snap.child("userId").getValue(String.class).equals(userId))) {
+                            snap.child("day").getRef().setValue(null);
+                            snap.child("month").getRef().setValue(null);
+                            snap.child("year").getRef().setValue(null);
+                            snap.child("city").getRef().setValue(null);
+                            snap.child("state").getRef().setValue(null);
+                            snap.child("Date").getRef().setValue(null);
+                            snap.child("userId").getRef().setValue(null);
+                            snap.child("userName").getRef().setValue(null);
+                            break;
+                        }
+
                     }
                 }
 
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+                    Log.i("JO_INFO", databaseError.getMessage());
+                }
+            });
+        }
     }
 }

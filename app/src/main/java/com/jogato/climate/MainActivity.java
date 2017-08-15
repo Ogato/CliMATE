@@ -94,6 +94,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
             getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new LoginFragment(), "login").commit();
         }
         else if(city != null && !User.getInstance().getmUserPreference().isEmpty()){
+            HistoryAndPreferenceSource.getInstance().deleteHandledData();
             Bundle bundle = new Bundle();
             bundle.putString(USER_CITY_KEY, city);
             bundle.putString(USER_STATE_KEY, state);
@@ -112,7 +113,6 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
             fragmentTransaction.replace(R.id.fragment_container, resultFragment, "result");
             fragmentTransaction.replace(R.id.overlay_container, transition, "transition").commit();
-            HistoryAndPreferenceSource.getInstance().deleteOldQuery();
         }
         else {
             User.getInstance().setmUserEmail(currentUser.getEmail());
@@ -201,6 +201,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
                                 getSupportFragmentManager().beginTransaction().replace(R.id.overlay_container, transition, "transition").commit();
                                 getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, fragment, "result").commit();
                             }else{
+                                Toast.makeText(MainActivity.this, "Request saved when forecast available", Toast.LENGTH_LONG).show();
                                 WeatherSource.pushDatetoSchedule(mDatePicker.getDayOfMonth()+"", mDatePicker.getMonth()+"", mDatePicker.getYear()+"", user_query, stateAbbrMap.get(mSelectedState));
                             }
                         }
