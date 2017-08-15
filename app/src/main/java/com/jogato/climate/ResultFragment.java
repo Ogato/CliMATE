@@ -303,7 +303,7 @@ public class ResultFragment extends Fragment {
                     cityT.setText(city_text.toUpperCase() + " " + state_text.toUpperCase());
                     titleT.setText(title);
                     if (getActivity() != null) {
-                        Picasso.with(getActivity()).load(img_url).into(city_image);
+                        Picasso.with(getActivity()).load(img_url).noPlaceholder().into(city_image);
                     }
 
                 } catch (JSONException e) {
