@@ -25,26 +25,39 @@
                 android:layout_height="match_parent"
                 android:scaleType="centerCrop"
                 android:contentDescription="@string/city_slide_show"/>
+            <ImageView
+                android:id="@+id/cityTransImage"
+                android:layout_width="match_parent"
+                android:layout_height="125dp"
+
+                android:layout_gravity="bottom"
+
+                />
 
             <TextView
                 android:id="@+id/cityText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center_horizontal"
-                android:layout_gravity="center"
+                android:layout_gravity="bottom|right"
+                android:layout_marginBottom="40dp"
+                android:layout_marginRight="10dp"
                 android:text="@string/getting_images"
                 android:textColor="#fff"
-                android:textSize="20sp"/>
+                android:textSize="17sp"/>
 
             <TextView
                 android:layout_marginTop="40dp"
                 android:id="@+id/titleText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:gravity="center_horizontal"
-                android:layout_gravity="center"
+                android:layout_gravity="bottom|right"
+                android:layout_marginBottom="20dp"
+                android:layout_marginRight="10dp"
                 android:textColor="#fff"
-                android:textSize="15sp" />
+                android:textSize="12sp" />
+
+
 
         </FrameLayout>
 
@@ -57,11 +70,22 @@
             <org.lucasr.twowayview.TwoWayView
                 android:id="@+id/weather"
                 style="@style/TwoWayView"
-                android:layout_width="wrap_content"
-                android:layout_marginBottom="5dp"
-                android:layout_height="100dp"
-                android:drawSelectorOnTop="false" />
 
+                android:layout_width="wrap_content"
+                android:layout_margin="10dp"
+                android:layout_height="100dp"
+                android:drawSelectorOnTop="false"
+                android:layout_gravity="center"/>
+
+
+            <TextView
+                android:layout_marginTop="10dp"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:text="Athletic Wear"
+                android:layout_gravity="center"
+                android:layout_marginLeft="5dp"
+                android:textStyle="bold" />
 
             <org.lucasr.twowayview.TwoWayView
                 xmlns:android="http://schemas.android.com/apk/res/android"
@@ -71,6 +95,15 @@
                 android:layout_height="wrap_content"
                 android:drawSelectorOnTop="false"/>
 
+            <TextView
+                android:layout_marginTop="10dp"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:text="Casual Wear"
+                android:layout_gravity="center"
+                android:layout_marginLeft="5dp"
+                android:textStyle="bold" />
+
             <org.lucasr.twowayview.TwoWayView
                 xmlns:android="http://schemas.android.com/apk/res/android"
                 android:id="@+id/office_wear"
@@ -78,6 +111,15 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:drawSelectorOnTop="false"/>
+
+            <TextView
+                android:layout_marginTop="10dp"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:text="Other Wear"
+                android:layout_gravity="center"
+                android:layout_marginLeft="5dp"
+                android:textStyle="bold" />
 
             <org.lucasr.twowayview.TwoWayView
                 xmlns:android="http://schemas.android.com/apk/res/android"

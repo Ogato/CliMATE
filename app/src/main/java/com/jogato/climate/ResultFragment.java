@@ -63,7 +63,7 @@ public class ResultFragment extends Fragment {
 //Variables for image view
     RequestQueue rq;
     TextView cityT, titleT;
-    ImageView city_image;
+    ImageView city_image, city_trans;
     String farm, serverid, photoid, secret, title, city_text, state_text, Url;
     int imageCount = 0, totalImages;
 
@@ -85,6 +85,7 @@ public class ResultFragment extends Fragment {
         city_image = (ImageView) v.findViewById(R.id.photo_img);
         cityT = (TextView) v.findViewById(R.id.cityText);
         titleT = (TextView) v.findViewById(R.id.titleText);
+        city_trans = (ImageView) v.findViewById(R.id.cityTransImage);
 
         new Runnable() {
             int updateInterval = 6000; //=one second
@@ -350,6 +351,8 @@ public class ResultFragment extends Fragment {
                     titleT.setText(title);
                     if (getActivity() != null) {
                         Picasso.with(getActivity()).load(img_url).noPlaceholder().into(city_image);
+
+                        city_trans.setImageResource(R.drawable.city_trans);
                     }
 
                 } catch (JSONException e) {

@@ -6,32 +6,34 @@
     android:gravity="center">
 
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_width="246dp"
+        android:layout_height="299dp"
         android:orientation="vertical"
-        android:background="@drawable/customborder"
+        android:background="@drawable/collectionbox"
         android:gravity="center"
-        android:layout_margin="3sp">
+        android:layout_margin="5sp">
 
         <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="200dp"
+            android:layout_height="20dp"
+            android:textAlignment="center"
+            android:text="hghjgkjhgkhghj"
             android:layout_gravity="center"
-            android:textStyle="bold"
+
             android:textSize="15sp"
             android:id="@+id/description"/>
 
 
         <com.android.volley.toolbox.NetworkImageView
-            android:layout_width="300dp"
-            android:layout_height="300dp"
+            android:layout_width="166dp"
+            android:layout_height="207dp"
             android:id="@+id/clothing_img"/>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:textStyle="bold"
+
             android:textSize="15sp"
             android:id="@+id/price"/>
 
