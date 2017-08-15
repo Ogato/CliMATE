@@ -27,7 +27,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="10dp"
                 android:textStyle="bold"
-                android:id="@+id/average_temp"/>
+                android:id="@+id/average_temp"
+                android:layout_gravity="center"/>
 
             <TextView
                 android:layout_width="wrap_content"

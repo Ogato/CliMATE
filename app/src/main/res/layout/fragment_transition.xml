@@ -12,10 +12,10 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="0.8"
-        android:src="@drawable/giphy"
         android:background="#69BDEE"
         tools:layout_editor_absoluteY="8dp"
-        tools:layout_editor_absoluteX="8dp" />
+        tools:layout_editor_absoluteX="8dp"
+        android:id="@+id/gifImageView" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -24,6 +24,6 @@
         android:textStyle="bold"
         android:textSize="20sp"
         android:textColor="#FFFFFF"
-        android:id="@+id/loading_caption"/>
+        android:id="@+id/loading_caption" />
 
 </LinearLayout>
