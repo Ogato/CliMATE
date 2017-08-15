@@ -300,10 +300,6 @@ public class WeatherSource{
                                     double price = clothing.getDouble("salePrice");
                                     mActiveClothingURLs.add(new Clothing(price, description, imageURL, product));
 
-                                } else {
-                                    if (mActiveClothingURLs.size() == 0) {
-                                        Toast.makeText(mContext, "Unable to retrieve clothing suggestions at this time", Toast.LENGTH_SHORT).show();
-                                    }
                                 }
                             } catch (JSONException e) {
                                 e.printStackTrace();
@@ -345,11 +341,7 @@ public class WeatherSource{
                                 double price = clothing.getDouble("salePrice");
                                 mActiveClothingURLs.add(new Clothing(price, description, imageURL, product));
                             }
-                            else{
-                                if(mActiveClothingURLs.size() == 0) {
-                                    Toast.makeText(mContext, "Unable to retrieve clothing suggestions at this time", Toast.LENGTH_SHORT).show();
-                                }
-                            }
+
                         }
                         catch (JSONException e){
                             e.printStackTrace();
@@ -460,10 +452,6 @@ public class WeatherSource{
                                     String product = clothing.getString("productUrl");
                                     double price = clothing.getDouble("salePrice");
                                     mOfficeClothingURLs.add(new Clothing(price, description, imageURL, product));
-                                } else {
-                                    if (mOfficeClothingURLs.size() == 0) {
-                                        Toast.makeText(mContext, "Unable to retrieve clothing suggestions at this time", Toast.LENGTH_SHORT).show();
-                                    }
                                 }
                             } catch (JSONException e) {
                                 e.printStackTrace();
@@ -505,11 +493,7 @@ public class WeatherSource{
                                 double price = clothing.getDouble("salePrice");
                                 mOfficeClothingURLs.add(new Clothing(price, description, imageURL, product));
                             }
-                            else{
-                                if (mOfficeClothingURLs.size() == 0) {
-                                    Toast.makeText(mContext, "Unable to retrieve clothing suggestions at this time", Toast.LENGTH_SHORT).show();
-                                }
-                            }
+
                         }
                         catch (JSONException e){
                             e.printStackTrace();
@@ -594,10 +578,6 @@ public class WeatherSource{
                                     String product = clothing.getString("productUrl");
                                     double price = clothing.getDouble("salePrice");
                                     mCasualClothingURLs.add(new Clothing(price, description, imageURL, product));
-                                } else {
-                                    if (mCasualClothingURLs.size() == 0) {
-                                        Toast.makeText(mContext, "Unable to retrieve clothing suggestions at this time", Toast.LENGTH_SHORT).show();
-                                    }
                                 }
                             } catch (JSONException e) {
                                 e.printStackTrace();
@@ -639,11 +619,7 @@ public class WeatherSource{
                                 double price = clothing.getDouble("salePrice");
                                 mCasualClothingURLs.add(new Clothing(price, description, imageURL, product));
                             }
-                            else{
-                                if (mCasualClothingURLs.size() == 0) {
-                                    Toast.makeText(mContext, "Unable to retrieve clothing suggestions at this time", Toast.LENGTH_SHORT).show();
-                                }
-                            }
+
                         }
                         catch (JSONException e){
                             e.printStackTrace();

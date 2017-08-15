@@ -141,7 +141,7 @@ public class LoginFragment extends Fragment implements GoogleApiClient.OnConnect
             @Override
             public void onClick(View view) {
                
-                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new SignUpFragment(), "signup").commit();
+                getFragmentManager().beginTransaction().replace(R.id.fragment_container, new SignUpFragment(), "signup").commit();
             }
         });
         return v;
@@ -264,11 +264,11 @@ public class LoginFragment extends Fragment implements GoogleApiClient.OnConnect
                         editor.putInt("app_opened_count", new_count);
                         editor.apply();
                         Fragment fragment = new AccountFragment();
-                        getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, fragment, "account").addToBackStack("account").commit();
+                        getFragmentManager().beginTransaction().replace(R.id.fragment_container, fragment, "account").addToBackStack("account").commit();
                     }
                     else{
                         Fragment mainFragment = new MainFragment();
-                        getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, mainFragment, "main").addToBackStack("main").commit();
+                        getFragmentManager().beginTransaction().replace(R.id.fragment_container, mainFragment, "main").addToBackStack("main").commit();
                     }
                 }
             });

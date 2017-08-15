@@ -52,17 +52,14 @@ public class TransitionFragment extends Fragment {
         View v = inflater.inflate(R.layout.fragment_transition, container, false);
         loadingCaption = (TextView) v.findViewById(R.id.loading_caption);
         loadingCaption.setText(mCaption);
+        ((MainActivity)getActivity()).setDrawerAccess(false);
         return v;
     }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        /*mLinearLayout = (LinearLayout) view.findViewById(R.id.transition);
-        ColorDrawable[] color = {new ColorDrawable(Color.RED), new ColorDrawable(Color.BLUE)};
-        TransitionDrawable trans = new TransitionDrawable(color);
-        mLinearLayout.setBackground(trans);
-        trans.startTransition(6000);*/
+
 
 
         gifImage = (ImageView) view.findViewById(R.id.gifImageView);

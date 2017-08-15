@@ -102,13 +102,11 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
             Bundle caption = new Bundle();
             caption.putString("caption", "Getting Requested Results...");
 
-            Log.i("CityCheck", city + " " + state);
-
             Fragment resultFragment = new ResultFragment();
             Fragment transition = new TransitionFragment();
             resultFragment.setArguments(bundle);
             transition.setArguments(caption);
-            Log.i("CLIMATE", "stopped");
+
             FragmentManager fragmentManager = getSupportFragmentManager();
             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
             fragmentTransaction.replace(R.id.fragment_container, resultFragment, "result");
@@ -150,6 +148,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
         }
         return true;
     }
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -290,7 +289,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
 
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-
+        Toast.makeText(this, "Unable to connect to database", Toast.LENGTH_SHORT).show();
     }
 
 
@@ -344,11 +343,25 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
         mDrawer.addDrawerListener(mDrawerToggle);
     }
 
+
+    public void setDrawerAccess(boolean access){
+        if(access){
+            Log.i("JO_INFO", "unlocked");
+            mDrawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
+        }
+        else{
+            Log.i("JO_INFO", "locked");
+            mDrawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+        }
+    }
+
+
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
         mDrawerToggle.syncState();
     }
+
 
     @Override
     protected void onStart() {
@@ -357,12 +370,12 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
         stopService(i);
     }
 
+
     @Override
     public void onStop() {
         super.onStop();
         Intent i = new Intent(this, NotificationService.class);
         startService(i);
     }
-
 
 }

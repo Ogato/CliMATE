@@ -42,6 +42,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.lucasr.twowayview.TwoWayView;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -106,10 +107,6 @@ public class ResultFragment extends Fragment {
                 city_image.postDelayed(this, updateInterval);
             }
         }.run();
-
-        final List<String> activeWearList = new ArrayList<>();
-        final List<String> officeWearList = new ArrayList<>();
-        final List<String> casualWearList = new ArrayList<>();
 
         mTwoWayViewWeather = (TwoWayView) v.findViewById(R.id.weather);
         mTwoWayViewActiveClothing = (TwoWayView) v.findViewById(R.id.active_wear);
@@ -224,7 +221,7 @@ public class ResultFragment extends Fragment {
 
         sendJsonRequest();
 
-        final FragmentManager fm = getActivity().getSupportFragmentManager();
+        final FragmentManager fm = getFragmentManager();
         WeatherSource.getInstance(getContext()).getWeatherForecast(city, state, new WeatherSource.ForecastListener() {
             @Override
             public void onForecastReceived(List<DayForecast> dayForecasts) {
@@ -275,9 +272,10 @@ public class ResultFragment extends Fragment {
 
                 }
                 else{
-                    TransitionFragment transition = (TransitionFragment)getActivity().getSupportFragmentManager().findFragmentByTag("transition");
-                    getActivity().getSupportFragmentManager().beginTransaction().remove(transition).commit();
-                    getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new MainFragment(), "main").commit();
+                    ((MainActivity)getActivity()).setDrawerAccess(true);
+                    TransitionFragment transition = (TransitionFragment)fm.findFragmentByTag("transition");
+                    fm.beginTransaction().remove(transition).commitAllowingStateLoss();
+                    fm.beginTransaction().replace(R.id.fragment_container, new MainFragment(), "main").commitAllowingStateLoss();
                 }
             }
         }, new WeatherSource.HistoryListener(){
@@ -307,7 +305,8 @@ public class ResultFragment extends Fragment {
                             public void onFinish() {
                                 TransitionFragment transition = (TransitionFragment) fm.findFragmentByTag("transition");
                                 if(transition != null) {
-                                    fm.beginTransaction().remove(transition).commit();
+                                    fm.beginTransaction().remove(transition).commitAllowingStateLoss();
+                                    ((MainActivity)getActivity()).setDrawerAccess(true);
                                 }
                             }
 
@@ -482,7 +481,8 @@ public class ResultFragment extends Fragment {
                 description.setText(clothing.getmDescription());
 
                 TextView price = (TextView) clothingView.findViewById(R.id.price);
-                price.setText("$" +Double.toString(clothing.getmPrice()));
+                String strPrice = new DecimalFormat("$0.00").format(clothing.getmPrice());
+                price.setText(strPrice);
                 return clothingView;
             }
             else {
@@ -497,7 +497,8 @@ public class ResultFragment extends Fragment {
                 description.setText(clothing.getmDescription());
 
                 TextView price = (TextView) view.findViewById(R.id.price);
-                price.setText("$" +Double.toString(clothing.getmPrice()));
+                String strPrice = new DecimalFormat("$0.00").format(clothing.getmPrice());
+                price.setText(strPrice);
                 return view;
             }
         }
@@ -551,7 +552,8 @@ public class ResultFragment extends Fragment {
                 description.setText(clothing.getmDescription());
 
                 TextView price = (TextView) clothingView.findViewById(R.id.price);
-                price.setText("$" +Double.toString(clothing.getmPrice()));
+                String strPrice = new DecimalFormat("$0.00").format(clothing.getmPrice());
+                price.setText(strPrice);
                 return clothingView;
             }
             else {
@@ -566,7 +568,8 @@ public class ResultFragment extends Fragment {
                 description.setText(clothing.getmDescription());
 
                 TextView price = (TextView) view.findViewById(R.id.price);
-                price.setText("$" +Double.toString(clothing.getmPrice()));
+                String strPrice = new DecimalFormat("$0.00").format(clothing.getmPrice());
+                price.setText(strPrice);
                 return view;
             }
         }
@@ -620,7 +623,8 @@ public class ResultFragment extends Fragment {
                 description.setText(clothing.getmDescription());
 
                 TextView price = (TextView) clothingView.findViewById(R.id.price);
-                price.setText("$" + Double.toString(clothing.getmPrice()));
+                String strPrice = new DecimalFormat("$0.00").format(clothing.getmPrice());
+                price.setText(strPrice);
                 return clothingView;
             }
             else {
@@ -635,7 +639,8 @@ public class ResultFragment extends Fragment {
                 description.setText(clothing.getmDescription());
 
                 TextView price = (TextView) view.findViewById(R.id.price);
-                price.setText("$" +Double.toString(clothing.getmPrice()));
+                String strPrice = new DecimalFormat("$0.00").format(clothing.getmPrice());
+                price.setText(strPrice);
                 return view;
             }
         }

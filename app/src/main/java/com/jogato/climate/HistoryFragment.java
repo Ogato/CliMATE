@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,9 +25,6 @@ public class HistoryFragment extends Fragment {
     private ListView historyListView;
     private CityImageAdapter cityImageAdapter;
 
-
-
-
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -45,45 +41,49 @@ public class HistoryFragment extends Fragment {
             }
         });
 
-        ((MainActivity)getActivity()).getSupportActionBar().setTitle("History");
+        if(((MainActivity)getActivity()).getSupportActionBar() != null) {
+            ((MainActivity) getActivity()).getSupportActionBar().setTitle("History");
+        }
 
         CityImagesSource.getInstance(getActivity()).getCityImages(new CityImagesSource.CityImageListener() {
             @Override
             public void onCityImageResults(List<LocalHistory> cityImages) {
-                if(cityImages != null && cityImages.size() > 0) {
-                    cityImageAdapter.setItems(cityImages);
-                    if (getActivity() != null) {
+            if(cityImages != null && cityImages.size() > 0) {
+                cityImageAdapter.setItems(cityImages);
+                if (getActivity() != null) {
 
-                        new CountDownTimer(2000, 1000){
+                    new CountDownTimer(2000, 1000){
 
-                            @Override
-                            public void onTick(long l) {
+                        @Override
+                        public void onTick(long l) {
 
+                        }
+
+                        @Override
+                        public void onFinish() {
+                            TransitionFragment transition = (TransitionFragment) getFragmentManager().findFragmentByTag("transition");
+                            if(transition != null) {
+                                getFragmentManager().beginTransaction().remove(transition).commitAllowingStateLoss();
                             }
-
-                            @Override
-                            public void onFinish() {
-                                TransitionFragment transition = (TransitionFragment) getFragmentManager().findFragmentByTag("transition");
-                                if(transition != null) {
-                                    getFragmentManager().beginTransaction().remove(transition).commit();
-                                }
-                            }
-                        }.start();
-
-                    }
-                }
-                else{
-                    TransitionFragment transition = (TransitionFragment) getFragmentManager().findFragmentByTag("transition");
-                    if(transition != null) {
-                        getFragmentManager().beginTransaction().remove(transition).commit();
-                    }
-                    Toast.makeText(getActivity(), "History is empty", Toast.LENGTH_SHORT).show();
-                    getFragmentManager().beginTransaction().replace(R.id.fragment_container, new MainFragment()).commit();
-
+                        }
+                    }.start();
 
                 }
             }
+            else{
+                TransitionFragment transition = (TransitionFragment) getFragmentManager().findFragmentByTag("transition");
+                if(transition != null) {
+                    getFragmentManager().beginTransaction().remove(transition).commitAllowingStateLoss();
+                    ((MainActivity)getActivity()).setDrawerAccess(true);
+                }
+                Toast.makeText(getActivity(), "History is empty", Toast.LENGTH_SHORT).show();
+                ((MainActivity)getActivity()).setDrawerAccess(true);
+                getFragmentManager().beginTransaction().replace(R.id.fragment_container, new MainFragment()).commit();
+
+            }
+            }
         });
+
 
         return v;
     }
@@ -136,10 +136,9 @@ public class HistoryFragment extends Fragment {
                 TextView cityName = (TextView) historyView.findViewById(R.id.history_city);
                 cityName.setText("  "+localHistory.getmCity().toUpperCase() + " " + localHistory.getmState().toUpperCase()+ "  ");
 
-
-
                 return historyView;
-            } else {
+            }
+            else {
                 LocalHistory localHistory = imgURLs.get(i);
                 ImageView cityImage = (ImageView) view.findViewById(R.id.cityImage);
                 Picasso.with(mContext)
@@ -149,7 +148,6 @@ public class HistoryFragment extends Fragment {
                 TextView cityName = (TextView) view.findViewById(R.id.history_city);
                 cityName.setText("  "+localHistory.getmCity().toUpperCase() + " " + localHistory.getmState().toUpperCase()+ "  ");
                 return view;
-
             }
         }
     }
