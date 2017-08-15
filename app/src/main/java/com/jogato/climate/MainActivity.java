@@ -112,6 +112,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
             fragmentTransaction.replace(R.id.fragment_container, resultFragment, "result");
             fragmentTransaction.replace(R.id.overlay_container, transition, "transition").commit();
+            HistoryAndPreferenceSource.getInstance().deleteOldQuery();
         }
         else {
             User.getInstance().setmUserEmail(currentUser.getEmail());

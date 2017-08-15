@@ -46,7 +46,6 @@ public class NotificationService extends Service {
     private Runnable periodicUpdate = new Runnable() {
         @Override
         public void run() {
-
             handler.postDelayed(periodicUpdate, 60 * 1000 - SystemClock.elapsedRealtime()%1000);
             queryDatabase();
         }
@@ -61,9 +60,6 @@ public class NotificationService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId){
         handler.post(periodicUpdate);
-        //super.onStartCommand(intent, flags, startId);
-        //int hour_of_day = Calendar.getInstance().get(Calendar.HOUR_OF_DAY);
-        //queryDatabase();
         return Service.START_STICKY;
     }
 
@@ -91,14 +87,19 @@ public class NotificationService extends Service {
                 Iterable<DataSnapshot> dataSnap = dataSnapshot.getChildren();
                 for (DataSnapshot snap : dataSnap){
                     Log.i("AS",snap.child("userId").getValue() + "");
-                    if ((snap.child("userId").getValue(String.class).equals(FirebaseAuth.getInstance().getCurrentUser().getUid()))){
-                        QueryObject queryObject = new QueryObject(snap);
-                        Log.i("CLi", "Data incoming");
-                        showNotification(queryObject);
-                        dataList.add(queryObject);
+                    if(FirebaseAuth.getInstance().getCurrentUser() != null) {
+                        if ((snap.child("userId").getValue(String.class).equals(FirebaseAuth.getInstance().getCurrentUser().getUid()))) {
+                            QueryObject queryObject = new QueryObject(snap);
+                            Log.i("CLi", "Data incoming");
+                            showNotification(queryObject);
+                            dataList.add(queryObject);
+                            break;
+                        } else {
+                            Log.i("Cli", FirebaseAuth.getInstance().getCurrentUser().getUid());
+                        }
+                    }
+                    else{
                         break;
-                    }else{
-                        Log.i("Cli", FirebaseAuth.getInstance().getCurrentUser().getUid());
                     }
                 }
 
@@ -134,9 +135,6 @@ public class NotificationService extends Service {
         Intent intent = new Intent(this, MainActivity.class);
         intent.putExtra(USER_CITY_KEY, queryObject.getCity());
         intent.putExtra(USER_STATE_KEY, queryObject.getState());
-//        intent.putExtra(USER_DAY_KEY, queryObject.getDay());
-//        intent.putExtra(USER_MONTH_KEY, queryObject.getMonth());
-//        intent.putExtra(USER_YEAR_KEY, queryObject.getYear());
         PendingIntent intent1 = PendingIntent.getActivity(this, (int) System.currentTimeMillis(), intent, 0);
         Notification n = new NotificationCompat.Builder(this)
                 .setContentTitle("Get your CliMate Suggestions")

@@ -185,7 +185,7 @@ public class ResultFragment extends Fragment {
                     mAdapter.setItems(dayForecasts);
                     WeatherSource.getInstance(getContext()).getActiveClothing(new WeatherSource.ActiveClothingListener() {
                         @Override
-                        public void onClothingReceived(List<String> activeImageURLs) {
+                        public void onClothingReceived(List<Clothing> activeImageURLs) {
                                 activeWearAdapter.setItems(activeImageURLs);
                         }
                     });
@@ -199,7 +199,7 @@ public class ResultFragment extends Fragment {
                         public void onFinish() {
                             WeatherSource.getInstance(getContext()).getOfficeClothing(new WeatherSource.OfficeClothingListener() {
                                 @Override
-                                public void onClothingReceived(List<String> officeImageURLs) {
+                                public void onClothingReceived(List<Clothing> officeImageURLs) {
                                     officeWearAdapter.setItems(officeImageURLs);
                                 }
                             });
@@ -217,7 +217,7 @@ public class ResultFragment extends Fragment {
                         public void onFinish() {
                             WeatherSource.getInstance(getContext()).getCasualClothing(new WeatherSource.CasualClothingListener() {
                                 @Override
-                                public void onClothingReceived(List<String> casualImageURLs) {
+                                public void onClothingReceived(List<Clothing> casualImageURLs) {
                                     casualWearAdapter.setItems(casualImageURLs);
                                 }
                             });
@@ -363,7 +363,7 @@ public class ResultFragment extends Fragment {
                 date.setText(dayForecast.getmDate());
 
                 TextView averageTemp = (TextView) dayView.findViewById(R.id.average_temp);
-                averageTemp.setText(Integer.toString(dayForecast.getmAverageTemp()));
+                averageTemp.setText(Integer.toString(dayForecast.getmAverageTemp()) + " " + (char) 0x00B0 +"F");
 
                 NetworkImageView weather_icon = (NetworkImageView) dayView.findViewById(R.id.weather_img);
                 ImageLoader imageLoader = WeatherSource.getInstance(getContext()).getImageLoader();
@@ -378,7 +378,7 @@ public class ResultFragment extends Fragment {
                 date.setText(dayForecast.getmDate());
 
                 TextView averageTemp = (TextView) view.findViewById(R.id.average_temp);
-                averageTemp.setText(Integer.toString(dayForecast.getmAverageTemp()));
+                averageTemp.setText(Integer.toString(dayForecast.getmAverageTemp()) + " " + (char) 0x00B0 +"F");
                 return view;
 
             }
@@ -387,29 +387,29 @@ public class ResultFragment extends Fragment {
 
     private class ActiveWearAdapter extends BaseAdapter {
         private Context mContext;
-        private List<String> mImages;
+        private List<Clothing> mActive;
         private LayoutInflater mForecastListLayout;
 
         ActiveWearAdapter(Context context) {
             mContext = context;
-            mImages = new ArrayList<>();
+            mActive = new ArrayList<>();
             mForecastListLayout = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         }
 
-        public void setItems(List<String> imageList) {
-            mImages.clear();
-            mImages.addAll(imageList);
+        public void setItems(List<Clothing> imageActiveList) {
+            mActive.clear();
+            mActive.addAll(imageActiveList);
             notifyDataSetChanged();
         }
 
         @Override
         public int getCount() {
-            return mImages.size();
+            return mActive.size();
         }
 
         @Override
         public Object getItem(int i) {
-            return mImages.get(i);
+            return mActive.get(i);
         }
 
         @Override
@@ -421,20 +421,34 @@ public class ResultFragment extends Fragment {
         public View getView(int i, View view, ViewGroup viewGroup) {
 
             if (view == null) {
-                View dayView = mForecastListLayout.inflate(R.layout.list_week_clothing, viewGroup, false);
-                final String url = mImages.get(i);
+                View clothingView = mForecastListLayout.inflate(R.layout.list_week_clothing, viewGroup, false);
+                Clothing clothing = mActive.get(i);
+                final String url = clothing.getmImageURL();
 
-
-                NetworkImageView clothing_icon = (NetworkImageView) dayView.findViewById(R.id.clothing_img);
+                NetworkImageView clothing_icon = (NetworkImageView) clothingView.findViewById(R.id.clothing_img);
                 ImageLoader imageLoader = WeatherSource.getInstance(getContext()).getImageLoader();
                 clothing_icon.setImageUrl(url, imageLoader);
-                return dayView;
+
+                TextView description = (TextView) clothingView.findViewById(R.id.description);
+                description.setText(clothing.getmDescription());
+
+                TextView price = (TextView) clothingView.findViewById(R.id.price);
+                price.setText("$" +Double.toString(clothing.getmPrice()));
+                return clothingView;
             }
             else {
-                final String url = mImages.get(i);
+                Clothing clothing = mActive.get(i);
+                final String url = clothing.getmImageURL();
+
                 NetworkImageView clothing_icon = (NetworkImageView) view.findViewById(R.id.clothing_img);
                 ImageLoader imageLoader = WeatherSource.getInstance(getContext()).getImageLoader();
                 clothing_icon.setImageUrl(url, imageLoader);
+
+                TextView description = (TextView) view.findViewById(R.id.description);
+                description.setText(clothing.getmDescription());
+
+                TextView price = (TextView) view.findViewById(R.id.price);
+                price.setText("$" +Double.toString(clothing.getmPrice()));
                 return view;
             }
         }
@@ -442,29 +456,29 @@ public class ResultFragment extends Fragment {
 
     private class OfficeWearAdapter extends BaseAdapter {
         private Context mContext;
-        private List<String> mImages;
+        private List<Clothing> mOfficemages;
         private LayoutInflater mForecastListLayout;
 
         OfficeWearAdapter(Context context) {
             mContext = context;
-            mImages = new ArrayList<>();
+            mOfficemages = new ArrayList<>();
             mForecastListLayout = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         }
 
-        public void setItems(List<String> imageList) {
-            mImages.clear();
-            mImages.addAll(imageList);
+        public void setItems(List<Clothing> imageList) {
+            mOfficemages.clear();
+            mOfficemages.addAll(imageList);
             notifyDataSetChanged();
         }
 
         @Override
         public int getCount() {
-            return mImages.size();
+            return mOfficemages.size();
         }
 
         @Override
         public Object getItem(int i) {
-            return mImages.get(i);
+            return mOfficemages.get(i);
         }
 
         @Override
@@ -476,20 +490,34 @@ public class ResultFragment extends Fragment {
         public View getView(int i, View view, ViewGroup viewGroup) {
 
             if (view == null) {
-                View dayView = mForecastListLayout.inflate(R.layout.list_week_clothing, viewGroup, false);
-                final String url = mImages.get(i);
+                View clothingView = mForecastListLayout.inflate(R.layout.list_week_clothing, viewGroup, false);
+                Clothing clothing = mOfficemages.get(i);
+                final String url = clothing.getmImageURL();
 
-
-                NetworkImageView clothing_icon = (NetworkImageView) dayView.findViewById(R.id.clothing_img);
+                NetworkImageView clothing_icon = (NetworkImageView) clothingView.findViewById(R.id.clothing_img);
                 ImageLoader imageLoader = WeatherSource.getInstance(getContext()).getImageLoader();
                 clothing_icon.setImageUrl(url, imageLoader);
-                return dayView;
+
+                TextView description = (TextView) clothingView.findViewById(R.id.description);
+                description.setText(clothing.getmDescription());
+
+                TextView price = (TextView) clothingView.findViewById(R.id.price);
+                price.setText("$" +Double.toString(clothing.getmPrice()));
+                return clothingView;
             }
             else {
-                final String url = mImages.get(i);
+                Clothing clothing = mOfficemages.get(i);
+                final String url = clothing.getmImageURL();
+
                 NetworkImageView clothing_icon = (NetworkImageView) view.findViewById(R.id.clothing_img);
                 ImageLoader imageLoader = WeatherSource.getInstance(getContext()).getImageLoader();
                 clothing_icon.setImageUrl(url, imageLoader);
+
+                TextView description = (TextView) view.findViewById(R.id.description);
+                description.setText(clothing.getmDescription());
+
+                TextView price = (TextView) view.findViewById(R.id.price);
+                price.setText("$" +Double.toString(clothing.getmPrice()));
                 return view;
             }
         }
@@ -497,29 +525,29 @@ public class ResultFragment extends Fragment {
 
     private class CasualWearAdapter extends BaseAdapter {
         private Context mContext;
-        private List<String> mImages;
+        private List<Clothing> mCasualImages;
         private LayoutInflater mForecastListLayout;
 
         CasualWearAdapter(Context context) {
             mContext = context;
-            mImages = new ArrayList<>();
+            mCasualImages = new ArrayList<>();
             mForecastListLayout = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         }
 
-        public void setItems(List<String> imageList) {
-            mImages.clear();
-            mImages.addAll(imageList);
+        public void setItems(List<Clothing> imageList) {
+            mCasualImages.clear();
+            mCasualImages.addAll(imageList);
             notifyDataSetChanged();
         }
 
         @Override
         public int getCount() {
-            return mImages.size();
+            return mCasualImages.size();
         }
 
         @Override
         public Object getItem(int i) {
-            return mImages.get(i);
+            return mCasualImages.get(i);
         }
 
         @Override
@@ -531,20 +559,34 @@ public class ResultFragment extends Fragment {
         public View getView(int i, View view, ViewGroup viewGroup) {
 
             if (view == null) {
-                View dayView = mForecastListLayout.inflate(R.layout.list_week_clothing, viewGroup, false);
-                final String url = mImages.get(i);
+                View clothingView = mForecastListLayout.inflate(R.layout.list_week_clothing, viewGroup, false);
+                Clothing clothing = mCasualImages.get(i);
+                final String url = clothing.getmImageURL();
 
-
-                NetworkImageView clothing_icon = (NetworkImageView) dayView.findViewById(R.id.clothing_img);
+                NetworkImageView clothing_icon = (NetworkImageView) clothingView.findViewById(R.id.clothing_img);
                 ImageLoader imageLoader = WeatherSource.getInstance(getContext()).getImageLoader();
                 clothing_icon.setImageUrl(url, imageLoader);
-                return dayView;
+
+                TextView description = (TextView) clothingView.findViewById(R.id.description);
+                description.setText(clothing.getmDescription());
+
+                TextView price = (TextView) clothingView.findViewById(R.id.price);
+                price.setText("$" + Double.toString(clothing.getmPrice()));
+                return clothingView;
             }
             else {
-                final String url = mImages.get(i);
+                Clothing clothing = mCasualImages.get(i);
+                final String url = clothing.getmImageURL();
+
                 NetworkImageView clothing_icon = (NetworkImageView) view.findViewById(R.id.clothing_img);
                 ImageLoader imageLoader = WeatherSource.getInstance(getContext()).getImageLoader();
                 clothing_icon.setImageUrl(url, imageLoader);
+
+                TextView description = (TextView) view.findViewById(R.id.description);
+                description.setText(clothing.getmDescription());
+
+                TextView price = (TextView) view.findViewById(R.id.price);
+                price.setText("$" +Double.toString(clothing.getmPrice()));
                 return view;
             }
         }

@@ -33,7 +33,14 @@ public class TransitionFragment extends Fragment {
             setExitTransition(new Fade());
         }
 
-        mCaption = getArguments().getString("caption");
+        if(getArguments() != null) {
+            mCaption = getArguments().getString("caption");
+        }
+        else{
+            mCaption = "Getting Requested Results";
+
+
+        }
     }
 
     private LinearLayout mLinearLayout;

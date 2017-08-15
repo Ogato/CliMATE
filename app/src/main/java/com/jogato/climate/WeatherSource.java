@@ -39,9 +39,9 @@ public class WeatherSource{
     private static final String[] MEN_CLOTHING_ID = {"5438_133197_592999", "5438_133197_1657253", "5438_133197"};
     private static final String[] WOMEN_CLOTHING_ID = {"5438_133162_592996", "5438_133162_9141868", "5438_133162"};
     private final static int IMAGE_CACHE_COUNT = 100;
-    private List<String> mActiveClothingURLs;
-    private List<String> mOfficeClothingURLs;
-    private List<String> mCasualClothingURLs;
+    private List<Clothing> mActiveClothingURLs;
+    private List<Clothing> mOfficeClothingURLs;
+    private List<Clothing> mCasualClothingURLs;
     private static WeatherSource sWeatherSource;
     private RequestQueue mRequestQueue;
     private Context mContext;
@@ -67,13 +67,13 @@ public class WeatherSource{
     }
 
     public interface ActiveClothingListener {
-        void onClothingReceived(List<String>activeImageURLs);
+        void onClothingReceived(List<Clothing>activeImageURLs);
     }
     public interface OfficeClothingListener {
-        void onClothingReceived(List<String>officeImageURLs);
+        void onClothingReceived(List<Clothing>officeImageURLs);
     }
     public interface CasualClothingListener {
-        void onClothingReceived(List<String>casualImageURLs);
+        void onClothingReceived(List<Clothing>casualImageURLs);
     }
 
 
@@ -281,6 +281,7 @@ public class WeatherSource{
         String pref = User.getInstance().getmUserPreference();
 
         if(pref.equals("male")) {
+                mActiveClothingURLs.clear();
                 for (String clothing : typeOfWeatherList) {
 
                     url = WALMART_API_URL + clothing + "&format=json&categoryId=" + MEN_CLOTHING_ID[0] + WALMART_API_KEY;
@@ -292,7 +293,11 @@ public class WeatherSource{
                             try {
                                 JSONArray jsonArray = response.getJSONArray("items");
                                 if (jsonArray.length() > 0) {
-                                    mActiveClothingURLs.add(jsonArray.getJSONObject((int) Math.floor(Math.random() * jsonArray.length())).getString("mediumImage"));
+                                    JSONObject clothing = jsonArray.getJSONObject((int) Math.floor(Math.random() * jsonArray.length()));
+                                    String imageURL = clothing.getString("mediumImage");
+                                    String description = clothing.getString("name");
+                                    double price = clothing.getDouble("salePrice");
+                                    mActiveClothingURLs.add(new Clothing(price, description, imageURL));
 
                                 } else {
                                     Toast.makeText(mContext, "Unable to retrieve clothing suggestions at this time", Toast.LENGTH_SHORT).show();
@@ -318,7 +323,7 @@ public class WeatherSource{
         }
 
         else if(pref.equals("female")){
-
+            mActiveClothingURLs.clear();
             for(String clothing : typeOfWeatherList){
 
                 url = WALMART_API_URL + clothing + "&format=json&categoryId=" + WOMEN_CLOTHING_ID[0] + WALMART_API_KEY;
@@ -330,7 +335,11 @@ public class WeatherSource{
                         try {
                             JSONArray jsonArray = response.getJSONArray("items");
                             if(jsonArray.length() > 0) {
-                                mActiveClothingURLs.add(jsonArray.getJSONObject((int)Math.floor(Math.random()*jsonArray.length())).getString("mediumImage"));
+                                JSONObject clothing = jsonArray.getJSONObject((int) Math.floor(Math.random() * jsonArray.length()));
+                                String imageURL = clothing.getString("mediumImage");
+                                String description = clothing.getString("name");
+                                double price = clothing.getDouble("salePrice");
+                                mActiveClothingURLs.add(new Clothing(price, description, imageURL));
                             }
                             else{
                                 Toast.makeText(mContext, "Unable to retrieve clothing suggestions at this time", Toast.LENGTH_SHORT).show();
@@ -427,6 +436,7 @@ public class WeatherSource{
         String pref = User.getInstance().getmUserPreference();
 
         if(pref.equals("male")) {
+            mOfficeClothingURLs.clear();
                 for (String clothing : typeOfWeatherList) {
 
                     url = WALMART_API_URL + clothing + "&format=json&categoryId=" + MEN_CLOTHING_ID[1] + WALMART_API_KEY;
@@ -438,8 +448,11 @@ public class WeatherSource{
                             try {
                                 JSONArray jsonArray = response.getJSONArray("items");
                                 if (jsonArray.length() > 0) {
-                                    mOfficeClothingURLs.add(jsonArray.getJSONObject((int) Math.floor(Math.random() * jsonArray.length())).getString("mediumImage"));
-
+                                    JSONObject clothing = jsonArray.getJSONObject((int) Math.floor(Math.random() * jsonArray.length()));
+                                    String imageURL = clothing.getString("mediumImage");
+                                    String description = clothing.getString("name");
+                                    double price = clothing.getDouble("salePrice");
+                                    mOfficeClothingURLs.add(new Clothing(price, description, imageURL));
                                 } else {
                                     Toast.makeText(mContext, "Unable to retrieve clothing suggestions at this time", Toast.LENGTH_SHORT).show();
                                 }
@@ -464,7 +477,7 @@ public class WeatherSource{
         }
 
         else if(pref.equals("female")){
-
+            mOfficeClothingURLs.clear();
             for(String clothing : typeOfWeatherList){
 
                 url = WALMART_API_URL + clothing + "&format=json&categoryId=" + WOMEN_CLOTHING_ID[1] + WALMART_API_KEY;
@@ -476,7 +489,11 @@ public class WeatherSource{
                         try {
                             JSONArray jsonArray = response.getJSONArray("items");
                             if(jsonArray.length() > 0) {
-                                mOfficeClothingURLs.add(jsonArray.getJSONObject((int)Math.floor(Math.random()*jsonArray.length())).getString("mediumImage"));
+                                JSONObject clothing = jsonArray.getJSONObject((int) Math.floor(Math.random() * jsonArray.length()));
+                                String imageURL = clothing.getString("mediumImage");
+                                String description = clothing.getString("name");
+                                double price = clothing.getDouble("salePrice");
+                                mOfficeClothingURLs.add(new Clothing(price, description, imageURL));
                             }
                             else{
                                 Toast.makeText(mContext, "Unable to retrieve clothing suggestions at this time", Toast.LENGTH_SHORT).show();
@@ -547,7 +564,7 @@ public class WeatherSource{
         String pref = User.getInstance().getmUserPreference();
 
         if(pref.equals("male")) {
-            for (String clothingType : MEN_CLOTHING_ID) {
+                mCasualClothingURLs.clear();
                 for (String clothing : typeOfWeatherList) {
 
                     url = WALMART_API_URL + clothing + "&format=json&categoryId=" + MEN_CLOTHING_ID[2] + WALMART_API_KEY;
@@ -559,8 +576,11 @@ public class WeatherSource{
                             try {
                                 JSONArray jsonArray = response.getJSONArray("items");
                                 if (jsonArray.length() > 0) {
-                                    mCasualClothingURLs.add(jsonArray.getJSONObject((int) Math.floor(Math.random() * jsonArray.length())).getString("mediumImage"));
-
+                                    JSONObject clothing = jsonArray.getJSONObject((int) Math.floor(Math.random() * jsonArray.length()));
+                                    String imageURL = clothing.getString("mediumImage");
+                                    String description = clothing.getString("name");
+                                    double price = clothing.getDouble("salePrice");
+                                    mCasualClothingURLs.add(new Clothing(price, description, imageURL));
                                 } else {
                                     Toast.makeText(mContext, "Unable to retrieve clothing suggestions at this time", Toast.LENGTH_SHORT).show();
                                 }
@@ -582,12 +602,10 @@ public class WeatherSource{
                     mRequestQueue.add(jsonObjectRequest);
 
                 }
-
-            }
         }
 
         else if(pref.equals("female")){
-
+            mCasualClothingURLs.clear();
             for(String clothing : typeOfWeatherList){
 
                 url = WALMART_API_URL + clothing + "&format=json&categoryId=" + WOMEN_CLOTHING_ID[2] + WALMART_API_KEY;
@@ -599,7 +617,11 @@ public class WeatherSource{
                         try {
                             JSONArray jsonArray = response.getJSONArray("items");
                             if(jsonArray.length() > 0) {
-                                mCasualClothingURLs.add(jsonArray.getJSONObject((int)Math.floor(Math.random()*jsonArray.length())).getString("mediumImage"));
+                                JSONObject clothing = jsonArray.getJSONObject((int) Math.floor(Math.random() * jsonArray.length()));
+                                String imageURL = clothing.getString("mediumImage");
+                                String description = clothing.getString("name");
+                                double price = clothing.getDouble("salePrice");
+                                mCasualClothingURLs.add(new Clothing(price, description, imageURL));
                             }
                             else{
                                 Toast.makeText(mContext, "Unable to retrieve clothing suggestions at this time", Toast.LENGTH_SHORT).show();
@@ -609,6 +631,7 @@ public class WeatherSource{
                             e.printStackTrace();
                         }
                         casualClothingListener.onClothingReceived(mCasualClothingURLs);
+
                     }
                 }, new Response.ErrorListener(){
                     @Override

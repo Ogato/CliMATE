@@ -13,6 +13,14 @@
         android:gravity="center"
         android:layout_margin="3sp">
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:textStyle="bold"
+            android:textSize="15sp"
+            android:id="@+id/description"/>
+
 
         <com.android.volley.toolbox.NetworkImageView
             android:layout_width="300dp"
@@ -24,7 +32,8 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:textStyle="bold"
-            android:id="@+id/description"/>
+            android:textSize="15sp"
+            android:id="@+id/price"/>
 
     </LinearLayout>
 

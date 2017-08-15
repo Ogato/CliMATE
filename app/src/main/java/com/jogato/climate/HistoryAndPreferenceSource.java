@@ -1,5 +1,8 @@
 package com.jogato.climate;
 
+import android.util.Log;
+
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -7,7 +10,9 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 
@@ -89,6 +94,36 @@ public class HistoryAndPreferenceSource {
                     User.getInstance().setmUserEmail(s.child("email").getValue(String.class));
                     User.getInstance().setmUserPreference(s.child("preference").getValue(String.class));
                 }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    public void deleteOldQuery(){
+        final DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
+        final DatabaseReference newqueryReference = databaseReference.child("forecasts");
+        Query queryReference = newqueryReference.orderByChild("Date");
+        queryReference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Iterable<DataSnapshot> dataSnap = dataSnapshot.getChildren();
+                for (DataSnapshot snap : dataSnap){
+                    Log.i("AS",snap.child("userId").getValue() + "");
+                    if ((snap.child("userId").getValue(String.class).equals(FirebaseAuth.getInstance().getCurrentUser().getUid()))){
+                        Log.i("JO_INFO", "delete");
+                        String key = newqueryReference.child(FirebaseAuth.getInstance().getCurrentUser().getUid()).getKey();
+                        databaseReference.child(key).removeValue();
+                        break;
+                    }
+                    else{
+                        Log.i("JO_INFO", "nope");
+                    }
+                }
+
             }
 
             @Override
