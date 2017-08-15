@@ -53,7 +53,7 @@ public class TransitionFragment extends Fragment {
         return v;
     }
 
-    @Override
+    /*@Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         mLinearLayout = (LinearLayout) view.findViewById(R.id.transition);
@@ -62,5 +62,6 @@ public class TransitionFragment extends Fragment {
         mLinearLayout.setBackground(trans);
         trans.startTransition(6000);
     }
+    */
 
 }
