@@ -15,8 +15,12 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -317,5 +321,37 @@ public class WeatherSource{
         Log.i("PushAS", userId);
         pushRef.setValue(dateMap);
 
+    }
+
+    public static void deleteHandledData(){
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        final String userId = user.getUid();
+        final String userName = user.getEmail();
+        DatabaseReference newforecastRef = databaseReference.child("forecasts");
+        Query forecastRef = newforecastRef.orderByChild("Date");
+        forecastRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Iterable<DataSnapshot> dataSnapshots = dataSnapshot.getChildren();
+                for (DataSnapshot snap : dataSnapshots){
+                    if ((snap.child("userId").equals(userId)){
+                        snap.child("day").getRef().setValue(null);
+                        snap.child("month").getRef().setValue(null);
+                        snap.child("year").getRef().setValue(null);
+                        snap.child("city").getRef().setValue(null);
+                        snap.child("state").getRef().setValue(null);
+                        snap.child("Date").getRef().setValue(null);
+                        break;
+                    }
+
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
     }
 }

@@ -134,6 +134,8 @@ public class NotificationService extends Service {
         Intent intent = new Intent(this, MainActivity.class);
         intent.putExtra(USER_CITY_KEY, queryObject.getCity());
         intent.putExtra(USER_STATE_KEY, queryObject.getState());
+        Log.i("NotificationService", queryObject.getCity());
+        Log.i("NotificationService", queryObject.getState());
 //        intent.putExtra(USER_DAY_KEY, queryObject.getDay());
 //        intent.putExtra(USER_MONTH_KEY, queryObject.getMonth());
 //        intent.putExtra(USER_YEAR_KEY, queryObject.getYear());

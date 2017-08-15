@@ -2,6 +2,8 @@ package com.jogato.climate;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.os.CountDownTimer;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -10,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -32,7 +35,6 @@ import com.squareup.picasso.Picasso;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.lucasr.twowayview.TwoWayView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,8 +47,8 @@ public class ResultFragment extends Fragment {
     private static final String USER_STATE_KEY = "state";
     private ForecastAdapter mAdapter;
     private ClothesAdapter mAdapter2;
-    private TwoWayView mTwoWayView1;
-    private TwoWayView mTwoWayView2;
+    private ListView mTwoWayView1;
+    private ListView mTwoWayView2;
     private ProgressBar mWeatherProgressBar;
     private ProgressBar mClothingProgressBar;
     private List<String>clothingURLs;
@@ -66,7 +68,7 @@ public class ResultFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable final ViewGroup container, @Nullable Bundle savedInstanceState) {
-        final View v = inflater.inflate(R.layout.fragment_results, container, false);
+        final View v = inflater.inflate(R.layout.fragment_results_test, container, false);
         setHasOptionsMenu(true);
         setRetainInstance(true);
 
@@ -87,15 +89,15 @@ public class ResultFragment extends Fragment {
         cityT = (TextView) v.findViewById(R.id.cityText);
         titleT = (TextView) v.findViewById(R.id.titleText);
 
+        final Handler handler = new Handler(getContext().getMainLooper());
 
-        sendJsonRequest();
 
         new Runnable() {
             int updateInterval = 6000; //=one second
 
             @Override
             public void run() {
-                android.os.Process.setThreadPriority(android.os.Process.THREAD_PRIORITY_BACKGROUND);
+                //android.os.Process.setThreadPriority(android.os.Process.THREAD_PRIORITY_BACKGROUND);
                 if (imageCount != totalImages) {
                     Log.i("ImageCount true state", imageCount + "");
                     Log.i("totalImages true state", totalImages + "");
@@ -111,9 +113,12 @@ public class ResultFragment extends Fragment {
                     imageCount = 0;
                 }
 
-                city_image.postDelayed(this, updateInterval);
+                handler.postDelayed(this, updateInterval);
+
             }
         }.run();
+
+
 //        for (int i = 0; i < 10; i++){
 //            if (imageCount != totalImages){
 //                Log.i("ImageCount", imageCount + "");
@@ -152,7 +157,7 @@ public class ResultFragment extends Fragment {
         mTwoWayView1.setAdapter(mAdapter);
         mTwoWayView2.setAdapter(mAdapter2);
 
-
+        sendJsonRequest();
 
 
         WeatherSource.getInstance(getContext()).getWeatherForecast(city, state, new WeatherSource.ForecastListener() {
@@ -164,7 +169,9 @@ public class ResultFragment extends Fragment {
                     WeatherSource.getInstance(getContext()).getClothing(new WeatherSource.ClothingListener() {
                         @Override
                         public void onClothingReceived(List<String> imageURLs) {
+                            Log.i("ResultFragment", imageURLs.toString());
                             mAdapter2.setItems(imageURLs);
+                            mTwoWayView2.setAdapter(mAdapter2);
                             mClothingProgressBar.setVisibility(View.INVISIBLE);
                         }
                     });
@@ -192,24 +199,26 @@ public class ResultFragment extends Fragment {
                             databaseReference.child("users").child(User.getInstance().getmUserId())
                                     .child("history").setValue(histories);
                         }
-//                        new CountDownTimer(2000, 1000) {
-//                            @Override
-//                            public void onTick(long l) {
-//
-//                            }
-//
-//                            @Override
-//                            public void onFinish() {
-//                                if(getActivity() != null) {
-//                                    Fragment transition = getActivity().getSupportFragmentManager().findFragmentByTag("transition");
-//                                    getActivity().getSupportFragmentManager().beginTransaction().remove(transition).commit();
-//                                }
-//                                else{
-//                                    Log.i("INFO", "NULL");
-//                                }
-//                            }
-//
-//                        }.start();
+
+                        new CountDownTimer(2000, 1000) {
+                            @Override
+                            public void onTick(long l) {
+
+                            }
+
+                            @Override
+                            public void onFinish() {
+                                if(getActivity() != null) {
+                                    Fragment transition = getActivity().getSupportFragmentManager().findFragmentByTag("transition");
+                                    getActivity().getSupportFragmentManager().beginTransaction().remove(transition).commit();
+                                }
+                                else{
+                                    Log.i("INFO", "NULL");
+                                }
+                            }
+
+                        }.start();
+
                     }
 
                     @Override
@@ -345,6 +354,7 @@ public class ResultFragment extends Fragment {
 
         public void setItems(List<String> imageList) {
             mImages.clear();
+            Log.i("ResultFragment", imageList.toString());
             mImages.addAll(imageList);
             notifyDataSetChanged();
         }
@@ -369,6 +379,7 @@ public class ResultFragment extends Fragment {
         public View getView(int i, View view, ViewGroup viewGroup) {
 
             if (view == null) {
+                Log.i("ResultFragment", "getView called");
                 View dayView = mForecastListLayout.inflate(R.layout.list_week_clothing, viewGroup, false);
                 String url = mImages.get(i);
 
@@ -380,6 +391,7 @@ public class ResultFragment extends Fragment {
             }
             else {
                 String url = mImages.get(i);
+                Log.i("ResultFragment", url);
                 NetworkImageView clothing_icon = view.findViewById(R.id.clothing_img);
                 ImageLoader imageLoader = WeatherSource.getInstance(getContext()).getImageLoader();
                 clothing_icon.setImageUrl(url, imageLoader);
