@@ -282,22 +282,22 @@ public class ResultFragment extends Fragment {
                                             date.setText(forecastObject.getmDate());
 
                                             TextView averageTemp = (TextView) forecastView.findViewById(R.id.average_temp);
-                                            averageTemp.setText("Average Temp: " + forecastObject.getmAverageTemp());
+                                            averageTemp.setText("Average Temp: " + forecastObject.getmAverageTemp() + (char) 0x00B0 +"F");
 
                                             TextView description = (TextView) forecastView.findViewById(R.id.description);
                                             description.setText("Condition: " + forecastObject.getmDescription());
 
                                             TextView minTemp = (TextView) forecastView.findViewById(R.id.min_temp);
-                                            minTemp.setText("Min Temp: " + forecastObject.getmMinTemp());
+                                            minTemp.setText("Min Temp: " + forecastObject.getmMinTemp() + (char) 0x00B0 +"F");
 
                                             TextView maxTemp = (TextView) forecastView.findViewById(R.id.max_temp);
-                                            maxTemp.setText("Max Temp: " + forecastObject.getmMaxTemp());
+                                            maxTemp.setText("Max Temp: " + forecastObject.getmMaxTemp() + (char) 0x00B0 +"F");
 
                                             TextView windSpeed = (TextView) forecastView.findViewById(R.id.wind_speed);
-                                            windSpeed.setText("Wind Speed: " + forecastObject.getmWindSpeed());
+                                            windSpeed.setText("Wind Speed: " + forecastObject.getmWindSpeed() + " MPH");
 
                                             TextView humidity = (TextView) forecastView.findViewById(R.id.humidity);
-                                            humidity.setText("Humidity: " + forecastObject.getmHumidity());
+                                            humidity.setText("Humidity: " + forecastObject.getmHumidity() + "%");
 
                                             AlertDialog alertDialog = new AlertDialog.Builder(getActivity())
                                                     .setView(forecastView)
