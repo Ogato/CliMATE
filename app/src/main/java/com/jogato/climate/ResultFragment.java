@@ -76,7 +76,7 @@ public class ResultFragment extends Fragment {
         setRetainInstance(true);
 
         if(((MainActivity)getActivity()).getSupportActionBar() != null) {
-            ((MainActivity) getActivity()).getSupportActionBar().setTitle("CLiMATE");
+            ((MainActivity) getActivity()).getSupportActionBar().setTitle("CLIMATE");
         }
 
         final String city = getArguments().getString(USER_CITY_KEY);
@@ -268,7 +268,6 @@ public class ResultFragment extends Fragment {
                                 TransitionFragment transition = (TransitionFragment) fm.findFragmentByTag("transition");
                                 if(transition != null) {
                                     fm.beginTransaction().remove(transition).commitAllowingStateLoss();
-                                    ((MainActivity)getActivity()).setDrawerAccess(true);
                                     mTwoWayViewWeather.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                                         @Override
                                         public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
@@ -278,6 +277,9 @@ public class ResultFragment extends Fragment {
 
                                             NetworkImageView weatherIcon = (NetworkImageView) forecastView.findViewById(R.id.weather_img);
                                             weatherIcon.setImageUrl(forecastObject.getmImageViewURL(), imageLoader);
+
+                                            TextView date = (TextView) forecastView.findViewById(R.id.date);
+                                            date.setText(forecastObject.getmDate());
 
                                             TextView averageTemp = (TextView) forecastView.findViewById(R.id.average_temp);
                                             averageTemp.setText("Average Temp: " + forecastObject.getmAverageTemp());
@@ -297,9 +299,8 @@ public class ResultFragment extends Fragment {
                                             TextView humidity = (TextView) forecastView.findViewById(R.id.humidity);
                                             humidity.setText("Humidity: " + forecastObject.getmHumidity());
 
-                                            String date = forecastObject.getmDate();
                                             AlertDialog alertDialog = new AlertDialog.Builder(getActivity())
-                                                    .setTitle(date)
+                                                    .setTitle("Day Forecast")
                                                     .setView(forecastView)
                                                     .setPositiveButton("Done", new DialogInterface.OnClickListener() {
                                                         @Override
@@ -326,6 +327,7 @@ public class ResultFragment extends Fragment {
             }
         });
 
+        ((MainActivity)getActivity()).setDrawerAccess(true);
         return v;
     }
 

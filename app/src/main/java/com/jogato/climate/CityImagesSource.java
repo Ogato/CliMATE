@@ -139,7 +139,7 @@ public class CityImagesSource {
     //Gets the user's last 10 search's from history entry
     private void getUserHistory(final UserHistoryListener userHistoryListener){
         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
-        final Query userHistory = databaseReference.child("users").child(User.getInstance().getmUserId()).child("history").limitToLast(10);
+        final Query userHistory = databaseReference.child("users").child(User.getInstance().getmUserId()).child("history").orderByChild("historyTimeStamp").limitToLast(10);
         userHistory.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
