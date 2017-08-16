@@ -7,6 +7,7 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.app.NavUtils;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
@@ -155,6 +156,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
         View view = LayoutInflater.from(this).inflate(R.layout.dialog_edit_text, null);
         final EditText editText = (EditText) view.findViewById(R.id.user_query);
         final Spinner stateSpinner = (Spinner) view.findViewById(R.id.states);
+
         mDatePicker = (DatePicker) view.findViewById(R.id.date_picker);
         mDatePicker.setMinDate(System.currentTimeMillis() - 1000);
         Calendar calendar = Calendar.getInstance(TimeZone.getDefault());
@@ -167,6 +169,23 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
 
         if (mDrawerToggle.onOptionsItemSelected(item)) {
             return true;
+        }
+
+        if(item.getTitle().equals("home")){
+            MainFragment main = (MainFragment) getSupportFragmentManager().findFragmentByTag("main");
+            if(main ==  null){
+                getSupportFragmentManager().popBackStack();
+                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new MainFragment(), "main").commit();
+                return true;
+            }
+            else if(!main.isVisible()){
+                getSupportFragmentManager().popBackStack();
+                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new MainFragment(), "main").commit();
+                return true;
+            }
+            else{
+                return true;
+            }
         }
 
         stateSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {

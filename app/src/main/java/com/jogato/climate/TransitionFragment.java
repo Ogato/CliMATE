@@ -8,6 +8,9 @@ import android.support.v4.app.Fragment;
 import android.transition.Fade;
 import android.transition.Slide;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -16,9 +19,6 @@ import android.widget.TextView;
 
 import java.util.Random;
 
-/**
- * Created by jogato on 8/7/17.
- */
 
 public class TransitionFragment extends Fragment {
     private String mCaption;
@@ -30,9 +30,14 @@ public class TransitionFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             setEnterTransition(new Slide());
             setExitTransition(new Fade());
+        }
+
+        if(((MainActivity)getActivity()).getSupportActionBar() != null) {
+            ((MainActivity) getActivity()).getSupportActionBar().setTitle("CLIMATE");
         }
 
         if(getArguments() != null) {
@@ -45,7 +50,7 @@ public class TransitionFragment extends Fragment {
         }
     }
 
-    private LinearLayout mLinearLayout;
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -88,9 +93,6 @@ public class TransitionFragment extends Fragment {
             view.setBackgroundColor(Color.parseColor("#69BDEE"));
         }
 
-
-
     }
-
 
 }
