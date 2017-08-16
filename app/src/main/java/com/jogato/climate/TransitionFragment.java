@@ -60,36 +60,6 @@ public class TransitionFragment extends Fragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-
-
-        gifImage = (ImageView) view.findViewById(R.id.gifImageView);
-
-
-        Random rand = new Random();
-        int gifcount = rand.nextInt(4);
-
-
-        if (gifcount == 0) {
-            gifImage.setImageResource(R.drawable.gifimagethree);
-            gifImage.setBackgroundColor(Color.parseColor("#000000"));
-            view.setBackgroundColor(Color.parseColor("#000000"));
-
-        } else if (gifcount == 1){
-
-            gifImage.setImageResource(R.drawable.gifimagetwo);
-            gifImage.setBackgroundColor(Color.parseColor("#80D3F8"));
-            view.setBackgroundColor(Color.parseColor("#80D3F8"));
-
-
-
-        } else {
-            gifImage.setImageResource(R.drawable.gifimageone);
-            gifImage.setBackgroundColor(Color.parseColor("#69BDEE"));
-            view.setBackgroundColor(Color.parseColor("#69BDEE"));
-        }
-
-
-
     }
 
 

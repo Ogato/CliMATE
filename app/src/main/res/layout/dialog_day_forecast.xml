@@ -28,12 +28,14 @@
                 android:layout_marginEnd="10dp"
                 android:textStyle="bold"
                 android:id="@+id/average_temp"
+                android:text="Average Temp 1"
                 android:layout_gravity="center"/>
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textStyle="bold"
+                android:text="Average Temp 2"
                 android:id="@+id/description"/>
 
         </LinearLayout>
@@ -48,12 +50,16 @@
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="10dp"
                 android:textStyle="bold"
+                android:text="Average Temp 3"
+
                 android:id="@+id/min_temp"/>
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textStyle="bold"
+                android:text="Average Temp 4"
+
                 android:id="@+id/max_temp"/>
 
         </LinearLayout>
@@ -69,13 +75,16 @@
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="10dp"
                 android:textStyle="bold"
+                android:text="Average Temp 5"
+
                 android:id="@+id/wind_speed"/>
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textStyle="bold"
-                android:id="@+id/humidity"/>
+                android:id="@+id/humidity"
+                android:text="Average Temp 6"/>
 
         </LinearLayout>
 
