@@ -22,7 +22,8 @@
         <LinearLayout
             android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:weightSum="1">
 
             <EditText
                 android:backgroundTint="#fff"
@@ -61,11 +62,12 @@
                 android:radius="10dip"
                 android:background="@drawable/login_button"
                 android:textColor="#fff"
-                android:text="@string/log_in"
+                android:text="Log In"
                 android:layout_marginTop="20dp"
                 android:layout_gravity="center"
                 android:layout_width="130dp"
                 android:layout_height="40dp"
+                android:textAllCaps="false"
                 android:id="@+id/login_button" />
 
 
@@ -80,15 +82,15 @@
 
             <com.facebook.login.widget.LoginButton
 
-                android:radius="10dip"
+                android:radius="20dip"
                 android:textColor="#fff"
                 android:text="@string/log_in_with_facebook"
-                android:background="@drawable/fb_button"
+
                 android:layout_marginTop="20dp"
                 android:layout_gravity="center"
-                android:layout_width="300dp"
-                android:layout_height="40dp"
-                android:id="@+id/facebook_button"/>
+                android:layout_width="254dp"
+                android:layout_height="30dp"
+                android:id="@+id/facebook_button" />
 
             <Button
 
@@ -98,9 +100,10 @@
                 android:text="@string/log_in_with_gmail"
                 android:layout_marginTop="10dp"
                 android:layout_gravity="center"
-                android:layout_width="300dp"
-                android:layout_height="40dp"
-                android:id="@+id/google_signin"/>
+                android:layout_width="254dp"
+                android:layout_height="30dp"
+                android:id="@+id/google_signin"
+                android:textAllCaps="false"/>
 
             <Button
                 android:radius="10dip"
