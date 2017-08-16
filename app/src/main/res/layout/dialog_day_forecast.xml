@@ -4,14 +4,27 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:gravity="center_horizontal">
+    android:gravity="center_horizontal"
+    >
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="10dp"
+        android:textStyle="bold"
+        android:text="Day Forecast"
+        android:layout_marginTop="20dp"
+        android:textSize="22sp"
+        android:layout_gravity="center"
+        android:layout_marginStart="10dp"/>
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="10dp"
         android:textStyle="bold"
-        android:id="@+id/date"/>
+        android:id="@+id/date"
+        android:layout_gravity="center"/>
 
     <com.android.volley.toolbox.NetworkImageView
         android:layout_width="30dp"
@@ -27,7 +40,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="10dp"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:layout_gravity="center">
 
             <TextView
                 android:layout_width="wrap_content"
@@ -50,7 +64,8 @@
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:layout_gravity="center">
 
             <TextView
                 android:layout_width="wrap_content"
@@ -65,7 +80,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textStyle="bold"
-                android:text="Average Temp 4"
+                android:text="Average  4"
 
                 android:id="@+id/max_temp"/>
 
@@ -74,8 +89,9 @@
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="10dp"
-            android:orientation="horizontal">
+            android:layout_marginTop="10dp"
+            android:orientation="horizontal"
+            android:layout_gravity="center">
 
             <TextView
                 android:layout_width="wrap_content"

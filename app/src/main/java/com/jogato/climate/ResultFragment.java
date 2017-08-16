@@ -300,7 +300,6 @@ public class ResultFragment extends Fragment {
                                             humidity.setText("Humidity: " + forecastObject.getmHumidity());
 
                                             AlertDialog alertDialog = new AlertDialog.Builder(getActivity())
-                                                    .setTitle("Day Forecast")
                                                     .setView(forecastView)
                                                     .setPositiveButton("Done", new DialogInterface.OnClickListener() {
                                                         @Override
