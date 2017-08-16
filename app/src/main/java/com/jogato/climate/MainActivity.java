@@ -331,6 +331,8 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
                 ft.replace(R.id.overlay_container, transition  , "transition");
                 ft.replace(R.id.fragment_container, fragment  , "history").commit();
                 mDrawer.closeDrawers();
+                setDrawerAccess(false);
+
             }
             else if(i == 1){
                 Fragment fragment = new AccountFragment();
@@ -377,9 +379,11 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
 
     public void setDrawerAccess(boolean access){
         if(access){
+            Log.i("JO_INFO", "UNLOCKED");
             mDrawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
         }
         else{
+            Log.i("JO_INFO", "LOCKED");
             mDrawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
         }
     }

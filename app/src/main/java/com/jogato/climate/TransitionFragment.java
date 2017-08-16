@@ -45,9 +45,8 @@ public class TransitionFragment extends Fragment {
         }
         else{
             mCaption = "Getting Requested Results";
-
-
         }
+
     }
 
 

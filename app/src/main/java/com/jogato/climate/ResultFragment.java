@@ -313,6 +313,7 @@ public class ResultFragment extends Fragment {
                                         }
                                     });
                                 }
+                                ((MainActivity)getActivity()).setDrawerAccess(true);
                             }
 
                         }.start();
@@ -326,7 +327,6 @@ public class ResultFragment extends Fragment {
             }
         });
 
-        ((MainActivity)getActivity()).setDrawerAccess(true);
         return v;
     }
 
