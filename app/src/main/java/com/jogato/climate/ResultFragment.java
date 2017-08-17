@@ -313,7 +313,9 @@ public class ResultFragment extends Fragment {
                                         }
                                     });
                                 }
-                                ((MainActivity)getActivity()).setDrawerAccess(true);
+                                if(((MainActivity)getActivity()) != null) {
+                                    ((MainActivity) getActivity()).setDrawerAccess(true);
+                                }
                             }
 
                         }.start();

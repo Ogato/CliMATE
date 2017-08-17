@@ -1,17 +1,24 @@
 package com.jogato.climate;
 
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 public class Clothing {
     private double mPrice;
     private String mDescription;
     private String mImageURL;
     private String mProductURL;
 
-    Clothing(double price, String description, String imageURL, String productURL){
-        mPrice = price;
-        mDescription = description;
-        mImageURL = imageURL;
-        mProductURL = productURL;
+    Clothing(JSONObject clothingObject){
+        try {
+            mImageURL = clothingObject.getString("mediumImage");
+            mDescription = clothingObject.getString("name");
+            mProductURL = clothingObject.getString("productUrl");
+            mPrice = clothingObject.getDouble("salePrice");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
     public double getmPrice() {

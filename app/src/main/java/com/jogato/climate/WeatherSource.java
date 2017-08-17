@@ -294,11 +294,7 @@ public class WeatherSource{
                                 JSONArray jsonArray = response.getJSONArray("items");
                                 if (jsonArray.length() > 0) {
                                     JSONObject clothing = jsonArray.getJSONObject((int) Math.floor(Math.random() * jsonArray.length()));
-                                    String imageURL = clothing.getString("mediumImage");
-                                    String description = clothing.getString("name");
-                                    String product = clothing.getString("productUrl");
-                                    double price = clothing.getDouble("salePrice");
-                                    mActiveClothingURLs.add(new Clothing(price, description, imageURL, product));
+                                    mActiveClothingURLs.add(new Clothing(clothing));
 
                                 }
                             } catch (JSONException e) {
@@ -311,7 +307,7 @@ public class WeatherSource{
                         @Override
                         public void onErrorResponse(VolleyError error) {
                             if(error.networkResponse.statusCode != 403){
-                                Toast.makeText(mContext, "Unable to retrieve clothing suggestions at this time", Toast.LENGTH_SHORT).show();
+                                //Toast.makeText(mContext, "Unable to retrieve clothing suggestions at this time", Toast.LENGTH_SHORT).show();
                             }
                         }
                     });
@@ -335,11 +331,7 @@ public class WeatherSource{
                             JSONArray jsonArray = response.getJSONArray("items");
                             if(jsonArray.length() > 0) {
                                 JSONObject clothing = jsonArray.getJSONObject((int) Math.floor(Math.random() * jsonArray.length()));
-                                String imageURL = clothing.getString("mediumImage");
-                                String description = clothing.getString("name");
-                                String product = clothing.getString("productUrl");
-                                double price = clothing.getDouble("salePrice");
-                                mActiveClothingURLs.add(new Clothing(price, description, imageURL, product));
+                                mActiveClothingURLs.add(new Clothing(clothing));
                             }
 
                         }
@@ -352,7 +344,7 @@ public class WeatherSource{
                     @Override
                     public void onErrorResponse(VolleyError error){
                         if(error.networkResponse.statusCode != 403){
-                            Toast.makeText(mContext, "Unable to retrieve clothing suggestions at this time", Toast.LENGTH_SHORT).show();
+                            //Toast.makeText(mContext, "Unable to retrieve clothing suggestions at this time", Toast.LENGTH_SHORT).show();
                         }
                     }
                 });
@@ -447,11 +439,7 @@ public class WeatherSource{
                                 JSONArray jsonArray = response.getJSONArray("items");
                                 if (jsonArray.length() > 0) {
                                     JSONObject clothing = jsonArray.getJSONObject((int) Math.floor(Math.random() * jsonArray.length()));
-                                    String imageURL = clothing.getString("mediumImage");
-                                    String description = clothing.getString("name");
-                                    String product = clothing.getString("productUrl");
-                                    double price = clothing.getDouble("salePrice");
-                                    mOfficeClothingURLs.add(new Clothing(price, description, imageURL, product));
+                                    mOfficeClothingURLs.add(new Clothing(clothing));
                                 }
                             } catch (JSONException e) {
                                 e.printStackTrace();
@@ -463,7 +451,7 @@ public class WeatherSource{
                         @Override
                         public void onErrorResponse(VolleyError error) {
                             if(error.networkResponse.statusCode != 403){
-                                Toast.makeText(mContext, "Unable to retrieve clothing suggestions at this time", Toast.LENGTH_SHORT).show();
+                                //Toast.makeText(mContext, "Unable to retrieve clothing suggestions at this time", Toast.LENGTH_SHORT).show();
                             }
                         }
                     });
@@ -487,11 +475,7 @@ public class WeatherSource{
                             JSONArray jsonArray = response.getJSONArray("items");
                             if(jsonArray.length() > 0) {
                                 JSONObject clothing = jsonArray.getJSONObject((int) Math.floor(Math.random() * jsonArray.length()));
-                                String imageURL = clothing.getString("mediumImage");
-                                String description = clothing.getString("name");
-                                String product = clothing.getString("productUrl");
-                                double price = clothing.getDouble("salePrice");
-                                mOfficeClothingURLs.add(new Clothing(price, description, imageURL, product));
+                                mOfficeClothingURLs.add(new Clothing(clothing));
                             }
 
                         }
@@ -504,7 +488,7 @@ public class WeatherSource{
                     @Override
                     public void onErrorResponse(VolleyError error){
                         if(error.networkResponse.statusCode != 403){
-                            Toast.makeText(mContext, "Unable to retrieve clothing suggestions at this time", Toast.LENGTH_SHORT).show();
+                            //Toast.makeText(mContext, "Unable to retrieve clothing suggestions at this time", Toast.LENGTH_SHORT).show();
                         }
                     }
                 });
@@ -573,11 +557,7 @@ public class WeatherSource{
                                 JSONArray jsonArray = response.getJSONArray("items");
                                 if (jsonArray.length() > 0) {
                                     JSONObject clothing = jsonArray.getJSONObject((int) Math.floor(Math.random() * jsonArray.length()));
-                                    String imageURL = clothing.getString("mediumImage");
-                                    String description = clothing.getString("name");
-                                    String product = clothing.getString("productUrl");
-                                    double price = clothing.getDouble("salePrice");
-                                    mCasualClothingURLs.add(new Clothing(price, description, imageURL, product));
+                                    mCasualClothingURLs.add(new Clothing(clothing));
                                 }
                             } catch (JSONException e) {
                                 e.printStackTrace();
@@ -589,7 +569,7 @@ public class WeatherSource{
                         @Override
                         public void onErrorResponse(VolleyError error) {
                             if(error.networkResponse.statusCode != 403){
-                                Toast.makeText(mContext, "Unable to retrieve clothing suggestions at this time", Toast.LENGTH_SHORT).show();
+                                //Toast.makeText(mContext, "Unable to retrieve clothing suggestions at this time", Toast.LENGTH_SHORT).show();
                             }
                         }
                     });
@@ -613,11 +593,7 @@ public class WeatherSource{
                             JSONArray jsonArray = response.getJSONArray("items");
                             if(jsonArray.length() > 0) {
                                 JSONObject clothing = jsonArray.getJSONObject((int) Math.floor(Math.random() * jsonArray.length()));
-                                String imageURL = clothing.getString("mediumImage");
-                                String description = clothing.getString("name");
-                                String product = clothing.getString("productUrl");
-                                double price = clothing.getDouble("salePrice");
-                                mCasualClothingURLs.add(new Clothing(price, description, imageURL, product));
+                                mCasualClothingURLs.add(new Clothing(clothing));
                             }
 
                         }
@@ -631,7 +607,7 @@ public class WeatherSource{
                     @Override
                     public void onErrorResponse(VolleyError error){
                         if(error.networkResponse.statusCode != 403){
-                            Toast.makeText(mContext, "Unable to retrieve clothing suggestions at this time", Toast.LENGTH_SHORT).show();
+                            //Toast.makeText(mContext, "Unable to retrieve clothing suggestions at this time", Toast.LENGTH_SHORT).show();
                         }
                     }
                 });
